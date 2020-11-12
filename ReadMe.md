@@ -220,3 +220,33 @@ Gets or sets the data type that converts this field to and from a string (as dem
 This property is available with the `FixedWidthField` attribute and not the `FixedWidthField` class.
 
 ## Customizing the Library
+
+All of the constructors for the `FixedWidthReader`, `FixedWidthReader<T>`, `FixedWidthWriter`, and `FixedWidthWriter<T>` class have an optional `FixedWidthOptions` parameter. To use the default options, leave this parameter as `null`. Provide your own instance of this class to customize the library settings.
+
+This class has the following properties.
+
+#### FieldAlignment DefaultAlignment
+
+Gets or sets the default way fields are padded. For example, if a field is right aligned, values shorter than the field width are padded on the left. Can be overridden for individual fields using the `FixedWidthField.Alignment` property. The default value is `FieldAlignment.Left`.
+
+#### har DefaultPadCharacter
+
+Gets or sets the default character used to pad fields when writing values shorter than the field width. Can be overridden for individual fields using the `FixedWidthField.PadCharacter` property. The default value is `' '`.
+
+#### bool TrimFields
+
+Gets or sets whether leading and trailing pad characters are trimmed when reading field values. Can be overridden for individual fields using the `FixedWidthField.TrimField` property. The default value is `true`.
+
+WARNING: If this property is <c>true</c> and the field value contains leading or trailing characters that match the current pad character, those characters will also be trimmed.
+
+#### bool ThrowDataException
+
+Gets or sets whether a `FixedWidthDataException` is thrown when reading a field that cannot be converted to the target field type. The default value is `true`.
+
+#### bool ThrowOutOfRangeException
+
+Gets or sets whether a `FixedWidthOutOfRangeException` is thrown when reading a field from a line that is too short. If `false`, the library reads as much of the field as possible or returns an empty string. The default value is `true`.
+
+#### bool ThrowOverflowException
+
+Gets or sets whether a `FixedWidthOverflowException` is thrown when attempting to write a value that is too large for the field. If `false`, the value will be silently truncated. The default value is `true`.
