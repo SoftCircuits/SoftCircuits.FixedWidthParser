@@ -41,6 +41,7 @@ using (FixedWidthWriter writer = new FixedWidthWriter(PersonFields, filename))
 // Read the data from disk
 using (FixedWidthReader reader = new FixedWidthReader(PersonFields, filename))
 {
+    // Array will be allocated if null or the wrong size
     string[] values = null;
     while (reader.Read(ref values))
     {
@@ -61,4 +62,48 @@ The code above writes and then reads the following file:
 
 ## FixedWidthWriter<T> and FixedWidthReader<T> Classes
 
-These classes are also used to write and read fixed-width files
+These classes are used to write and read fixed-width files using a class to define the fields.
+
+All properties and fields in the class with a `FixedWidthField` attribute will be written and/or read to the fixed width file. Note that the members don't have to be strings. All the basic data types are supported, including `Guid`. (Note that `DateTime` members are not currently supported due to the many ways they can be formatted, but you can work around this by writing custom data converters.)
+
+```cs
+// Declare our class with FixedWidthField attributes
+private class Product
+{
+    [FixedWidthField(36)]
+    public Guid Id { get; set; }
+    [FixedWidthField(12)]
+    public string Description { get; set; }
+    [FixedWidthField(12)]
+    public string Category { get; set; }
+    [FixedWidthField(10)]
+    public double Rating { get; set; }
+}
+
+// Create some data
+private readonly List<Product> Products = new List<Product>
+{
+    new Product { Id = Guid.NewGuid(), Description = "Coffee Table", Category = "Furniture", Rating = 4.5 },
+    new Product { Id = Guid.NewGuid(), Description = "Spoons", Category = "Utensils", Rating = 4.2 },
+    new Product { Id = Guid.NewGuid(), Description = "Carpet", Category = "Flooring", Rating = 4.5 },
+    new Product { Id = Guid.NewGuid(), Description = "Knives", Category = "Utensils", Rating = 4.7 },
+    new Product { Id = Guid.NewGuid(), Description = "Recliner", Category = "Furniture", Rating = 4.5 },
+    new Product { Id = Guid.NewGuid(), Description = "Floor Tiles", Category = "Flooring", Rating = 4.5 },
+};
+
+// Write the data to a file
+using (FixedWidthWriter<Product> writer = new FixedWidthWriter<Product>(filename))
+{
+    foreach (var product in Products)
+        writer.WriteItem(product);
+}
+
+// Read the data back from the file
+List<Product> results = new List<Product>();
+using (FixedWidthReader<Product> reader = new FixedWidthReader<Product>(filename))
+{
+    while (reader.ReadItem(out Product item))
+        results.Add(item);
+}
+```
+
