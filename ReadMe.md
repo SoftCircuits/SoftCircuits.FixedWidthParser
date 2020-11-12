@@ -191,8 +191,32 @@ Here's the file created by the code above:
 ```
 
 
-## Additional Field Settings
+## Additional Field Options
 
+Whether you define your fields by declaring an array of `FixedWidthField`s or using the `FixedWidthField` attribute, there are a number of field options you can specify.
 
+#### int Length
+
+Gets or sets the number of characters occupied by this column.
+
+#### FieldAlignment? Alignment
+
+Gets or sets the column alignment for this field. Leave as `null` to use the default alignment.
+
+#### char? PadCharacter
+
+Gets or sets the character used to pad this field when writing values shorter than the field width. Leave as `null` to use the default pad character.
+
+#### bool? TrimField
+
+Gets or sets whether leading and trailing pad characters are trimmed when reading field values. Leave as `null` to use the default trim setting.
+
+WARNING: If this property is <c>true</c> and the field value contains leading or trailing characters that match the current pad character, those characters will also be trimmed.
+
+#### Type ConverterType
+
+Gets or sets the data type that converts this field to and from a string (as demonstrated previously). Must derive from `IDataConverter`. For best results and type safety, derive the class from `DataConverter<T>`.
+
+This property is available with the `FixedWidthField` attribute and not the `FixedWidthField` class.
 
 ## Customizing the Library
