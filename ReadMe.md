@@ -60,7 +60,7 @@ The code above writes and then reads the following file:
 5    Julie     Samson    
 ```
 
-## FixedWidthWriter<T> and FixedWidthReader<T> Classes
+## FixedWidthWriter&lt;T&gt; and FixedWidthReader&lt;T&gt; Classes
 
 These classes are used to write and read fixed-width files using a class to define the fields.
 
