@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
@@ -9,14 +9,14 @@
     <Copyright>Copyright © 2020 SoftCircuits</Copyright>
     <NeutralLanguage>en-US</NeutralLanguage>
     <PackageReleaseNotes>Initial version.</PackageReleaseNotes>
-    <PackageTags>text text-parser file file-parser fixed width fixed-width</PackageTags>
+    <PackageTags>text text-parser file file-parser fixed width fixed-width fixed-width-parser</PackageTags>
     <PackageId>SoftCircuits.FixedWidthParser</PackageId>
     <Product>SoftCircuits.FixedWidthParser</Product>
-    <Description>Lightweight .NET class for reading and writing fixed-width data files. Included basic reader and writer class, and also includes generic class that automatically map class properties to fixed-width fields. Many options included.</Description>
+    <Description>Lightweight .NET class for reading and writing fixed-width data files. Includes basic reader and writer class, and also includes generic classes that automatically map class properties to fixed-width fields. Includes many options to control the library's behavior.</Description>
     <PackageLicenseFile>License.txt</PackageLicenseFile>
-    <PackageProjectUrl>https://github.com/SoftCircuits/FixedWidth</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/SoftCircuits/SoftCircuits.FixedWidthParser</PackageProjectUrl>
     <PackageIcon>Logo_64x64.png</PackageIcon>
-    <RepositoryUrl>https://github.com/SoftCircuits/FixedWidth</RepositoryUrl>
+    <RepositoryUrl>https://github.com/SoftCircuits/SoftCircuits.FixedWidthParser</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 

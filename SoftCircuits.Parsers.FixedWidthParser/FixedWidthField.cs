@@ -21,7 +21,7 @@ namespace SoftCircuits.Parsers
 
         /// <summary>
         /// Gets or sets the character used to pad this field when writing values shorter than the field width.
-        /// Leave as <c>null</c> to use the default pad character
+        /// Leave as <c>null</c> to use the default pad character.
         /// </summary>
         public char? PadCharacter { get; set; }
 
