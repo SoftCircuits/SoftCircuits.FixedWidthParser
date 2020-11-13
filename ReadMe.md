@@ -45,7 +45,7 @@ using (FixedWidthReader reader = new FixedWidthReader(PersonFields, filename))
     string[] values = null;
     while (reader.Read(ref values))
     {
-        // Do someting with values here
+        // Do something with values here
     }
 }
 ```
