@@ -127,7 +127,16 @@ namespace SoftCircuits.Parsers
         /// <param name="item">Returns the item read.</param>
         /// <returns>True if successful, false if the end of the file was reached.</returns>
         /// <exception cref="FixedWidthDataException"></exception>
-        public bool ReadItem(out T item)
+        [Obsolete("This method is deprecated and will be removed in a future version. Please use Read() instead.")]
+        public bool ReadItem(out T item) => Read(out item);
+
+        /// <summary>
+        /// Reads the next item from the fixed-width file.
+        /// </summary>
+        /// <param name="item">Returns the item read.</param>
+        /// <returns>True if successful, false if the end of the file was reached.</returns>
+        /// <exception cref="FixedWidthDataException"></exception>
+        public bool Read(out T item)
         {
             // Ensure read buffers are allocated
             if (ReadValues == null || ReadValues.Length != MemberDescriptors.Count)

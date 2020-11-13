@@ -4,12 +4,6 @@
 
 namespace SoftCircuits.Parsers
 {
-    public enum FieldAlignment
-    {
-        Left,
-        Right,
-    }
-
     /// <summary>
     /// Specifies options used by the <see cref="FixedWidthReader"/> and
     /// <see cref="FixedWidthWriter"/> classes.

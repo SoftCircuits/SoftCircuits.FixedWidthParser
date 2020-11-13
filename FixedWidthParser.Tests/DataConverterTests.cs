@@ -243,14 +243,14 @@ namespace FixedWidthParserTests
             using (FixedWidthWriter<Person> writer = new FixedWidthWriter<Person>(filename))
             {
                 foreach (var person in People)
-                    writer.WriteItem(person);
+                    writer.Write(person);
             }
 
             // Read the data back from the file
             List<Person> results = new List<Person>();
             using (FixedWidthReader<Person> reader = new FixedWidthReader<Person>(filename))
             {
-                while (reader.ReadItem(out Person person))
+                while (reader.Read(out Person person))
                     results.Add(person);
             }
         }

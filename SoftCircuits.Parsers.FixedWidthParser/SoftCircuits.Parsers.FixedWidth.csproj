@@ -8,7 +8,7 @@
     <Company>SoftCircuits</Company>
     <Copyright>Copyright © 2020 SoftCircuits</Copyright>
     <NeutralLanguage>en-US</NeutralLanguage>
-    <PackageReleaseNotes>Initial version.</PackageReleaseNotes>
+    <PackageReleaseNotes>Renamed FixedWidthWriter&lt;T&gt;.WriteItem() to Write(); Renamed FixedWidthReader&lt;T&gt;.ReadItem() to Read(); Update unit tests.</PackageReleaseNotes>
     <PackageTags>text text-parser file file-parser fixed width fixed-width fixed-width-parser</PackageTags>
     <PackageId>SoftCircuits.FixedWidthParser</PackageId>
     <Product>SoftCircuits.FixedWidthParser</Product>
@@ -18,6 +18,7 @@
     <PackageIcon>Logo_64x64.png</PackageIcon>
     <RepositoryUrl>https://github.com/SoftCircuits/SoftCircuits.FixedWidthParser</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
   <ItemGroup>

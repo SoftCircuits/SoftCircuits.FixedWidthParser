@@ -79,13 +79,13 @@ namespace FixedWidthParserTests
                 using (FixedWidthWriter<T1> writer = new FixedWidthWriter<T1>(path, options))
                 {
                     foreach (var item in items)
-                        writer.WriteItem(item);
+                        writer.Write(item);
                 }
 
                 results = new List<T2>();
                 using (FixedWidthReader<T2> reader = new FixedWidthReader<T2>(path, options))
                 {
-                    while (reader.ReadItem(out T2 item))
+                    while (reader.Read(out T2 item))
                         results.Add(item);
                 }
             }

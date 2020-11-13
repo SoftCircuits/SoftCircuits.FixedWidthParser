@@ -77,7 +77,16 @@ namespace SoftCircuits.Parsers
         /// <param name="item">The item to write</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="FixedWidthOverflowException"></exception>
-        public void WriteItem(T item)
+        [Obsolete("This method is deprecated and will be removed in a future version. Please use Write() instead.")]
+        public void WriteItem(T item) => Write(item);
+
+        /// <summary>
+        /// Writes the given item to the fixed-width file.
+        /// </summary>
+        /// <param name="item">The item to write</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="FixedWidthOverflowException"></exception>
+        public void Write(T item)
         {
             // Ensure write buffers are allocated
             if (WriteValues == null || WriteValues.Length != MemberDescriptors.Count)
