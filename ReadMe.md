@@ -96,14 +96,14 @@ private readonly List<Product> Products = new List<Product>
 using (FixedWidthWriter<Product> writer = new FixedWidthWriter<Product>(filename))
 {
     foreach (var product in Products)
-        writer.WriteItem(product);
+        writer.Write(product);
 }
 
 // Read the data back from the file
 List<Product> results = new List<Product>();
 using (FixedWidthReader<Product> reader = new FixedWidthReader<Product>(filename))
 {
-    while (reader.ReadItem(out Product product))
+    while (reader.Read(out Product product))
         results.Add(product);
 }
 ```
@@ -168,14 +168,14 @@ private readonly List<Person> People = new List<Person>
 using (FixedWidthWriter<Person> writer = new FixedWidthWriter<Person>(filename))
 {
     foreach (var person in People)
-        writer.WriteItem(person);
+        writer.Write(person);
 }
 
 // Read the data back from the file
 List<Person> results = new List<Person>();
 using (FixedWidthReader<Person> reader = new FixedWidthReader<Person>(filename))
 {
-    while (reader.ReadItem(out Person person))
+    while (reader.Read(out Person person))
         results.Add(person);
 }
 ```
