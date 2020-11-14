@@ -223,7 +223,23 @@ This property is available with the `FixedWidthField` attribute and not the `Fix
 
 All of the constructors for the `FixedWidthReader`, `FixedWidthReader<T>`, `FixedWidthWriter`, and `FixedWidthWriter<T>` class have an optional `FixedWidthOptions` parameter. To use the default options, leave this parameter as `null`. Provide your own instance of this class to customize the library settings.
 
-This class has the following properties.
+```cs
+// Set to right align, tilde padding and don't throw exception for invalid ata
+FixedWidthOptions options = new FixedWidthOptions
+{
+    DefaultAlignment = FieldAlignment.Right,
+    DefaultPadCharacter = '~',
+    ThrowDataException = false
+};
+
+using (FixedWidthWriter<Product> writer = new FixedWidthWriter<Product>(filename, options))
+{
+    foreach (var product in Products)
+        writer.Write(product);
+}
+```
+
+The `FixedWidthOptions` class has the following properties.
 
 #### FieldAlignment DefaultAlignment
 
