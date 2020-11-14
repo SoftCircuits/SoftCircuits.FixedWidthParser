@@ -245,7 +245,7 @@ The `FixedWidthOptions` class has the following properties.
 
 Gets or sets the default way fields are padded. For example, if a field is right aligned, values shorter than the field width are padded on the left. Can be overridden for individual fields using the `FixedWidthField.Alignment` property. The default value is `FieldAlignment.Left`.
 
-#### har DefaultPadCharacter
+#### char DefaultPadCharacter
 
 Gets or sets the default character used to pad fields when writing values shorter than the field width. Can be overridden for individual fields using the `FixedWidthField.PadCharacter` property. The default value is `' '`.
 
