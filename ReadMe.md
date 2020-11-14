@@ -123,7 +123,7 @@ ce2026bf-7401-47b2-a7ab-2202292a4425Knives      Utensils    4.7
 
 If you have a class member of a type for which there is no built-in support, or if you want to customize the way a member is formatted, you can supply your own data conversion class.
 
-Data conversion classes must implement the `IDataConverter` interface, but the easiest and type-safe way to write a custom data converter is to derive your class from `DataConverter<T>`, where `T` is the type of the member you are converting. This class has two abstract members that you must implement in your derived class: `ConvertToString()` and `TryConvertFromString()`.
+Data conversion classes must implement the `IDataConverter` interface, but the easiest way to write a custom data converter in a type-safe manner is to derive your class from `DataConverter<T>`, where `T` is the type of the member you are converting. This class has two abstract members that you must implement in your derived class: `ConvertToString()` and `TryConvertFromString()`.
 
 The following code reads and writes `Person` records, which contain a `DateTime` property. The `BirthdateConverter` class is used to provide data conversion support for the `DateTime` property. This is done by setting the `ConverterType` property of the `FixedWidthField` attribute.
 
@@ -213,6 +213,10 @@ Gets or sets whether leading and trailing pad characters are trimmed when readin
 
 WARNING: If this property is <c>true</c> and the field value contains leading or trailing characters that match the current pad character, those characters will also be trimmed.
 
+#### int Skip
+
+Gets or sets the number of characters to skip before the field. Normally, this property is set to zero. You can use this property to skip fixed-width fields that you don't want to read. When writing fixed-width files, the character specified by `FixedWidthOptions.DefaultPadCharacter` will be written to fill the skipped characters. The default value is `0`.
+
 #### Type ConverterType
 
 Gets or sets the data type that converts this field to and from a string (as demonstrated previously). Must derive from `IDataConverter`. For best results and type safety, derive the class from `DataConverter<T>`.
@@ -223,13 +227,29 @@ This property is available with the `FixedWidthField` attribute and not the `Fix
 
 All of the constructors for the `FixedWidthReader`, `FixedWidthReader<T>`, `FixedWidthWriter`, and `FixedWidthWriter<T>` class have an optional `FixedWidthOptions` parameter. To use the default options, leave this parameter as `null`. Provide your own instance of this class to customize the library settings.
 
-This class has the following properties.
+```cs
+// Set to right align, tilde padding and don't throw exception for invalid ata
+FixedWidthOptions options = new FixedWidthOptions
+{
+    DefaultAlignment = FieldAlignment.Right,
+    DefaultPadCharacter = '~',
+    ThrowDataException = false
+};
+
+using (FixedWidthWriter<Product> writer = new FixedWidthWriter<Product>(filename, options))
+{
+    foreach (var product in Products)
+        writer.Write(product);
+}
+```
+
+The `FixedWidthOptions` class has the following properties.
 
 #### FieldAlignment DefaultAlignment
 
 Gets or sets the default way fields are padded. For example, if a field is right aligned, values shorter than the field width are padded on the left. Can be overridden for individual fields using the `FixedWidthField.Alignment` property. The default value is `FieldAlignment.Left`.
 
-#### har DefaultPadCharacter
+#### char DefaultPadCharacter
 
 Gets or sets the default character used to pad fields when writing values shorter than the field width. Can be overridden for individual fields using the `FixedWidthField.PadCharacter` property. The default value is `' '`.
 
