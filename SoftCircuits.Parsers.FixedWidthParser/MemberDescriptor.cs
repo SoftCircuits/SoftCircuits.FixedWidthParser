@@ -25,7 +25,7 @@ namespace SoftCircuits.Parsers
         /// <param name="attribute">The property's <see cref="FixedWidthFieldAttribute"/> attribute.</param>
         /// <exception cref="ArgumentNullException"></exception>
         public MemberDescriptor(PropertyInfo property, FixedWidthFieldAttribute attribute)
-            : base(attribute.Field)
+            : base(attribute)
         {
             if (property == null)
                 throw new ArgumentNullException(nameof(property));
@@ -44,7 +44,7 @@ namespace SoftCircuits.Parsers
         /// <param name="attribute">The field's <see cref="FixedWidthFieldAttribute"/> attribute.</param>
         /// <exception cref="ArgumentNullException"></exception>
         public MemberDescriptor(FieldInfo field, FixedWidthFieldAttribute attribute)
-            : base(attribute.Field)
+            : base(attribute)
         {
             if (field == null)
                 throw new ArgumentNullException(nameof(field));

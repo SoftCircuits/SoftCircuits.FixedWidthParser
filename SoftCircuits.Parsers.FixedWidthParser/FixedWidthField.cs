@@ -1,6 +1,8 @@
 ﻿// Copyright (c) 2020 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
+using System.Diagnostics;
+
 namespace SoftCircuits.Parsers
 {
     /// <summary>
@@ -38,6 +40,15 @@ namespace SoftCircuits.Parsers
         public bool? TrimField { get; set; }
 
         /// <summary>
+        /// Gets or sets the number of characters to skip before the field. Normally, this property
+        /// is set to zero. You can use this property to skip fixed-width fields that you don't
+        /// want to read. When writing fixed-width files, the character specified by
+        /// <see cref="FixedWidthOptions.DefaultPadCharacter"/> will be written to fill the skipped
+        /// characters. The default value is <c>0</c>.
+        /// </summary>
+        public int Skip { get; set; }
+
+        /// <summary>
         /// Constructs a new <see cref="FixedWidthField"/>.
         /// </summary>
         /// <param name="length">The number of characters that this field occupies.</param>
@@ -51,14 +62,17 @@ namespace SoftCircuits.Parsers
             Alignment = null;
             PadCharacter = null;
             TrimField = null;
+            Skip = 0;
         }
 
-        internal FixedWidthField(FixedWidthField field)
+        internal FixedWidthField(FixedWidthFieldAttribute attribute)
         {
-            Length = field.Length;
-            Alignment = field.Alignment;
-            PadCharacter = field.PadCharacter;
-            TrimField = field.TrimField;
+            Debug.Assert(attribute?.Field != null);
+            Length = attribute.Field.Length;
+            Alignment = attribute.Field.Alignment;
+            PadCharacter = attribute.Field.PadCharacter;
+            TrimField = attribute.Field.TrimField;
+            Skip = attribute.Field.Skip;
         }
     }
 }

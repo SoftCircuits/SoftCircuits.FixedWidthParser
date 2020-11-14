@@ -235,27 +235,6 @@ namespace FixedWidthParserTests
         };
 
         [Test]
-        public void Temp()
-        {
-            string filename = "D:\\Temp.txt";
-
-            // Write the data to a file
-            using (FixedWidthWriter<Person> writer = new FixedWidthWriter<Person>(filename))
-            {
-                foreach (var person in People)
-                    writer.Write(person);
-            }
-
-            // Read the data back from the file
-            List<Person> results = new List<Person>();
-            using (FixedWidthReader<Person> reader = new FixedWidthReader<Person>(filename))
-            {
-                while (reader.Read(out Person person))
-                    results.Add(person);
-            }
-        }
-
-        [Test]
         public void TestCustomConverter()
         {
             ObjectMappingTests x = new ObjectMappingTests();

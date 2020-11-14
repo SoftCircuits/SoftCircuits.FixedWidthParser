@@ -212,7 +212,10 @@ namespace SoftCircuits.Parsers
             // Read fields
             int position = 0;
             for (int i = 0; i < Fields.Count; i++)
+            {
+                position += Fields[i].Skip;
                 values[i] = ReadField(line, Fields[i], ref position);
+            }
 
             return true;
         }

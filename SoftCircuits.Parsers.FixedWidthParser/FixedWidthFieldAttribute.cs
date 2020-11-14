@@ -51,6 +51,15 @@ namespace SoftCircuits.Parsers
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        public int Skip
+        {
+            get => Field.Skip;
+            set => Field.Skip = value;
+        }
+
+        /// <summary>
         /// Gets or sets the data type that converts this field to and from a string.
         /// Must derive from <see cref="IDataConverter"/>. For best results and type
         /// safety, derive the class from <see cref="DataConverter{T}"/>.

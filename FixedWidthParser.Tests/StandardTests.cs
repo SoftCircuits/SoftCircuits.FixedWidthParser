@@ -111,6 +111,55 @@ namespace FixedWidthParserTests
         }
 
         [Test]
+        public void SkipTests()
+        {
+            FixedWidthField[] fields = new FixedWidthField[]
+            {
+                new FixedWidthField(5),
+                new FixedWidthField(5) { Skip = 4 },
+                new FixedWidthField(5),
+            };
+
+            FixedWidthField[] fields2 = new FixedWidthField[]
+            {
+                new FixedWidthField(5),
+                new FixedWidthField(4),
+                new FixedWidthField(5),
+                new FixedWidthField(5),
+            };
+
+            List<string[]> values = new List<string[]>
+            {
+                new string[] { "abc", "def", "ghi" },
+                new string[] { "def", "ghi", "jkl" },
+                new string[] { "ghi", "jkl", "mno" },
+            };
+
+            List<string[]> expected = new List<string[]>
+            {
+                new string[] { "abc  ", "def  ", "ghi  " },
+                new string[] { "def  ", "ghi  ", "jkl  " },
+                new string[] { "ghi  ", "jkl  ", "mno  " },
+            };
+
+            List<string[]> expected2 = new List<string[]>
+            {
+                new string[] { "abc  ", "    ", "def  ", "ghi  " },
+                new string[] { "def  ", "    ", "ghi  ", "jkl  " },
+                new string[] { "ghi  ", "    ", "jkl  ", "mno  " },
+            };
+
+            WriteReadValues(fields, values, out List<string[]> results);
+            CollectionAssert.AreEqual(values, results);
+
+            WriteReadValues(fields, values, out results, new FixedWidthOptions { TrimFields = false });
+            CollectionAssert.AreEqual(expected, results);
+
+            WriteReadValues(fields, fields2, values, out results, new FixedWidthOptions { TrimFields = false });
+            CollectionAssert.AreEqual(expected2, results);
+        }
+
+        [Test]
         public void FieldOverrideTests()
         {
             FixedWidthField[] fields = new FixedWidthField[]

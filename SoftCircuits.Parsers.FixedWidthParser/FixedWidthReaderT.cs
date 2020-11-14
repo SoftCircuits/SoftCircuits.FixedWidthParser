@@ -150,7 +150,7 @@ namespace SoftCircuits.Parsers
             }
 
             // Create and populate item
-            item = Activator.CreateInstance(typeof(T)) as T;
+            item = Activator.CreateInstance<T>();
             for (int i = 0; i < MemberDescriptors.Count; i++)
                 MemberDescriptors[i].SetValue(item, ReadValues[i], Options.ThrowDataException);
 

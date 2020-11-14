@@ -126,6 +126,8 @@ namespace SoftCircuits.Parsers
             IEnumerator<string> enumerator = values.GetEnumerator();
             foreach (FixedWidthField field in Fields)
             {
+                if (field.Skip > 0)
+                    Writer.Write(new string(Options.DefaultPadCharacter, field.Skip));
                 string value = enumerator.MoveNext() ? enumerator.Current : string.Empty;
                 Writer.Write(FormatField(value, field));
             }
