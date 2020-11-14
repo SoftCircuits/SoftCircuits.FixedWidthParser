@@ -215,7 +215,7 @@ WARNING: If this property is <c>true</c> and the field value contains leading or
 
 #### int Skip
 
-Gets or sets the number of characters to skip before the field. Normally, this is set to zero. You can use this property to skip fixed-width fields that you don't want to read. When writing fixed-width files, the character specified by `FixedWidthOptions.DefaultPadCharacter` will be written to fill the skipped characters. The default value is `0`.
+Gets or sets the number of characters to skip before the field. Normally, this property is set to zero. You can use this property to skip fixed-width fields that you don't want to read. When writing fixed-width files, the character specified by `FixedWidthOptions.DefaultPadCharacter` will be written to fill the skipped characters. The default value is `0`.
 
 #### Type ConverterType
 
