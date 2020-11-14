@@ -123,7 +123,7 @@ ce2026bf-7401-47b2-a7ab-2202292a4425Knives      Utensils    4.7
 
 If you have a class member of a type for which there is no built-in support, or if you want to customize the way a member is formatted, you can supply your own data conversion class.
 
-Data conversion classes must implement the `IDataConverter` interface, but the easiest and type-safe way to write a custom data converter is to derive your class from `DataConverter<T>`, where `T` is the type of the member you are converting. This class has two abstract members that you must implement in your derived class: `ConvertToString()` and `TryConvertFromString()`.
+Data conversion classes must implement the `IDataConverter` interface, but the easiest way to write a custom data converter in a type-safe manner is to derive your class from `DataConverter<T>`, where `T` is the type of the member you are converting. This class has two abstract members that you must implement in your derived class: `ConvertToString()` and `TryConvertFromString()`.
 
 The following code reads and writes `Person` records, which contain a `DateTime` property. The `BirthdateConverter` class is used to provide data conversion support for the `DateTime` property. This is done by setting the `ConverterType` property of the `FixedWidthField` attribute.
 
