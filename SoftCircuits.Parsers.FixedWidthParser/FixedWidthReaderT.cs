@@ -131,7 +131,7 @@ namespace SoftCircuits.Parsers
         public bool ReadItem(out T item) => Read(out item);
 
         /// <summary>
-        /// Reads the next item from the fixed-width file.
+        /// Reads the next item from the current fixed-width file.
         /// </summary>
         /// <param name="item">Returns the item read.</param>
         /// <returns>True if successful, false if the end of the file was reached.</returns>
@@ -155,6 +155,16 @@ namespace SoftCircuits.Parsers
                 MemberDescriptors[i].SetValue(item, ReadValues[i], Options.ThrowDataException);
 
             return true;
+        }
+
+        /// <summary>
+        /// Reads all items from the current fixed-width file.
+        /// </summary>
+        /// <returns>An <see cref="IEnumerable{T}"/> that iterates the items read.</returns>
+        public IEnumerable<T> ReadAll()
+        {
+            while (Read(out T item))
+                yield return item;
         }
     }
 }

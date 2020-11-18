@@ -8,6 +8,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Linq;
 
 namespace FixedWidthParserTests
 {
@@ -62,31 +63,33 @@ namespace FixedWidthParserTests
         };
 
         [Test]
-        public void BasicTest()
+        public void BasicTests()
         {
-            WriteReadValues(Products, out List<Product> results);
-            CollectionAssert.AreEqual(Products, results, new ProductComparer());
+            CollectionAssert.AreEqual(Products, WriteReadValues(Products), new ProductComparer());
         }
 
         #region Support methods
 
-        internal void WriteReadValues<T1, T2>(List<T1> items, out List<T2> results, FixedWidthOptions options = null) where T1 : class, new() where T2 : class, new()
+        internal List<T1> WriteReadValues<T1>(List<T1> items, FixedWidthOptions options = null) where T1 : class, new()
+        {
+            return WriteReadValues<T1, T1>(items, options);
+        }
+
+        internal List<T2> WriteReadValues<T1, T2>(List<T1> items, FixedWidthOptions options = null) where T1 : class, new() where T2 : class, new()
         {
             string path = Path.GetTempFileName();
+            List<T2> results;
 
             try
             {
                 using (FixedWidthWriter<T1> writer = new FixedWidthWriter<T1>(path, options))
                 {
-                    foreach (var item in items)
-                        writer.Write(item);
+                    writer.Write(items);
                 }
 
-                results = new List<T2>();
                 using (FixedWidthReader<T2> reader = new FixedWidthReader<T2>(path, options))
                 {
-                    while (reader.Read(out T2 item))
-                        results.Add(item);
+                    results = reader.ReadAll().ToList();
                 }
             }
             catch (Exception)
@@ -97,6 +100,7 @@ namespace FixedWidthParserTests
             {
                 File.Delete(path);
             }
+            return results;
         }
 
         #endregion

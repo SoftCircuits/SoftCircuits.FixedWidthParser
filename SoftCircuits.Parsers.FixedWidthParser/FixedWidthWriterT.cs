@@ -99,5 +99,20 @@ namespace SoftCircuits.Parsers
             // Write values
             Write(WriteValues);
         }
+
+        /// <summary>
+        /// Writes the given items to the fixed-width file.
+        /// </summary>
+        /// <param name="items">The items to write</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="FixedWidthOverflowException"></exception>
+        public void Write(IEnumerable<T> items)
+        {
+            if (items == null)
+                throw new ArgumentNullException(nameof(items));
+
+            foreach (T item in items)
+                Write(item);
+        }
     }
 }

@@ -172,9 +172,7 @@ namespace FixedWidthParserTests
         public void TestIntrinsicDataConverters()
         {
             ObjectMappingTests x = new ObjectMappingTests();
-
-            x.WriteReadValues(AllTypesItems, out List<AllTypesClass> results);
-            CollectionAssert.AreEqual(AllTypesItems, results, new AllTypesComparer());
+            CollectionAssert.AreEqual(AllTypesItems, x.WriteReadValues(AllTypesItems), new AllTypesComparer());
         }
 
         private class Person
@@ -238,9 +236,7 @@ namespace FixedWidthParserTests
         public void TestCustomConverter()
         {
             ObjectMappingTests x = new ObjectMappingTests();
-
-            x.WriteReadValues(People, out List<Person> results);
-            CollectionAssert.AreEqual(People, results, new PersonComparer());
+            CollectionAssert.AreEqual(People, x.WriteReadValues(People), new PersonComparer());
         }
     }
 }

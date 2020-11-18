@@ -8,8 +8,8 @@
     <Company>SoftCircuits</Company>
     <Copyright>Copyright © 2020 SoftCircuits</Copyright>
     <NeutralLanguage>en-US</NeutralLanguage>
-    <PackageReleaseNotes>Added FixedWidthField.Skip and FixedWidthFieldAttribute.Skip properties; Added unit tests; Minor tweaks and enhancements.</PackageReleaseNotes>
-    <PackageTags>text text-parser file file-parser fixed width fixed-width fixed-width-parser</PackageTags>
+    <PackageReleaseNotes>Added FixedWidthReader&lt;T&gt;.ReadAll(); Added FixedWidthWriter&lt;T&gt;.Write(IEnumerable&lt;T&gt;); Updated unit tests to test new functionality.</PackageReleaseNotes>
+    <PackageTags>text parser text-parser file file-parser fixed width fixed-width fixed-width-parser</PackageTags>
     <PackageId>SoftCircuits.FixedWidthParser</PackageId>
     <Product>SoftCircuits.FixedWidthParser</Product>
     <Description>Lightweight .NET class for reading and writing fixed-width data files. Includes basic reader and writer class, and also includes generic classes that automatically map class properties to fixed-width fields. Includes many options to control the library's behavior.</Description>
@@ -18,7 +18,7 @@
     <PackageIcon>Logo_64x64.png</PackageIcon>
     <RepositoryUrl>https://github.com/SoftCircuits/SoftCircuits.FixedWidthParser</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <Version>1.0.2</Version>
+    <Version>1.0.3</Version>
   </PropertyGroup>
 
   <ItemGroup>
