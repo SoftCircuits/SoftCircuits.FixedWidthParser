@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2020 Jonathan Wood (www.softcircuits.com)
+﻿// Copyright (c) 2020-2021 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
 using System;
@@ -25,11 +25,11 @@ namespace SoftCircuits.Parsers.Converters
             Type = type;
         }
 
-        public string ConvertToString(object value) => value.ToString();
+        public string ConvertToString(object? value) => value?.ToString() ?? string.Empty;
 
-        public bool TryConvertFromString(string s, out object value)
+        public bool TryConvertFromString(string? s, out object value)
         {
-            throw new FixedWidthUnsupportedTypeException(Type.FullName);
+            throw new FixedWidthUnsupportedTypeException(Type);
         }
     }
 }

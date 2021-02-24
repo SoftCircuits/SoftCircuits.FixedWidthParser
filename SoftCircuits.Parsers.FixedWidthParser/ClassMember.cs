@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2020 Jonathan Wood (www.softcircuits.com)
+﻿// Copyright (c) 2020-2021 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
 using System;
@@ -16,7 +16,7 @@ namespace SoftCircuits.Parsers
         bool CanRead { get; }
         bool CanWrite { get; }
         void SetValue(object item, object value);
-        object GetValue(object item);
+        object? GetValue(object item);
     }
 
     /// <summary>
@@ -41,7 +41,7 @@ namespace SoftCircuits.Parsers
 
         public void SetValue(object item, object value) => Field.SetValue(item, value);
 
-        public object GetValue(object item) => Field.GetValue(item);
+        public object? GetValue(object item) => Field.GetValue(item);
     }
 
     /// <summary>
@@ -66,6 +66,6 @@ namespace SoftCircuits.Parsers
 
         public void SetValue(object item, object value) => Property.SetValue(item, value);
 
-        public object GetValue(object item) => Property.GetValue(item);
+        public object? GetValue(object item) => Property.GetValue(item);
     }
 }

@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2020 Jonathan Wood (www.softcircuits.com)
+﻿// Copyright (c) 2020-2021 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
 using System;
@@ -29,7 +29,7 @@ namespace SoftCircuits.Parsers.Converters
 
         public static IDataConverter GetConverter(Type type)
         {
-            return ConverterLookup.TryGetValue(type, out Func<IDataConverter> f) ?
+            return ConverterLookup.TryGetValue(type, out Func<IDataConverter>? f) ?
                 f() :
                 new UnsupportedTypeConverter(type);
         }

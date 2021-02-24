@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2020 Jonathan Wood (www.softcircuits.com)
+﻿// Copyright (c) 2020-2021 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
 using System;
@@ -9,6 +9,6 @@ namespace SoftCircuits.Parsers.Converters
     {
         public override string ConvertToString(Double value) => value.ToString();
 
-        public override bool TryConvertFromString(string s, out Double value) => Double.TryParse(s, out value);
+        public override bool TryConvertFromString(string? s, out Double value) => Double.TryParse(s, out value);
     }
 }

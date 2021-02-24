@@ -1,24 +1,27 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFrameworks>net5.0;netstandard2.0</TargetFrameworks>
+    <Nullable>annotations</Nullable>
+    <Nullable Condition="'$(TargetFramework)' == 'net5.0'">enable</Nullable>
+    <LangVersion>9.0</LangVersion>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <Authors>Jonathan Wood</Authors>
     <Company>SoftCircuits</Company>
-    <Copyright>Copyright © 2020 SoftCircuits</Copyright>
+    <Copyright>Copyright © 2020-2021 SoftCircuits</Copyright>
     <NeutralLanguage>en-US</NeutralLanguage>
-    <PackageReleaseNotes>Added FixedWidthReader&lt;T&gt;.ReadAll(); Added FixedWidthWriter&lt;T&gt;.Write(IEnumerable&lt;T&gt;); Updated unit tests to test new functionality.</PackageReleaseNotes>
+    <PackageReleaseNotes>Library now targets either .NET 5.0 or .NET Standard 2.0, and supports nullable reference types.</PackageReleaseNotes>
     <PackageTags>text parser text-parser file file-parser fixed width fixed-width fixed-width-parser</PackageTags>
     <PackageId>SoftCircuits.FixedWidthParser</PackageId>
     <Product>SoftCircuits.FixedWidthParser</Product>
-    <Description>Lightweight .NET class for reading and writing fixed-width data files. Includes basic reader and writer class, and also includes generic classes that automatically map class properties to fixed-width fields. Includes many options to control the library's behavior.</Description>
+    <Description>Lightweight .NET class for reading and writing fixed-width data files. Includes basic reader and writer class, and also includes generic classes that automatically map class properties to fixed-width fields. Includes many options to control the library's behavior. Now targets either .NET 5.0 or .NET Standard 2.0, and supports nullable reference types.</Description>
     <PackageLicenseFile>License.txt</PackageLicenseFile>
     <PackageProjectUrl>https://github.com/SoftCircuits/SoftCircuits.FixedWidthParser</PackageProjectUrl>
     <PackageIcon>Logo_64x64.png</PackageIcon>
     <RepositoryUrl>https://github.com/SoftCircuits/SoftCircuits.FixedWidthParser</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <Version>1.0.3</Version>
+    <Version>2.0.0</Version>
   </PropertyGroup>
 
   <ItemGroup>

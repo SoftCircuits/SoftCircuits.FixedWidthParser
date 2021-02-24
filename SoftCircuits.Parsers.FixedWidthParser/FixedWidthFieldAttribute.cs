@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2020 Jonathan Wood (www.softcircuits.com)
+﻿// Copyright (c) 2020-2021 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
 using System;
@@ -64,7 +64,7 @@ namespace SoftCircuits.Parsers
         /// Must derive from <see cref="IDataConverter"/>. For best results and type
         /// safety, derive the class from <see cref="DataConverter{T}"/>.
         /// </summary>
-        public Type ConverterType { get; set; }
+        public Type? ConverterType { get; set; }
 
         public FixedWidthFieldAttribute(int length)
         {

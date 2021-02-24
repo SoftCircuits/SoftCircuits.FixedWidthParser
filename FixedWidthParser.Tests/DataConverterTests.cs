@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2020 Jonathan Wood (www.softcircuits.com)
+﻿// Copyright (c) 2020-2021 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
 using NUnit.Framework;
@@ -6,7 +6,6 @@ using SoftCircuits.Parsers;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 
 namespace FixedWidthParserTests
 {
@@ -44,51 +43,65 @@ namespace FixedWidthParserTests
             public UInt32 UInt32Value { get; set; }
             [FixedWidthField(10)]
             public UInt64 UInt64Value { get; set; }
+
+            public AllTypesClass()
+            {
+                StringValue = string.Empty;
+            }
         }
 
         private class AllTypesComparer : IComparer, IComparer<AllTypesClass>
         {
-            public int Compare(object a, object b)
+            public int Compare(object? a, object? b)
             {
-                if (!(a is AllTypesClass ta) || !(b is AllTypesClass tb))
+                if (a is not AllTypesClass ta || b is not AllTypesClass tb)
                     throw new InvalidOperationException();
                 return Compare(ta, tb);
             }
 
-            public int Compare([AllowNull] AllTypesClass a, [AllowNull] AllTypesClass b)
+            public int Compare(AllTypesClass? a, AllTypesClass? b)
             {
-                int result;
+                if (a != null && b != null)
+                {
+                    int result;
 
-                result = a.BooleanValue.CompareTo(b.BooleanValue);
-                if (result != 0) return result;
-                result = a.ByteValue.CompareTo(b.ByteValue);
-                if (result != 0) return result;
-                result = a.CharValue.CompareTo(b.CharValue);
-                if (result != 0) return result;
-                result = a.DecimalValue.CompareTo(b.DecimalValue);
-                if (result != 0) return result;
-                result = a.DoubleValue.CompareTo(b.DoubleValue);
-                if (result != 0) return result;
-                result = a.GuidValue.CompareTo(b.GuidValue);
-                if (result != 0) return result;
-                result = a.Int16Value.CompareTo(b.Int16Value);
-                if (result != 0) return result;
-                result = a.Int32Value.CompareTo(b.Int32Value);
-                if (result != 0) return result;
-                result = a.Int64Value.CompareTo(b.Int64Value);
-                if (result != 0) return result;
-                result = a.SByteValue.CompareTo(b.SByteValue);
-                if (result != 0) return result;
-                result = a.SingleValue.CompareTo(b.SingleValue);
-                if (result != 0) return result;
-                result = a.StringValue.CompareTo(b.StringValue);
-                if (result != 0) return result;
-                result = a.UInt16Value.CompareTo(b.UInt16Value);
-                if (result != 0) return result;
-                result = a.UInt32Value.CompareTo(b.UInt32Value);
-                if (result != 0) return result;
-                result = a.UInt64Value.CompareTo(b.UInt64Value);
-                return result;
+                    result = a.BooleanValue.CompareTo(b.BooleanValue);
+                    if (result != 0) return result;
+                    result = a.ByteValue.CompareTo(b.ByteValue);
+                    if (result != 0) return result;
+                    result = a.CharValue.CompareTo(b.CharValue);
+                    if (result != 0) return result;
+                    result = a.DecimalValue.CompareTo(b.DecimalValue);
+                    if (result != 0) return result;
+                    result = a.DoubleValue.CompareTo(b.DoubleValue);
+                    if (result != 0) return result;
+                    result = a.GuidValue.CompareTo(b.GuidValue);
+                    if (result != 0) return result;
+                    result = a.Int16Value.CompareTo(b.Int16Value);
+                    if (result != 0) return result;
+                    result = a.Int32Value.CompareTo(b.Int32Value);
+                    if (result != 0) return result;
+                    result = a.Int64Value.CompareTo(b.Int64Value);
+                    if (result != 0) return result;
+                    result = a.SByteValue.CompareTo(b.SByteValue);
+                    if (result != 0) return result;
+                    result = a.SingleValue.CompareTo(b.SingleValue);
+                    if (result != 0) return result;
+                    result = a.StringValue.CompareTo(b.StringValue);
+                    if (result != 0) return result;
+                    result = a.UInt16Value.CompareTo(b.UInt16Value);
+                    if (result != 0) return result;
+                    result = a.UInt32Value.CompareTo(b.UInt32Value);
+                    if (result != 0) return result;
+                    result = a.UInt64Value.CompareTo(b.UInt64Value);
+                    return result;
+                }
+
+                if (a == null && b == null)
+                    return 0;
+                if (a == null)
+                    return -1;
+                return 1;
             }
         }
 
@@ -185,29 +198,43 @@ namespace FixedWidthParserTests
             public string LastName { get; set; }
             [FixedWidthField(12, ConverterType = typeof(BirthdateConverter))]
             public DateTime Birthdate { get; set; }
+
+            public Person()
+            {
+                FirstName = LastName = string.Empty;
+            }
         }
 
         private class PersonComparer : IComparer, IComparer<Person>
         {
-            public int Compare(object a, object b)
+            public int Compare(object? a, object? b)
             {
-                if (!(a is Person ta) || !(b is Person tb))
+                if (a is not Person ta || b is not Person tb)
                     throw new InvalidOperationException();
                 return Compare(ta, tb);
             }
 
-            public int Compare([AllowNull] Person a, [AllowNull] Person b)
+            public int Compare(Person? a, Person? b)
             {
-                int result;
+                if (a != null && b != null)
+                {
+                    int result;
 
-                result = a.Id.CompareTo(b.Id);
-                if (result != 0) return result;
-                result = a.FirstName.CompareTo(b.FirstName);
-                if (result != 0) return result;
-                result = a.LastName.CompareTo(b.LastName);
-                if (result != 0) return result;
-                result = a.Birthdate.CompareTo(b.Birthdate);
-                return result;
+                    result = a.Id.CompareTo(b.Id);
+                    if (result != 0) return result;
+                    result = a.FirstName.CompareTo(b.FirstName);
+                    if (result != 0) return result;
+                    result = a.LastName.CompareTo(b.LastName);
+                    if (result != 0) return result;
+                    result = a.Birthdate.CompareTo(b.Birthdate);
+                    return result;
+                }
+
+                if (a == null && b == null)
+                    return 0;
+                if (a == null)
+                    return -1;
+                return 1;
             }
         }
 
@@ -217,7 +244,7 @@ namespace FixedWidthParserTests
 
             public override string ConvertToString(DateTime value) => value.ToString(Format);
 
-            public override bool TryConvertFromString(string s, out DateTime value)
+            public override bool TryConvertFromString(string? s, out DateTime value)
             {
                 return DateTime.TryParseExact(s, Format, null, System.Globalization.DateTimeStyles.None, out value);
             }

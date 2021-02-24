@@ -1,4 +1,4 @@
-// Copyright (c) 2020 Jonathan Wood (www.softcircuits.com)
+// Copyright (c) 2020-2021 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
 using NUnit.Framework;
@@ -292,13 +292,13 @@ namespace FixedWidthParserTests
         /// <summary>
         /// Writes the given values to a fixed-width file and reads back the results.
         /// </summary>
-        private void WriteReadValues(IEnumerable<FixedWidthField> fields, List<string[]> items, out List<string[]> results, FixedWidthOptions options = null) =>
+        private static void WriteReadValues(IEnumerable<FixedWidthField> fields, List<string[]> items, out List<string[]> results, FixedWidthOptions? options = null) =>
             WriteReadValues(fields, fields, items, out results, options);
 
         /// <summary>
         /// Writes the given values to a fixed-width file and reads back the results.
         /// </summary>
-        private void WriteReadValues(IEnumerable<FixedWidthField> writeFields, IEnumerable<FixedWidthField> readFields, List<string[]> items, out List<string[]> results, FixedWidthOptions options = null)
+        private static void WriteReadValues(IEnumerable<FixedWidthField> writeFields, IEnumerable<FixedWidthField> readFields, List<string[]> items, out List<string[]> results, FixedWidthOptions? options = null)
         {
             string path = Path.GetTempFileName();
 
@@ -311,16 +311,16 @@ namespace FixedWidthParserTests
                 }
 
                 results = new List<string[]>();
-                using (FixedWidthReader reader = new FixedWidthReader(readFields, path, options))
+
+                using FixedWidthReader reader = new FixedWidthReader(readFields, path, options);
+
+                string[]? values = null;
+                while (reader.Read(ref values))
                 {
-                    string[] values = null;
-                    while (reader.Read(ref values))
-                    {
-                        // Need to copy values so next read doesn't overwrite them
-                        string[] copy = new string[values.Length];
-                        values.CopyTo(copy, 0);
-                        results.Add(copy);
-                    }
+                    // Need to copy values so next read doesn't overwrite them
+                    string[] copy = new string[values.Length];
+                    values.CopyTo(copy, 0);
+                    results.Add(copy);
                 }
             }
             catch (Exception)

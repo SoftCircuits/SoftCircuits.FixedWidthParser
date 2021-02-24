@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2020 Jonathan Wood (www.softcircuits.com)
+﻿// Copyright (c) 2020-2021 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
 using SoftCircuits.Parsers.Converters;
@@ -64,13 +64,15 @@ namespace SoftCircuits.Parsers
         /// <param name="converterType">The converter type specified in the <see cref="FixedWidthFieldAttribute"/>.</param>
         /// <returns>A data converter for this member.</returns>
         /// <exception cref="InvalidOperationException"></exception>
-        private IDataConverter GetConverter(Type converterType)
+        private IDataConverter GetConverter(Type? converterType)
         {
             if (converterType != null)
             {
                 if (!typeof(IDataConverter).IsAssignableFrom(converterType))
                     throw new InvalidOperationException($"The data converter type specified for member '{Member.Name}' must derive from '{nameof(IDataConverter)}'.");
-                return Activator.CreateInstance(converterType) as IDataConverter;
+                if (Activator.CreateInstance(converterType) is not IDataConverter converter)
+                    throw new Exception($"Unable to create instance of type {converterType.FullName}.");
+                return converter;
             }
             return DataConverters.GetConverter(Member.Type);
         }
@@ -103,13 +105,16 @@ namespace SoftCircuits.Parsers
 
             if (Member.CanWrite)
             {
-                if (!Converter.TryConvertFromString(s, out object value))
+                if (Converter.TryConvertFromString(s, out object? value))
+                {
+                    Member.SetValue(item, value);
+                }
+                else
                 {
                     // Could not convert field
                     if (throwExceptionOnInvalidData)
                         throw new FixedWidthDataException(Member.Name, s, Member.Type.Name);
                 }
-                Member.SetValue(item, value);
             }
         }
 
@@ -121,10 +126,10 @@ namespace SoftCircuits.Parsers
 
             foreach (MemberInfo member in type.GetMembers(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance))
             {
-                FixedWidthFieldAttribute attribute = member.GetCustomAttribute<FixedWidthFieldAttribute>();
+                FixedWidthFieldAttribute? attribute = member.GetCustomAttribute<FixedWidthFieldAttribute>();
                 if (attribute != null)
                 {
-                    MemberDescriptor field = null;
+                    MemberDescriptor? field = null;
 
                     if (member is PropertyInfo propertyInfo)
                     {

@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2020 Jonathan Wood (www.softcircuits.com)
+﻿// Copyright (c) 2020-2021 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
 using NUnit.Framework;
@@ -6,7 +6,6 @@ using SoftCircuits.Parsers;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 
@@ -25,30 +24,44 @@ namespace FixedWidthParserTests
             [FixedWidthField(10)]
             public double Rating { get; set; }
 
+            public Product()
+            {
+                Description = Category = string.Empty;
+            }
+
             public override string ToString() => $"{Id}/{Category}/{Description}/{Rating}";
         }
 
         private class ProductComparer : IComparer, IComparer<Product>
         {
-            public int Compare(object a, object b)
+            public int Compare(object? a, object? b)
             {
-                if (!(a is Product ta) || !(b is Product tb))
+                if (a is not Product ta || b is not Product tb)
                     throw new InvalidOperationException();
                 return Compare(ta, tb);
             }
 
-            public int Compare([AllowNull] Product a, [AllowNull] Product b)
+            public int Compare(Product? a, Product? b)
             {
-                int result;
+                if (a != null && b != null)
+                {
+                    int result;
 
-                result = a.Id.CompareTo(b.Id);
-                if (result != 0) return result;
-                result = a.Description.CompareTo(b.Description);
-                if (result != 0) return result;
-                result = a.Category.CompareTo(b.Category);
-                if (result != 0) return result;
-                result = a.Rating.CompareTo(b.Rating);
-                return result;
+                    result = a.Id.CompareTo(b.Id);
+                    if (result != 0) return result;
+                    result = a.Description.CompareTo(b.Description);
+                    if (result != 0) return result;
+                    result = a.Category.CompareTo(b.Category);
+                    if (result != 0) return result;
+                    result = a.Rating.CompareTo(b.Rating);
+                    return result;
+                }
+
+                if (a == null && b == null)
+                    return 0;
+                if (a == null)
+                    return -1;
+                return 1;
             }
         }
 
@@ -70,12 +83,12 @@ namespace FixedWidthParserTests
 
         #region Support methods
 
-        internal List<T1> WriteReadValues<T1>(List<T1> items, FixedWidthOptions options = null) where T1 : class, new()
+        internal List<T1> WriteReadValues<T1>(List<T1> items, FixedWidthOptions? options = null) where T1 : class, new()
         {
             return WriteReadValues<T1, T1>(items, options);
         }
 
-        internal List<T2> WriteReadValues<T1, T2>(List<T1> items, FixedWidthOptions options = null) where T1 : class, new() where T2 : class, new()
+        internal static List<T2> WriteReadValues<T1, T2>(List<T1> items, FixedWidthOptions? options = null) where T1 : class, new() where T2 : class, new()
         {
             string path = Path.GetTempFileName();
             List<T2> results;
@@ -87,10 +100,8 @@ namespace FixedWidthParserTests
                     writer.Write(items);
                 }
 
-                using (FixedWidthReader<T2> reader = new FixedWidthReader<T2>(path, options))
-                {
-                    results = reader.ReadAll().ToList();
-                }
+                using FixedWidthReader<T2> reader = new FixedWidthReader<T2>(path, options);
+                results = reader.ReadAll().ToList();
             }
             catch (Exception)
             {

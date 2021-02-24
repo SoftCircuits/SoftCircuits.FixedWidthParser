@@ -1,7 +1,8 @@
-﻿// Copyright (c) 2020 Jonathan Wood (www.softcircuits.com)
+﻿// Copyright (c) 2020-2021 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SoftCircuits.Parsers
 {
@@ -23,7 +24,7 @@ namespace SoftCircuits.Parsers
         /// </summary>
         /// <param name="value">The object to be converted to a string.</param>
         /// <returns>A string representation of <paramref name="value"/>.</returns>
-        string ConvertToString(object value);
+        string ConvertToString(object? value);
 
         /// <summary>
         /// Converts a string back to an object. Returns <c>true</c> if
@@ -36,6 +37,10 @@ namespace SoftCircuits.Parsers
         /// parsed from the string.</param>
         /// <returns>True if successful, false if the string could not
         /// be converted.</returns>
-        bool TryConvertFromString(string s, out object value);
+#if NETSTANDARD2_0
+        bool TryConvertFromString(string? s, out object value);
+#else
+        bool TryConvertFromString(string? s, [NotNullWhen(true)] out object? value);
+#endif
     }
 }

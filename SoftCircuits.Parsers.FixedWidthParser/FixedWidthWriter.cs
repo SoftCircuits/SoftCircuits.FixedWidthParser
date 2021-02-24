@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2020 Jonathan Wood (www.softcircuits.com)
+﻿// Copyright (c) 2020-2021 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
 using System;
@@ -28,7 +28,7 @@ namespace SoftCircuits.Parsers
         /// <param name="filename">File to write.</param>
         /// <param name="options">Library options. Leave as null to use the default options.</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public FixedWidthWriter(IEnumerable<FixedWidthField> fields, string filename, FixedWidthOptions options = null)
+        public FixedWidthWriter(IEnumerable<FixedWidthField> fields, string filename, FixedWidthOptions? options = null)
         {
             if (fields == null)
                 throw new ArgumentNullException(nameof(fields));
@@ -48,7 +48,7 @@ namespace SoftCircuits.Parsers
         /// <param name="encoding">The character encoding to use.</param>
         /// <param name="options">Library options. Leave as null to use the default options.</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public FixedWidthWriter(IEnumerable<FixedWidthField> fields, string filename, Encoding encoding, FixedWidthOptions options = null)
+        public FixedWidthWriter(IEnumerable<FixedWidthField> fields, string filename, Encoding encoding, FixedWidthOptions? options = null)
         {
             if (fields == null)
                 throw new ArgumentNullException(nameof(fields));
@@ -69,7 +69,7 @@ namespace SoftCircuits.Parsers
         /// <param name="stream">Stream to write.</param>
         /// <param name="options">Library options. Leave as null to use the default options.</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public FixedWidthWriter(IEnumerable<FixedWidthField> fields, Stream stream, FixedWidthOptions options = null)
+        public FixedWidthWriter(IEnumerable<FixedWidthField> fields, Stream stream, FixedWidthOptions? options = null)
         {
             if (fields == null)
                 throw new ArgumentNullException(nameof(fields));
@@ -89,7 +89,7 @@ namespace SoftCircuits.Parsers
         /// <param name="encoding">The character encoding to use.</param>
         /// <param name="options">Library options. Leave as null to use the default options.</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public FixedWidthWriter(IEnumerable<FixedWidthField> fields, Stream stream, Encoding encoding, FixedWidthOptions options = null)
+        public FixedWidthWriter(IEnumerable<FixedWidthField> fields, Stream stream, Encoding encoding, FixedWidthOptions? options = null)
         {
             if (fields == null)
                 throw new ArgumentNullException(nameof(fields));
@@ -176,6 +176,10 @@ namespace SoftCircuits.Parsers
         /// <summary>
         /// Releases resources used by this <see cref="FixedWidthWriter"/> object.
         /// </summary>
-        public void Dispose() => Writer.Dispose();
+        public void Dispose()
+        {
+            GC.SuppressFinalize(this);
+            Writer.Dispose();
+        }
     }
 }

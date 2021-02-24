@@ -1,7 +1,8 @@
-﻿// Copyright (c) 2020 Jonathan Wood (www.softcircuits.com)
+﻿// Copyright (c) 2020-2021 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SoftCircuits.Parsers
 {
@@ -26,7 +27,7 @@ namespace SoftCircuits.Parsers
         /// </summary>
         /// <param name="value">The variable to be converted to a string.</param>
         /// <returns>A string representation of <paramref name="value"/>.</returns>
-        public string ConvertToString(object value) => ConvertToString((T)value);
+        public string ConvertToString(object? value) => ConvertToString((T)value);
 
         /// <summary>
         /// Converts a string back to a value. Returns <c>true</c> if
@@ -38,7 +39,11 @@ namespace SoftCircuits.Parsers
         /// parsed from the string.</param>
         /// <returns>True if successful, false if the string could not
         /// be converted.</returns>
+#if NETSTANDARD2_0
         public bool TryConvertFromString(string s, out object value)
+#else
+        public bool TryConvertFromString(string? s, [NotNullWhen(true)] out object? value)
+#endif
         {
             if (TryConvertFromString(s, out T temp))
             {
@@ -49,7 +54,7 @@ namespace SoftCircuits.Parsers
             return false;
         }
 
-        #region Abstract methods
+#region Abstract methods
 
         /// <summary>
         /// Override this abstract method to implement your own logic to convert
@@ -58,7 +63,7 @@ namespace SoftCircuits.Parsers
         /// <param name="value">The value to be converted to a string.</param>
         /// <returns>Returns a string representation of
         /// <typeparamref name="T"/></returns>
-        public abstract string ConvertToString(T value);
+        public abstract string ConvertToString(T? value);
 
         /// <summary>
         /// Override this abstract method to implement your own logic to convert
@@ -69,9 +74,13 @@ namespace SoftCircuits.Parsers
         /// parsed from the string.</param>
         /// <returns>True if successful, false if the string could not
         /// be converted.</returns>
+#if NETSTANDARD2_0
         public abstract bool TryConvertFromString(string s, out T value);
+#else
+        public abstract bool TryConvertFromString(string? s, [NotNullWhen(true)] out T value);
+#endif
 
-        #endregion
+#endregion
 
     }
 }

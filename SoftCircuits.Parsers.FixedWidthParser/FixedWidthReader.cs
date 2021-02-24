@@ -1,9 +1,10 @@
-﻿// Copyright (c) 2020 Jonathan Wood (www.softcircuits.com)
+﻿// Copyright (c) 2020-2021 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text;
 
@@ -29,7 +30,7 @@ namespace SoftCircuits.Parsers
         /// <param name="filename">File to read.</param>
         /// <param name="options">Library options. Leave as null to use the default options.</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public FixedWidthReader(IEnumerable<FixedWidthField> fields, string filename, FixedWidthOptions options = null)
+        public FixedWidthReader(IEnumerable<FixedWidthField> fields, string filename, FixedWidthOptions? options = null)
         {
             if (fields == null)
                 throw new ArgumentNullException(nameof(fields));
@@ -49,7 +50,7 @@ namespace SoftCircuits.Parsers
         /// <param name="encoding">The character encoding to use.</param>
         /// <param name="options">Library options. Leave as null to use the default options.</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public FixedWidthReader(IEnumerable<FixedWidthField> fields, string filename, Encoding encoding, FixedWidthOptions options = null)
+        public FixedWidthReader(IEnumerable<FixedWidthField> fields, string filename, Encoding encoding, FixedWidthOptions? options = null)
         {
             if (fields == null)
                 throw new ArgumentNullException(nameof(fields));
@@ -71,7 +72,7 @@ namespace SoftCircuits.Parsers
         /// <param name="detectEncodingFromByteOrderMarks">Indicates whether to look for byte order marks at the beginning of the file.</param>
         /// <param name="options">Library options. Leave as null to use the default options.</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public FixedWidthReader(IEnumerable<FixedWidthField> fields, string filename, bool detectEncodingFromByteOrderMarks, FixedWidthOptions options = null)
+        public FixedWidthReader(IEnumerable<FixedWidthField> fields, string filename, bool detectEncodingFromByteOrderMarks, FixedWidthOptions? options = null)
         {
             if (fields == null)
                 throw new ArgumentNullException(nameof(fields));
@@ -92,7 +93,7 @@ namespace SoftCircuits.Parsers
         /// <param name="detectEncodingFromByteOrderMarks">Indicates whether to look for byte order marks at the beginning of the file.</param>
         /// <param name="options">Library options. Leave as null to use the default options.</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public FixedWidthReader(IEnumerable<FixedWidthField> fields, string filename, Encoding encoding, bool detectEncodingFromByteOrderMarks, FixedWidthOptions options = null)
+        public FixedWidthReader(IEnumerable<FixedWidthField> fields, string filename, Encoding encoding, bool detectEncodingFromByteOrderMarks, FixedWidthOptions? options = null)
         {
             if (fields == null)
                 throw new ArgumentNullException(nameof(fields));
@@ -113,7 +114,7 @@ namespace SoftCircuits.Parsers
         /// <param name="stream">Stream to read.</param>
         /// <param name="options">Library options. Leave as null to use the default options.</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public FixedWidthReader(IEnumerable<FixedWidthField> fields, Stream stream, FixedWidthOptions options = null)
+        public FixedWidthReader(IEnumerable<FixedWidthField> fields, Stream stream, FixedWidthOptions? options = null)
         {
             if (fields == null)
                 throw new ArgumentNullException(nameof(fields));
@@ -133,7 +134,7 @@ namespace SoftCircuits.Parsers
         /// <param name="encoding">The character encoding to use.</param>
         /// <param name="options">Library options. Leave as null to use the default options.</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public FixedWidthReader(IEnumerable<FixedWidthField> fields, Stream stream, Encoding encoding, FixedWidthOptions options = null)
+        public FixedWidthReader(IEnumerable<FixedWidthField> fields, Stream stream, Encoding encoding, FixedWidthOptions? options = null)
         {
             if (fields == null)
                 throw new ArgumentNullException(nameof(fields));
@@ -155,7 +156,7 @@ namespace SoftCircuits.Parsers
         /// <param name="detectEncodingFromByteOrderMarks">Indicates whether to look for byte order marks at the beginning of the file.</param>
         /// <param name="options">Library options. Leave as null to use the default options.</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public FixedWidthReader(IEnumerable<FixedWidthField> fields, Stream stream, bool detectEncodingFromByteOrderMarks, FixedWidthOptions options = null)
+        public FixedWidthReader(IEnumerable<FixedWidthField> fields, Stream stream, bool detectEncodingFromByteOrderMarks, FixedWidthOptions? options = null)
         {
             if (fields == null)
                 throw new ArgumentNullException(nameof(fields));
@@ -176,7 +177,7 @@ namespace SoftCircuits.Parsers
         /// <param name="detectEncodingFromByteOrderMarks">Indicates whether to look for byte order marks at the beginning of the file.</param>
         /// <param name="options">Library options. Leave as null to use the default options.</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public FixedWidthReader(IEnumerable<FixedWidthField> fields, Stream stream, Encoding encoding, bool detectEncodingFromByteOrderMarks, FixedWidthOptions options = null)
+        public FixedWidthReader(IEnumerable<FixedWidthField> fields, Stream stream, Encoding encoding, bool detectEncodingFromByteOrderMarks, FixedWidthOptions? options = null)
         {
             if (fields == null)
                 throw new ArgumentNullException(nameof(fields));
@@ -198,10 +199,14 @@ namespace SoftCircuits.Parsers
         /// elements.</param>
         /// <returns>True if successful, false if the end of the file was reached.</returns>
         /// <exception cref="FixedWidthOutOfRangeException"></exception>
+#if NETSTANDARD2_0
         public bool Read(ref string[] values)
+#else
+        public bool Read([NotNullWhen(true)] ref string[]? values)
+#endif
         {
             // Get next line
-            string line = Reader.ReadLine();
+            string? line = Reader.ReadLine();
             if (line == null)
                 return false;
 
@@ -266,6 +271,10 @@ namespace SoftCircuits.Parsers
         /// <summary>
         /// Releases all resources used by the <see cref="FixedWidthReader"/> object.
         /// </summary>
-        public void Dispose() => Reader.Dispose();
+        public void Dispose()
+        {
+            GC.SuppressFinalize(this);
+            Reader.Dispose();
+        }
     }
 }

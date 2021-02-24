@@ -1,9 +1,10 @@
-﻿// Copyright (c) 2020 Jonathan Wood (www.softcircuits.com)
+﻿// Copyright (c) 2020-2021 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -13,14 +14,14 @@ namespace SoftCircuits.Parsers
     public class FixedWidthWriter<T> : FixedWidthWriter where T : class, new()
     {
         private List<MemberDescriptor> MemberDescriptors;
-        private string[] WriteValues;
+        private string[]? WriteValues;
 
         /// <summary>
         /// Constructs a new <see cref="FixedWidthWriter{T}"/> instance.
         /// </summary>
         /// <param name="filename">File to write.</param>
         /// <param name="options">Library options. Leave as null to use the default options.</param>
-        public FixedWidthWriter(string filename, FixedWidthOptions options = null)
+        public FixedWidthWriter(string filename, FixedWidthOptions? options = null)
             : base(Enumerable.Empty<FixedWidthField>(), filename, options)
         {
             InitializeMemberDescriptors();
@@ -32,7 +33,7 @@ namespace SoftCircuits.Parsers
         /// <param name="filename">File to write.</param>
         /// <param name="encoding">The character encoding to use.</param>
         /// <param name="options">Library options. Leave as null to use the default options.</param>
-        public FixedWidthWriter(string filename, Encoding encoding, FixedWidthOptions options = null)
+        public FixedWidthWriter(string filename, Encoding encoding, FixedWidthOptions? options = null)
             : base(Enumerable.Empty<FixedWidthField>(), filename, encoding, options)
         {
             InitializeMemberDescriptors();
@@ -43,7 +44,7 @@ namespace SoftCircuits.Parsers
         /// </summary>
         /// <param name="stream">Stream to write.</param>
         /// <param name="options">Library options. Leave as null to use the default options.</param>
-        public FixedWidthWriter(Stream stream, FixedWidthOptions options = null)
+        public FixedWidthWriter(Stream stream, FixedWidthOptions? options = null)
             : base(Enumerable.Empty<FixedWidthField>(), stream, options)
         {
             InitializeMemberDescriptors();
@@ -55,7 +56,7 @@ namespace SoftCircuits.Parsers
         /// <param name="stream">Stream to write.</param>
         /// <param name="encoding">The character encoding to use.</param>
         /// <param name="options">Library options. Leave as null to use the default options.</param>
-        public FixedWidthWriter(Stream stream, Encoding encoding, FixedWidthOptions options = null)
+        public FixedWidthWriter(Stream stream, Encoding encoding, FixedWidthOptions? options = null)
             : base(Enumerable.Empty<FixedWidthField>(), stream, encoding, options)
         {
             InitializeMemberDescriptors();
@@ -64,6 +65,9 @@ namespace SoftCircuits.Parsers
         /// <summary>
         /// Initializes the class member descriptors.
         /// </summary>
+#if NET5_0
+        [MemberNotNull(nameof(MemberDescriptors))]
+#endif
         private void InitializeMemberDescriptors()
         {
             MemberDescriptors = MemberDescriptor.GetMemberDescriptors(typeof(T));
