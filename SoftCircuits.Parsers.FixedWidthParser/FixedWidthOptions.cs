@@ -10,6 +10,9 @@ namespace SoftCircuits.Parsers
     /// </summary>
     public class FixedWidthOptions
     {
+
+        
+
         /// <summary>
         /// Gets or sets the default way fields are padded. For example, if a field is right aligned, values shorter
         /// than the field width are padded on the left. Can be overridden for individual fields using the

@@ -15,43 +15,43 @@ namespace SoftCircuits.Parsers
         internal readonly FixedWidthField Field;
 
         /// <summary>
-        /// Gets or sets the column alignment for this field. Leave as <c>null</c> to use the
-        /// default alignment.
+        /// Gets or sets the column alignment for this field.
         /// </summary>
-        public FieldAlignment? Alignment
+        public FieldAlignment Alignment
         {
-            get => Field.Alignment;
+            get => Field.Alignment ?? FieldAlignment.Left;
             set => Field.Alignment = value;
         }
 
         /// <summary>
-        /// Gets or sets the character used to pad this field when writing values shorter than the field width.
-        /// Leave as <c>null</c> to use the default pad character
+        /// Gets or sets the character used to pad this field when writing values shorter 
+        /// than the field width.
         /// </summary>
-        public char? PadCharacter
+        public char PadCharacter
         {
-            get => Field.PadCharacter;
+            get => Field.PadCharacter ?? ' ';
             set => Field.PadCharacter = value;
         }
 
         /// <summary>
         /// <para>
-        /// Gets or sets whether leading and trailing pad characters are trimmed when reading field values. Leave as
-        /// <c>null</c> to use the default trim setting.
+        /// Gets or sets whether leading and trailing pad characters are trimmed when reading field values.
         /// </para>
         /// <para>
         /// WARNING: If this property is <c>true</c> and the field value contains leading or trailing characters that
         /// match the current pad character, those characters will also be trimmed.
         /// </para>
         /// </summary>
-        public bool? TrimField
+        public bool TrimField
         {
-            get => Field.TrimField;
+            get => Field.TrimField ?? false;
             set => Field.TrimField = value;
         }
 
         /// <summary>
-        /// 
+        /// Gets or sets the number of characters to skip before the field. Normally, this property
+        /// is set to zero. You can use this property to skip fixed-width fields that you don't
+        /// want to read.
         /// </summary>
         public int Skip
         {

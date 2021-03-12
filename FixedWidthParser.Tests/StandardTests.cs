@@ -86,7 +86,7 @@ namespace FixedWidthParserTests
                 new FixedWidthField(10),
             };
 
-            List<string[]> values = new List<string[]>
+            List<string[]> values = new()
             {
                 new string[] { "abc" },
                 new string[] { "abc", "def" },
@@ -96,7 +96,7 @@ namespace FixedWidthParserTests
                 new string[] { "abc", "def", "ghi", "jkl", "mno", "pqr" },
             };
 
-            List<string[]> expected = new List<string[]>
+            List<string[]> expected = new()
             {
                 new string[] { "abc", string.Empty, string.Empty, string.Empty },
                 new string[] { "abc", "def", string.Empty, string.Empty },
@@ -128,21 +128,21 @@ namespace FixedWidthParserTests
                 new FixedWidthField(5),
             };
 
-            List<string[]> values = new List<string[]>
+            List<string[]> values = new()
             {
                 new string[] { "abc", "def", "ghi" },
                 new string[] { "def", "ghi", "jkl" },
                 new string[] { "ghi", "jkl", "mno" },
             };
 
-            List<string[]> expected = new List<string[]>
+            List<string[]> expected = new()
             {
                 new string[] { "abc  ", "def  ", "ghi  " },
                 new string[] { "def  ", "ghi  ", "jkl  " },
                 new string[] { "ghi  ", "jkl  ", "mno  " },
             };
 
-            List<string[]> expected2 = new List<string[]>
+            List<string[]> expected2 = new()
             {
                 new string[] { "abc  ", "    ", "def  ", "ghi  " },
                 new string[] { "def  ", "    ", "ghi  ", "jkl  " },
@@ -229,13 +229,13 @@ namespace FixedWidthParserTests
                 new FixedWidthField(2),
             };
 
-            List<string[]> values = new List<string[]>
+            List<string[]> values = new()
             {
                 new string[] { "abc", "def" },
                 new string[] { "ghi", "jkl" },
             };
 
-            List<string[]> expected = new List<string[]>
+            List<string[]> expected = new()
             {
                 new string[] { "ab", "de" },
                 new string[] { "gh", "jk" },
@@ -266,13 +266,13 @@ namespace FixedWidthParserTests
                 new FixedWidthField(4),
             };
 
-            List<string[]> values = new List<string[]>
+            List<string[]> values = new()
             {
                 new string[] { "abc", "def" },
                 new string[] { "ghi", "jkl" },
             };
 
-            List<string[]> expected = new List<string[]>
+            List<string[]> expected = new()
             {
                 new string[] { "abc", "def", string.Empty },
                 new string[] { "ghi", "jkl", string.Empty },

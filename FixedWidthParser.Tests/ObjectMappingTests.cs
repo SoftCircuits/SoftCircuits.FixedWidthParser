@@ -65,7 +65,7 @@ namespace FixedWidthParserTests
             }
         }
 
-        private readonly List<Product> Products = new List<Product>
+        private readonly List<Product> Products = new()
         {
             new Product { Id = Guid.NewGuid(), Description = "Coffee Table", Category = "Furniture", Rating = 4.5 },
             new Product { Id = Guid.NewGuid(), Description = "Spoons", Category = "Utensils", Rating = 4.2 },
@@ -95,12 +95,12 @@ namespace FixedWidthParserTests
 
             try
             {
-                using (FixedWidthWriter<T1> writer = new FixedWidthWriter<T1>(path, options))
+                using (FixedWidthWriter<T1> writer = new(path, options))
                 {
                     writer.Write(items);
                 }
 
-                using FixedWidthReader<T2> reader = new FixedWidthReader<T2>(path, options);
+                using FixedWidthReader<T2> reader = new(path, options);
                 results = reader.ReadAll().ToList();
             }
             catch (Exception)

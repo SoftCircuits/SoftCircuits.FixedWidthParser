@@ -105,7 +105,7 @@ namespace FixedWidthParserTests
             }
         }
 
-        private readonly List<AllTypesClass> AllTypesItems = new List<AllTypesClass>
+        private readonly List<AllTypesClass> AllTypesItems = new()
         {
             new AllTypesClass
             {
@@ -184,7 +184,7 @@ namespace FixedWidthParserTests
         [Test]
         public void TestIntrinsicDataConverters()
         {
-            ObjectMappingTests x = new ObjectMappingTests();
+            ObjectMappingTests x = new();
             CollectionAssert.AreEqual(AllTypesItems, x.WriteReadValues(AllTypesItems), new AllTypesComparer());
         }
 
@@ -250,7 +250,7 @@ namespace FixedWidthParserTests
             }
         }
 
-        private readonly List<Person> People = new List<Person>
+        private readonly List<Person> People = new()
         {
             new Person { Id = 1, FirstName = "Bill", LastName = "Smith", Birthdate = new DateTime(1982, 2, 7) },
             new Person { Id = 1, FirstName = "Gary", LastName = "Parker", Birthdate = new DateTime(1989, 8, 2) },
@@ -262,7 +262,7 @@ namespace FixedWidthParserTests
         [Test]
         public void TestCustomConverter()
         {
-            ObjectMappingTests x = new ObjectMappingTests();
+            ObjectMappingTests x = new();
             CollectionAssert.AreEqual(People, x.WriteReadValues(People), new PersonComparer());
         }
     }
