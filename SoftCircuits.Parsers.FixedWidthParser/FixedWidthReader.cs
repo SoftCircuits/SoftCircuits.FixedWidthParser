@@ -244,7 +244,11 @@ namespace SoftCircuits.Parsers
             {
                 if (Options.ThrowOutOfRangeException)
                     throw new FixedWidthOutOfRangeException();
+#if NETSTANDARD2_0
                 result = (position <= line.Length) ? line.Substring(position) : string.Empty;
+#else
+                result = (position <= line.Length) ? line[position..] : string.Empty;
+#endif
             }
             else
             {
@@ -252,8 +256,7 @@ namespace SoftCircuits.Parsers
             }
 
             // If requested, trim field
-            bool trimField = field.TrimField ?? Options.TrimFields;
-            if (trimField)
+            if (field.TrimField ?? Options.TrimFields)
                 result = result.Trim(field.PadCharacter ?? Options.DefaultPadCharacter);
 
             // Advance line position

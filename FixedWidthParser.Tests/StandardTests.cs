@@ -27,7 +27,7 @@ namespace FixedWidthParserTests
                 new FixedWidthField(26),
             };
 
-            List<string[]> values = new List<string[]>
+            List<string[]> values = new()
             {
                 new string[] { "abcdefghijklmnopqrstuvwxyz", "1234567890", "1010101010", "" },
                 new string[] { "1234567890", "1010101010", "", "abcdefghijklmnopqrstuvwxyz" },
@@ -35,7 +35,7 @@ namespace FixedWidthParserTests
                 new string[] { "", "abcdefghijklmnopqrstuvwxyz", "1234567890", "1010101010" },
             };
 
-            List<string[]> leftPadded = new List<string[]>
+            List<string[]> leftPadded = new()
             {
                 new string[] { "abcdefghijklmnopqrstuvwxyz", "1234567890                ", "1010101010                ", "                          " },
                 new string[] { "1234567890                ", "1010101010                ", "                          ", "abcdefghijklmnopqrstuvwxyz" },
@@ -43,7 +43,7 @@ namespace FixedWidthParserTests
                 new string[] { "                          ", "abcdefghijklmnopqrstuvwxyz", "1234567890                ", "1010101010                " },
             };
 
-            List<string[]> rightPadded = new List<string[]>
+            List<string[]> rightPadded = new()
             {
                 new string[] { "abcdefghijklmnopqrstuvwxyz", "                1234567890", "                1010101010", "                          " },
                 new string[] { "                1234567890", "                1010101010", "                          ", "abcdefghijklmnopqrstuvwxyz" },
@@ -51,7 +51,7 @@ namespace FixedWidthParserTests
                 new string[] { "                          ", "abcdefghijklmnopqrstuvwxyz", "                1234567890", "                1010101010" },
             };
 
-            List<string[]> tildePadded = new List<string[]>
+            List<string[]> tildePadded = new()
             {
                 new string[] { "abcdefghijklmnopqrstuvwxyz", "1234567890~~~~~~~~~~~~~~~~", "1010101010~~~~~~~~~~~~~~~~", "~~~~~~~~~~~~~~~~~~~~~~~~~~" },
                 new string[] { "1234567890~~~~~~~~~~~~~~~~", "1010101010~~~~~~~~~~~~~~~~", "~~~~~~~~~~~~~~~~~~~~~~~~~~", "abcdefghijklmnopqrstuvwxyz" },
@@ -164,30 +164,10 @@ namespace FixedWidthParserTests
         {
             FixedWidthField[] fields = new FixedWidthField[]
             {
-                new FixedWidthField(10)
-                {
-                    Alignment = FieldAlignment.Left,
-                    PadCharacter = ' ',
-                    TrimField = false,
-                },
-                new FixedWidthField(10)
-                {
-                    Alignment = FieldAlignment.Right,
-                    PadCharacter = '~',
-                    TrimField = false,
-                },
-                new FixedWidthField(10)
-                {
-                    Alignment = FieldAlignment.Left,
-                    PadCharacter = '@',
-                    TrimField = false,
-                },
-                new FixedWidthField(10)
-                {
-                    Alignment = FieldAlignment.Right,
-                    PadCharacter = '!',
-                    TrimField = false,
-                },
+                new FixedWidthField(10, FieldAlignment.Left, ' ', false),
+                new FixedWidthField(10, FieldAlignment.Right, '~', false),
+                new FixedWidthField(10, alignment: FieldAlignment.Left, padCharacter: '@', trimField: false),
+                new FixedWidthField(10, alignment: FieldAlignment.Right, padCharacter: '!', trimField: false),
                 new FixedWidthField(10)
                 {
                     Alignment = FieldAlignment.Left,
@@ -202,14 +182,14 @@ namespace FixedWidthParserTests
                 },
             };
 
-            List<string[]> values = new List<string[]>
+            List<string[]> values = new()
             {
                 new string[] { "abc", "def", "ghi", "jkl", "mno", "pqr" },
                 new string[] { "def", "ghi", "jkl", "mno", "pqr", "stu" },
                 new string[] { "ghi", "jkl", "mno", "pqr", "stu", "vwx" },
             };
 
-            List<string[]> expected = new List<string[]>
+            List<string[]> expected = new()
             {
                 new string[] { "abc       ", "~~~~~~~def", "ghi@@@@@@@", "!!!!!!!jkl", "mno", "pqr" },
                 new string[] { "def       ", "~~~~~~~ghi", "jkl@@@@@@@", "!!!!!!!mno", "pqr", "stu" },
@@ -304,7 +284,7 @@ namespace FixedWidthParserTests
 
             try
             {
-                using (FixedWidthWriter writer = new FixedWidthWriter(writeFields, path, options))
+                using (FixedWidthWriter writer = new(writeFields, path, options))
                 {
                     foreach (var item in items)
                         writer.Write(item);
@@ -312,7 +292,7 @@ namespace FixedWidthParserTests
 
                 results = new List<string[]>();
 
-                using FixedWidthReader reader = new FixedWidthReader(readFields, path, options);
+                using FixedWidthReader reader = new(readFields, path, options);
 
                 string[]? values = null;
                 while (reader.Read(ref values))

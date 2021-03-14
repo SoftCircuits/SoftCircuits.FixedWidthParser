@@ -109,7 +109,7 @@ namespace SoftCircuits.Parsers
         /// <param name="args">The field values to write.</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="FixedWidthOverflowException"></exception>
-        public void Write(params string[] args) => Write((IEnumerable<string>)args);
+        public void Write(params string[] args) => Write(args as IEnumerable<string>);
 
         /// <summary>
         /// Writes a collection of fields to one line in the output file.
@@ -117,10 +117,10 @@ namespace SoftCircuits.Parsers
         /// <param name="values">The field values to write.</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="FixedWidthOverflowException"></exception>
-        public void Write(IEnumerable<string> values)
+        public void Write(IEnumerable<string>? values)
         {
             if (values == null)
-                throw new ArgumentNullException(nameof(values));
+                return;
 
             // Write fields to file
             IEnumerator<string> enumerator = values.GetEnumerator();

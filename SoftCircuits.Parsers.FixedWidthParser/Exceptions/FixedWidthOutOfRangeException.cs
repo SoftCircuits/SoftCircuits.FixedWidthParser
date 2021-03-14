@@ -15,7 +15,7 @@ namespace SoftCircuits.Parsers
         /// Constructs a new <see cref="FixedWidthOutOfRangeException"/> instance.
         /// </summary>
         public FixedWidthOutOfRangeException()
-            : base("The current line is not long enough to contain the requested field.")
+            : base("The current line is not long enough to include one or more fields.")
         {
         }
     }

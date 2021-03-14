@@ -117,7 +117,6 @@ namespace SoftCircuits.Parsers
         /// </summary>
 #if NET5_0
         [MemberNotNull(nameof(MemberDescriptors))]
-        //[MemberNotNull(nameof(MemberDescriptors))]
 #endif
         private void InitializeMemberDescriptors()
         {
@@ -136,7 +135,7 @@ namespace SoftCircuits.Parsers
 #if NETSTANDARD2_0
         public bool ReadItem(out T item) => ReadItem(out item);
 #else
-        public bool ReadItem([MaybeNullWhen(false)] out T item) => Read(out item);
+        public bool ReadItem([NotNullWhen(true)] out T? item) => Read(out item);
 #endif
 
         /// <summary>
@@ -148,7 +147,7 @@ namespace SoftCircuits.Parsers
 #if NETSTANDARD2_0
         public bool Read(out T item)
 #else
-        public bool Read([MaybeNullWhen(false)] out T item)
+        public bool Read([NotNullWhen(true)] out T? item)
 #endif
         {
             // Ensure read buffers are allocated
@@ -156,18 +155,16 @@ namespace SoftCircuits.Parsers
                 ReadValues = new string[MemberDescriptors.Count];
 
             // Get values
-            if (!Read(ref ReadValues))
+            if (Read(ref ReadValues))
             {
-                item = null;
-                return false;
+                // Create and populate item
+                item = Activator.CreateInstance<T>();
+                for (int i = 0; i < MemberDescriptors.Count; i++)
+                    MemberDescriptors[i].SetValue(item, ReadValues[i], Options.ThrowDataException);
+                return true;
             }
-
-            // Create and populate item
-            item = Activator.CreateInstance<T>();
-            for (int i = 0; i < MemberDescriptors.Count; i++)
-                MemberDescriptors[i].SetValue(item, ReadValues[i], Options.ThrowDataException);
-
-            return true;
+            item = default;
+            return false;
         }
 
         /// <summary>

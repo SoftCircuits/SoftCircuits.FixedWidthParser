@@ -11,7 +11,7 @@ namespace SoftCircuits.Parsers
     public class FixedWidthField
     {
         /// <summary>
-        /// Gets or sets the number of characters occupied by this column.
+        /// Gets or sets the number of characters occupied by this field.
         /// </summary>
         public int Length { get; set; }
 
@@ -22,29 +22,30 @@ namespace SoftCircuits.Parsers
         public FieldAlignment? Alignment { get; set; }
 
         /// <summary>
-        /// Gets or sets the character used to pad this field when writing values shorter than the field width.
-        /// Leave as <c>null</c> to use the default pad character.
+        /// Gets or sets the character used to pad this field when writing values shorter than
+        /// the field width. Leave as <c>null</c> to use the default pad character.
         /// </summary>
         public char? PadCharacter { get; set; }
 
         /// <summary>
         /// <para>
-        /// Gets or sets whether leading and trailing pad characters are trimmed when reading field values. Leave as
-        /// <c>null</c> to use the default trim setting.
+        /// Gets or sets whether leading and trailing pad characters are trimmed when reading
+        /// field values. Leave as <c>null</c> to use the default trim setting.
         /// </para>
         /// <para>
-        /// WARNING: If this property is <c>true</c> and the field value contains leading or trailing characters that
-        /// match the current pad character, those characters will also be trimmed.
+        /// WARNING: If this property is <c>true</c> and the field value contains leading or
+        /// trailing characters that match the current pad character, those characters will
+        /// also be trimmed.
         /// </para>
         /// </summary>
         public bool? TrimField { get; set; }
 
         /// <summary>
-        /// Gets or sets the number of characters to skip before the field. Normally, this property
-        /// is set to zero. You can use this property to skip fixed-width fields that you don't
-        /// want to read. When writing fixed-width files, the character specified by
-        /// <see cref="FixedWidthOptions.DefaultPadCharacter"/> will be written to fill the skipped
-        /// characters. The default value is <c>0</c>.
+        /// Gets or sets the number of characters to skip before this field. Normally, this
+        /// property is set to zero. You can use this property to skip fixed-width fields
+        /// that you don't want to read. When writing fixed-width files, the character
+        /// specified by <see cref="FixedWidthOptions.DefaultPadCharacter"/> will be written
+        /// to fill the skipped characters. The default value is <c>0</c>.
         /// </summary>
         public int Skip { get; set; }
 
@@ -52,17 +53,25 @@ namespace SoftCircuits.Parsers
         /// Constructs a new <see cref="FixedWidthField"/>.
         /// </summary>
         /// <param name="length">The number of characters that this field occupies.</param>
-        /// <param name="trimField">Specifies if leading and trailing whitespace is removed
-        /// from fields when reading them from a file.</param>
-        /// <param name="padCharacter">Character used to pad values to fill field. Specify
-        /// to override default pad character.</param>
-        public FixedWidthField(int length)
+        /// <param name="alignment">The column alignment for this field. Leave as <c>null</c>
+        /// to use the default alignment.</param>
+        /// <param name="padCharacter">Character used to pad this field when writing values
+        /// shorter than the field width. Leave as <c>null</c> to use the default pad
+        /// character.</param>
+        /// <param name="trimField">Specifies whether leading and trailing pad characters
+        /// are trimmed when reading field values. Leave as <c>null</c> to use the default
+        /// trim setting.</param>
+        /// <param name="skip">Gets or sets the number of characters to skip before this
+        /// field. Normally, this property is set to zero. You can use this property to skip
+        /// fixed-width fields that you don't want to read. Leave as <c>0</c> to not skip
+        /// any characters.</param>
+        public FixedWidthField(int length, FieldAlignment? alignment = null, char? padCharacter = null, bool? trimField = null, int skip = 0)
         {
             Length = length;
-            Alignment = null;
-            PadCharacter = null;
-            TrimField = null;
-            Skip = 0;
+            Alignment = alignment;
+            PadCharacter = padCharacter;
+            TrimField = trimField;
+            Skip = skip;
         }
 
         internal FixedWidthField(FixedWidthFieldAttribute attribute)

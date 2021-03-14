@@ -11,7 +11,7 @@
     <Company>SoftCircuits</Company>
     <Copyright>Copyright © 2020-2021 SoftCircuits</Copyright>
     <NeutralLanguage>en-US</NeutralLanguage>
-    <PackageReleaseNotes>Fixed issue where FixedWidthFieldAttribute's named parameters were invalid types and produced compile errors; Added unit tests; Minor tweaks and improvements.</PackageReleaseNotes>
+    <PackageReleaseNotes>Added additional, optional parameters to FixedWidthField constructor; Minor tweaks and enhancements.</PackageReleaseNotes>
     <PackageTags>text parser text-parser file file-parser fixed width fixed-width fixed-width-parser</PackageTags>
     <PackageId>SoftCircuits.FixedWidthParser</PackageId>
     <Product>SoftCircuits.FixedWidthParser</Product>
@@ -21,7 +21,7 @@
     <PackageIcon>Logo_64x64.png</PackageIcon>
     <RepositoryUrl>https://github.com/SoftCircuits/SoftCircuits.FixedWidthParser</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <Version>2.0.1</Version>
+    <Version>2.0.2</Version>
   </PropertyGroup>
 
   <ItemGroup>

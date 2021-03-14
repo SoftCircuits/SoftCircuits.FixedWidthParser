@@ -10,9 +10,6 @@ namespace SoftCircuits.Parsers
     /// </summary>
     public class FixedWidthOptions
     {
-
-        
-
         /// <summary>
         /// Gets or sets the default way fields are padded. For example, if a field is right aligned, values shorter
         /// than the field width are padded on the left. Can be overridden for individual fields using the
@@ -42,14 +39,14 @@ namespace SoftCircuits.Parsers
         public bool TrimFields { get; set; }
 
         /// <summary>
-        /// Gets or sets whether a <see cref="FixedWidthDataException"/> is thrown when
+        /// Gets or sets whether a <see cref="FixedWidthDataException"/> exception is thrown when
         /// reading a field that cannot be converted to the target field type. The default
         /// value is <c>true</c>.
         /// </summary>
         public bool ThrowDataException;
 
         /// <summary>
-        /// Gets or sets whether a <see cref="FixedWidthOutOfRangeException"/> is thrown when
+        /// Gets or sets whether a <see cref="FixedWidthOutOfRangeException"/> exception is thrown when
         /// reading a field from a line that is too short. If <c>false</c>, the library reads
         /// as much of the field as possible or returns an empty string. The default value is
         /// <c>true</c>.
@@ -57,7 +54,7 @@ namespace SoftCircuits.Parsers
         public bool ThrowOutOfRangeException;
 
         /// <summary>
-        /// Gets or sets whether a <see cref="FixedWidthOverflowException"/> is thrown when
+        /// Gets or sets whether a <see cref="FixedWidthOverflowException"/> exception is thrown when
         /// attempting to write a value that is too large for the field. If <c>false</c>,
         /// the value will be silently truncated. The default value is <c>true</c>.
         /// </summary>

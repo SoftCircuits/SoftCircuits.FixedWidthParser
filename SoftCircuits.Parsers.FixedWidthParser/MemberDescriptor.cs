@@ -122,7 +122,7 @@ namespace SoftCircuits.Parsers
 
         public static List<MemberDescriptor> GetMemberDescriptors(Type type)
         {
-            List<MemberDescriptor> descriptors = new List<MemberDescriptor>();
+            List<MemberDescriptor> descriptors = new();
 
             foreach (MemberInfo member in type.GetMembers(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance))
             {
