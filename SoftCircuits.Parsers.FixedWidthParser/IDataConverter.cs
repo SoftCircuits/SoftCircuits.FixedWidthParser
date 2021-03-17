@@ -40,7 +40,7 @@ namespace SoftCircuits.Parsers
 #if NETSTANDARD2_0
         bool TryConvertFromString(string? s, out object value);
 #else
-        bool TryConvertFromString(string? s, [MaybeNullWhen(false)] out object value);
+        bool TryConvertFromString(string? s, [NotNullWhen(true)] out object? value);
 #endif
     }
 }

@@ -8,7 +8,7 @@ namespace SoftCircuits.Parsers.Converters
 {
     internal class DataConverters
     {
-        private static readonly Dictionary<Type, Func<IDataConverter>> ConverterLookup = new Dictionary<Type, Func<IDataConverter>>
+        private static readonly Dictionary<Type, Func<IDataConverter>> ConverterLookup = new()
         {
             [typeof(Boolean)] = () => new BooleanConverter(),
             [typeof(Byte)] = () => new ByteConverter(),
@@ -29,9 +29,9 @@ namespace SoftCircuits.Parsers.Converters
 
         public static IDataConverter GetConverter(Type type)
         {
-            return ConverterLookup.TryGetValue(type, out Func<IDataConverter>? f) ?
-                f() :
-                new UnsupportedTypeConverter(type);
+            if (ConverterLookup.TryGetValue(type, out Func<IDataConverter>? f))
+                return f();
+            return new UnsupportedTypeConverter(type);
         }
     }
 }

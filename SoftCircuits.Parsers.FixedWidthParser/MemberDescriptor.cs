@@ -32,13 +32,13 @@ namespace SoftCircuits.Parsers
             if (attribute == null)
                 throw new ArgumentNullException(nameof(attribute));
 
-            Member = new ClassPropertyAccess(property);
+            Member = new PropertyMember(property);
             Converter = GetConverter(attribute.ConverterType);
             Debug.Assert(Converter != null);
         }
 
         /// <summary>
-        /// 
+        /// Constructor
         /// </summary>
         /// <param name="field">The information for this field.</param>
         /// <param name="attribute">The field's <see cref="FixedWidthFieldAttribute"/> attribute.</param>
@@ -51,7 +51,7 @@ namespace SoftCircuits.Parsers
             if (attribute == null)
                 throw new ArgumentNullException(nameof(attribute));
 
-            Member = new ClassFieldMember(field);
+            Member = new FieldMember(field);
             Converter = GetConverter(attribute.ConverterType);
             Debug.Assert(Converter != null);
         }

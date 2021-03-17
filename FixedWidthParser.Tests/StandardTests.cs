@@ -11,11 +11,6 @@ namespace FixedWidthParserTests
 {
     public class StandardTests
     {
-        [SetUp]
-        public void Setup()
-        {
-        }
-
         [Test]
         public void BasicTest()
         {

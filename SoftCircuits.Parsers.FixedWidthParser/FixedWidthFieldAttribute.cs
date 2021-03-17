@@ -19,7 +19,7 @@ namespace SoftCircuits.Parsers
         /// </summary>
         public FieldAlignment Alignment
         {
-            get => Field.Alignment ?? FieldAlignment.Left;
+            get => Field.Alignment ?? default;
             set => Field.Alignment = value;
         }
 
@@ -29,7 +29,7 @@ namespace SoftCircuits.Parsers
         /// </summary>
         public char PadCharacter
         {
-            get => Field.PadCharacter ?? ' ';
+            get => Field.PadCharacter ?? default;
             set => Field.PadCharacter = value;
         }
 
@@ -44,7 +44,7 @@ namespace SoftCircuits.Parsers
         /// </summary>
         public bool TrimField
         {
-            get => Field.TrimField ?? false;
+            get => Field.TrimField ?? default;
             set => Field.TrimField = value;
         }
 

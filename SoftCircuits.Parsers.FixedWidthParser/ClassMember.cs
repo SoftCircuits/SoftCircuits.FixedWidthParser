@@ -22,11 +22,11 @@ namespace SoftCircuits.Parsers
     /// <summary>
     /// Class for accessing field properties.
     /// </summary>
-    internal class ClassFieldMember : IClassMember
+    internal class FieldMember : IClassMember
     {
         private readonly FieldInfo Field;
 
-        public ClassFieldMember(FieldInfo field)
+        public FieldMember(FieldInfo field)
         {
             Field = field;
         }
@@ -47,11 +47,11 @@ namespace SoftCircuits.Parsers
     /// <summary>
     /// Class for accessing class properties.
     /// </summary>
-    internal class ClassPropertyAccess : IClassMember
+    internal class PropertyMember : IClassMember
     {
         private readonly PropertyInfo Property;
 
-        public ClassPropertyAccess(PropertyInfo property)
+        public PropertyMember(PropertyInfo property)
         {
             Property = property;
         }
