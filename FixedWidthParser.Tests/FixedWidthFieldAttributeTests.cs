@@ -65,7 +65,8 @@ namespace FixedWidthParserTests
                 List<Product> results = new();
                 using FixedWidthReader<Product> reader = new(path);
                 {
-                    while (reader.Read(out Product? product))
+                    Product? product;
+                    while ((product = reader.Read()) != null)
                         results.Add(product);
                 }
 

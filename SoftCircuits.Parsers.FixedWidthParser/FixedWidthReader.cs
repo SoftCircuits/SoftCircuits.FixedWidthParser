@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace SoftCircuits.Parsers
 {
@@ -22,6 +23,23 @@ namespace SoftCircuits.Parsers
         /// Gets the list of fixed-width field descriptors.
         /// </summary>
         public List<FixedWidthField> Fields { get; private set; }
+
+        /// <summary>
+        /// Returns the complete, unparsed line of text last read by the <see cref="Read(ref string[]?)"/>
+        /// method. Valid only when <see cref="Read(ref string[]?)"/> returns true.
+        /// </summary>
+        public string? CurrentLine { get; private set; }
+
+        /// <summary>
+        /// Returns the column values read in the last call to <see cref="Read"/> or <see cref="ReadAsync"/>.
+        /// May be null.
+        /// </summary>
+        public string[]? Columns { get; private set; }
+
+        /// <summary>
+        /// Returns true if the current file position is at the end of the file.
+        /// </summary>
+        public bool EndOfFile => Reader.EndOfStream;
 
         /// <summary>
         /// Constructs a new <see cref="FixedWidthReader"/> instance.
@@ -199,30 +217,77 @@ namespace SoftCircuits.Parsers
         /// elements.</param>
         /// <returns>True if successful, false if the end of the file was reached.</returns>
         /// <exception cref="FixedWidthOutOfRangeException"></exception>
-#if NETSTANDARD2_0
-        public bool Read(ref string[] values)
-#else
+        [Obsolete("This method is deprecated and will be removed in a future version of this library. Please use a version of Read() that take no parameters.")]
+#if !NETSTANDARD2_0
+        [MemberNotNullWhen(true, "CurrentLine")]
         public bool Read([NotNullWhen(true)] ref string[]? values)
+#else
+        public bool Read(ref string[] values)
 #endif
         {
+            values = Read();
+            return (values != null);
+        }
+
+        /// <summary>
+        /// Reads the fields from one line of data.
+        /// </summary>
+        /// <param name="values">Array to contain the fields. This method will allocate
+        /// the array if this parameter is null or does not have the right number of
+        /// elements.</param>
+        /// <returns>The values read or null if the end of the file was reached.</returns>
+        /// <exception cref="FixedWidthOutOfRangeException"></exception>
+#if !NETSTANDARD2_0
+        [MemberNotNullWhen(true, "CurrentLine")]
+#endif
+        public string[]? Read()
+        {
             // Get next line
-            string? line = Reader.ReadLine();
-            if (line == null)
-                return false;
+            CurrentLine = Reader.ReadLine();
+            if (CurrentLine == null)
+                return null;
+
+            ReadLine();
+            return Columns;
+        }
+
+        /// <summary>
+        /// Asynchronously reads the fields from one line of data.
+        /// </summary>
+        /// <param name="values">Array to contain the fields. This method will allocate
+        /// the array if this parameter is null or does not have the right number of
+        /// elements.</param>
+        /// <returns>The values read or null if the end of the file was reached.</returns>
+        /// <exception cref="FixedWidthOutOfRangeException"></exception>
+        public async Task<string[]?> ReadAsync()
+        {
+            // Get next line
+            CurrentLine = await Reader.ReadLineAsync();
+            if (CurrentLine == null)
+                return null;
+
+            ReadLine();
+            return Columns;
+        }
+
+        /// <summary>
+        /// Processes a single fixed-width line.
+        /// </summary>
+        private void ReadLine()
+        {
+            Debug.Assert(CurrentLine != null);
 
             // If needed, allocate array to return values
-            if (values == null || values.Length != Fields.Count)
-                values = new string[Fields.Count];
+            if (Columns == null || Columns.Length != Fields.Count)
+                Columns = new string[Fields.Count];
 
             // Read fields
             int position = 0;
             for (int i = 0; i < Fields.Count; i++)
             {
                 position += Fields[i].Skip;
-                values[i] = ReadField(line, Fields[i], ref position);
+                Columns[i] = ReadField(CurrentLine, Fields[i], ref position);
             }
-
-            return true;
         }
 
         /// <summary>
@@ -244,10 +309,10 @@ namespace SoftCircuits.Parsers
             {
                 if (Options.ThrowOutOfRangeException)
                     throw new FixedWidthOutOfRangeException();
-#if NETSTANDARD2_0
-                result = (position <= line.Length) ? line.Substring(position) : string.Empty;
-#else
+#if !NETSTANDARD2_0
                 result = (position <= line.Length) ? line[position..] : string.Empty;
+#else
+                result = (position <= line.Length) ? line.Substring(position) : string.Empty;
 #endif
             }
             else

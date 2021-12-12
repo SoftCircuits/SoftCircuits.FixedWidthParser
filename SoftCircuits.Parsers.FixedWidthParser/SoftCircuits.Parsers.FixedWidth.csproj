@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net5.0;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>net6.0;net5.0;netstandard2.0</TargetFrameworks>
     <Nullable>annotations</Nullable>
     <Nullable Condition="'$(TargetFramework)' == 'net5.0'">enable</Nullable>
     <LangVersion>9.0</LangVersion>
@@ -11,7 +11,7 @@
     <Company>SoftCircuits</Company>
     <Copyright>Copyright © 2020-2021 SoftCircuits</Copyright>
     <NeutralLanguage>en-US</NeutralLanguage>
-    <PackageReleaseNotes>Minor tweaks and enhancements.</PackageReleaseNotes>
+    <PackageReleaseNotes>Added async methods; Now also targeting .NET 6.0; Numerous smaller changes; WARNING: Some method signatures changed and the old ones marked as deprecated.</PackageReleaseNotes>
     <PackageTags>text parser text-parser file file-parser fixed width fixed-width fixed-width-parser</PackageTags>
     <PackageId>SoftCircuits.FixedWidthParser</PackageId>
     <Product>SoftCircuits.FixedWidthParser</Product>
@@ -21,7 +21,8 @@
     <PackageIcon>Logo_64x64.png</PackageIcon>
     <RepositoryUrl>https://github.com/SoftCircuits/SoftCircuits.FixedWidthParser</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <Version>2.0.3</Version>
+    <Version>2.1.0</Version>
+    <PackageReadmeFile>ReadMe.md</PackageReadmeFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -32,6 +33,10 @@
     <None Include="..\Logo_64x64.png">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
+    </None>
+    <None Include="..\ReadMe.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
     </None>
   </ItemGroup>
 

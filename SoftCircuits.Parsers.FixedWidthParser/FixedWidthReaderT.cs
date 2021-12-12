@@ -8,13 +8,13 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace SoftCircuits.Parsers
 {
     public class FixedWidthReader<T> : FixedWidthReader where T : class, new()
     {
         private List<MemberDescriptor> MemberDescriptors;
-        private string[]? ReadValues;
 
         /// <summary>
         /// Constructs a new <see cref="FixedWidthReader{T}"/> instance.
@@ -115,7 +115,7 @@ namespace SoftCircuits.Parsers
         /// <summary>
         /// Initializes the class member descriptors.
         /// </summary>
-#if NET5_0
+#if !NETSTANDARD2_0
         [MemberNotNull(nameof(MemberDescriptors))]
 #endif
         private void InitializeMemberDescriptors()
@@ -126,17 +126,18 @@ namespace SoftCircuits.Parsers
         }
 
         /// <summary>
-        /// Reads the next item from the fixed-width file.
+        /// Reads the next row from the current fixed-width file and returns the raw
+        /// text values.
         /// </summary>
-        /// <param name="item">Returns the item read.</param>
-        /// <returns>True if successful, false if the end of the file was reached.</returns>
-        /// <exception cref="FixedWidthDataException"></exception>
-        [Obsolete("This method is deprecated and will be removed in a future version. Please use Read() instead.")]
-#if NETSTANDARD2_0
-        public bool ReadItem(out T item) => ReadItem(out item);
-#else
-        public bool ReadItem([NotNullWhen(true)] out T? item) => Read(out item);
-#endif
+        /// <returns></returns>
+        public string[]? ReadRawValues() => base.Read();
+
+        /// <summary>
+        /// Asynchronously reads the next row from the current fixed-width file and returns the raw
+        /// text values.
+        /// </summary>
+        /// <returns></returns>
+        public async Task<string[]?> ReadRawValuesAsync() => await base.ReadAsync();
 
         /// <summary>
         /// Reads the next item from the current fixed-width file.
@@ -144,37 +145,82 @@ namespace SoftCircuits.Parsers
         /// <param name="item">Returns the item read.</param>
         /// <returns>True if successful, false if the end of the file was reached.</returns>
         /// <exception cref="FixedWidthDataException"></exception>
-#if NETSTANDARD2_0
-        public bool Read(out T item)
-#else
+        [Obsolete("This method is deprecated and will be removed in a future version of this library. Please use a version of Read() that takes no parameters.")]
+#if !NETSTANDARD2_0
         public bool Read([NotNullWhen(true)] out T? item)
+#else
+        public bool Read(out T item)
 #endif
         {
-            // Ensure read buffers are allocated
-            if (ReadValues == null || ReadValues.Length != MemberDescriptors.Count)
-                ReadValues = new string[MemberDescriptors.Count];
+            item = Read();
+            return item != null;
+        }
 
-            // Get values
-            if (Read(ref ReadValues))
-            {
-                // Create and populate item
-                item = Activator.CreateInstance<T>();
-                for (int i = 0; i < MemberDescriptors.Count; i++)
-                    MemberDescriptors[i].SetValue(item, ReadValues[i], Options.ThrowDataException);
-                return true;
-            }
-            item = default;
-            return false;
+        /// <summary>
+        /// Reads the next item from the current fixed-width file.
+        /// </summary>
+        /// <param name="item">Returns the item read.</param>
+        /// <returns>The item read or null if the end of the file was reached.</returns>
+        /// <exception cref="FixedWidthDataException"></exception>
+        public new T? Read()
+        {
+            string[]? columns = base.Read();
+            if (columns == null)
+                return null;
+
+            // Create and populate item
+            int memberCount = Math.Min(columns.Length, MemberDescriptors.Count);
+            T item = Activator.CreateInstance<T>();
+            for (int i = 0; i < memberCount; i++)
+                MemberDescriptors[i].SetValue(item, columns[i], Options.ThrowDataException);
+            return item;
+        }
+
+        /// <summary>
+        /// Asynchronously reads the next item from the current fixed-width file.
+        /// </summary>
+        /// <param name="item">Returns the item read.</param>
+        /// <returns>The item read or null if the end of the file was reached.</returns>
+        /// <exception cref="FixedWidthDataException"></exception>
+        public new async Task<T?> ReadAsync()
+        {
+            string[]? columns = await base.ReadAsync();
+            if (columns == null)
+                return null;
+
+            // Create and populate item
+            int memberCount = Math.Min(columns.Length, MemberDescriptors.Count);
+            T item = Activator.CreateInstance<T>();
+            for (int i = 0; i < memberCount; i++)
+                MemberDescriptors[i].SetValue(item, columns[i], Options.ThrowDataException);
+            return item;
         }
 
         /// <summary>
         /// Reads all items from the current fixed-width file.
         /// </summary>
-        /// <returns>An <see cref="IEnumerable{T}"/> that iterates the items read.</returns>
+        /// <returns>An <see cref="IEnumerable{T}"/> of the items read.</returns>
         public IEnumerable<T> ReadAll()
         {
-            while (Read(out T? item))
+            T? item;
+            while ((item = Read()) != null)
                 yield return item;
         }
+
+#if !NETSTANDARD2_0
+
+        /// <summary>
+        /// Asynchronously reads all items from the current fixed-width file.
+        /// </summary>
+        /// <returns>An <see cref="IAsyncEnumerable{T}"/> of the items read.</returns>
+        public async IAsyncEnumerable<T> ReadAllAsync()
+        {
+            T? item;
+            while ((item = await ReadAsync()) != null)
+                yield return item;
+        }
+
+#endif
+
     }
 }

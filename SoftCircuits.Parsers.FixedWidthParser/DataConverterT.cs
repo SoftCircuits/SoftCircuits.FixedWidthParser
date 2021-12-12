@@ -39,10 +39,10 @@ namespace SoftCircuits.Parsers
         /// parsed from the string.</param>
         /// <returns>True if successful, false if the string could not
         /// be converted.</returns>
-#if NETSTANDARD2_0
-        public bool TryConvertFromString(string s, out object value)
-#else
+#if !NETSTANDARD2_0
         public bool TryConvertFromString(string? s, [NotNullWhen(true)] out object? value)
+#else
+        public bool TryConvertFromString(string s, out object value)
 #endif
         {
             if (TryConvertFromString(s, out T? temp))
@@ -74,13 +74,13 @@ namespace SoftCircuits.Parsers
         /// parsed from the string.</param>
         /// <returns>True if successful, false if the string could not
         /// be converted.</returns>
-#if NETSTANDARD2_0
-        public abstract bool TryConvertFromString(string s, out T value);
-#else
+#if !NETSTANDARD2_0
         public abstract bool TryConvertFromString(string? s, [NotNullWhen(true)] out T? value);
+#else
+        public abstract bool TryConvertFromString(string s, out T value);
 #endif
 
-#endregion
+        #endregion
 
     }
 }

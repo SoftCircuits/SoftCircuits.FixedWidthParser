@@ -37,10 +37,10 @@ namespace SoftCircuits.Parsers
         /// parsed from the string.</param>
         /// <returns>True if successful, false if the string could not
         /// be converted.</returns>
-#if NETSTANDARD2_0
-        bool TryConvertFromString(string? s, out object value);
-#else
+#if !NETSTANDARD2_0
         bool TryConvertFromString(string? s, [NotNullWhen(true)] out object? value);
+#else
+        bool TryConvertFromString(string? s, out object value);
 #endif
     }
 }

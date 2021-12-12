@@ -8,6 +8,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace SoftCircuits.Parsers
 {
@@ -65,7 +66,7 @@ namespace SoftCircuits.Parsers
         /// <summary>
         /// Initializes the class member descriptors.
         /// </summary>
-#if NET5_0
+#if !NETSTANDARD2_0
         [MemberNotNull(nameof(MemberDescriptors))]
 #endif
         private void InitializeMemberDescriptors()
@@ -105,6 +106,26 @@ namespace SoftCircuits.Parsers
         }
 
         /// <summary>
+        /// Asynchronously writes the given item to the fixed-width file.
+        /// </summary>
+        /// <param name="item">The item to write</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="FixedWidthOverflowException"></exception>
+        public async Task WriteAsync(T item)
+        {
+            // Ensure write buffers are allocated
+            if (WriteValues == null || WriteValues.Length != MemberDescriptors.Count)
+                WriteValues = new string[MemberDescriptors.Count];
+
+            // Get values
+            for (int i = 0; i < MemberDescriptors.Count; i++)
+                WriteValues[i] = MemberDescriptors[i].GetValue(item);
+
+            // Write values
+            await WriteAsync(WriteValues);
+        }
+
+        /// <summary>
         /// Writes the given items to the fixed-width file.
         /// </summary>
         /// <param name="items">The items to write</param>
@@ -117,6 +138,21 @@ namespace SoftCircuits.Parsers
 
             foreach (T item in items)
                 Write(item);
+        }
+
+        /// <summary>
+        /// Asynchronously writes the given items to the fixed-width file.
+        /// </summary>
+        /// <param name="items">The items to write</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="FixedWidthOverflowException"></exception>
+        public async Task WriteAsync(IEnumerable<T> items)
+        {
+            if (items == null)
+                throw new ArgumentNullException(nameof(items));
+
+            foreach (T item in items)
+                await WriteAsync(item);
         }
     }
 }

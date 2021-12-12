@@ -289,8 +289,8 @@ namespace FixedWidthParserTests
 
                 using FixedWidthReader reader = new(readFields, path, options);
 
-                string[]? values = null;
-                while (reader.Read(ref values))
+                string[]? values;
+                while ((values = reader.Read()) != null)
                 {
                     // Need to copy values so next read doesn't overwrite them
                     string[] copy = new string[values.Length];

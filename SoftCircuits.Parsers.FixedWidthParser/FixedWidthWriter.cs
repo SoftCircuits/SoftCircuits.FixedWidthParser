@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace SoftCircuits.Parsers
 {
@@ -112,6 +113,14 @@ namespace SoftCircuits.Parsers
         public void Write(params string[] args) => Write(args as IEnumerable<string>);
 
         /// <summary>
+        /// Asynchronously writes a collection of fields to one line in the output file.
+        /// </summary>
+        /// <param name="args">The field values to write.</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="FixedWidthOverflowException"></exception>
+        public async Task WriteAsync(params string[] args) => await WriteAsync(args as IEnumerable<string>);
+
+        /// <summary>
         /// Writes a collection of fields to one line in the output file.
         /// </summary>
         /// <param name="values">The field values to write.</param>
@@ -132,6 +141,29 @@ namespace SoftCircuits.Parsers
                 Writer.Write(FormatField(value, field));
             }
             Writer.WriteLine();
+        }
+
+        /// <summary>
+        /// Asynchronously writes a collection of fields to one line in the output file.
+        /// </summary>
+        /// <param name="values">The field values to write.</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="FixedWidthOverflowException"></exception>
+        public async Task WriteAsync(IEnumerable<string>? values)
+        {
+            if (values == null)
+                return;
+
+            // Write fields to file
+            IEnumerator<string> enumerator = values.GetEnumerator();
+            foreach (FixedWidthField field in Fields)
+            {
+                if (field.Skip > 0)
+                    Writer.Write(new string(Options.DefaultPadCharacter, field.Skip));
+                string value = enumerator.MoveNext() ? enumerator.Current : string.Empty;
+                await Writer.WriteAsync(FormatField(value, field));
+            }
+            await Writer.WriteLineAsync();
         }
 
         /// <summary>
@@ -158,7 +190,11 @@ namespace SoftCircuits.Parsers
             {
                 if (Options.ThrowOverflowException)
                     throw new FixedWidthOverflowException(value, field.Length);
+#if !NETSTANDARD2_0
+                value = value[..field.Length];
+#else
                 value = value.Substring(0, field.Length);
+#endif
             }
             return value;
         }
