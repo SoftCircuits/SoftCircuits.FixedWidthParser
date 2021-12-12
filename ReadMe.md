@@ -40,8 +40,8 @@ using (FixedWidthWriter writer = new FixedWidthWriter(PersonFields, filename))
 using (FixedWidthReader reader = new FixedWidthReader(PersonFields, filename))
 {
     // Array will be allocated if null or the wrong size
-    string[] values = null;
-    while (reader.Read(ref values))
+    string[] values;
+    while ((values = reader.Read()) != null)
     {
         // Do something with values here
     }
@@ -101,7 +101,8 @@ using (FixedWidthWriter<Product> writer = new FixedWidthWriter<Product>(filename
 List<Product> results = new List<Product>();
 using (FixedWidthReader<Product> reader = new FixedWidthReader<Product>(filename))
 {
-    while (reader.Read(out Product product))
+    Product? product;
+    while ((product = reader.Read()) != null)
         results.Add(product);
 }
 ```
@@ -173,7 +174,8 @@ using (FixedWidthWriter<Person> writer = new FixedWidthWriter<Person>(filename))
 List<Person> results = new List<Person>();
 using (FixedWidthReader<Person> reader = new FixedWidthReader<Person>(filename))
 {
-    while (reader.Read(out Person person))
+    Person? person;
+    while ((person = reader.Read()) != null)
         results.Add(person);
 }
 ```
