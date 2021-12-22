@@ -145,7 +145,6 @@ namespace SoftCircuits.Parsers
         /// <param name="item">Returns the item read.</param>
         /// <returns>True if successful, false if the end of the file was reached.</returns>
         /// <exception cref="FixedWidthDataException"></exception>
-        [Obsolete("This method is deprecated and will be removed in a future version of this library. Please use a version of Read() that takes no parameters.")]
 #if !NETSTANDARD2_0
         public bool Read([NotNullWhen(true)] out T? item)
 #else

@@ -217,7 +217,6 @@ namespace SoftCircuits.Parsers
         /// elements.</param>
         /// <returns>True if successful, false if the end of the file was reached.</returns>
         /// <exception cref="FixedWidthOutOfRangeException"></exception>
-        [Obsolete("This method is deprecated and will be removed in a future version of this library. Please use a version of Read() that take no parameters.")]
 #if !NETSTANDARD2_0
         [MemberNotNullWhen(true, "CurrentLine")]
         public bool Read([NotNullWhen(true)] ref string[]? values)
