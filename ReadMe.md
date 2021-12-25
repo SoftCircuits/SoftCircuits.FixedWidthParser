@@ -62,7 +62,7 @@ The code above writes and then reads the following file:
 
 These classes are used to write and read fixed-width files using a class to define the fields.
 
-All properties and fields in the class with a `FixedWidthField` attribute will be written and/or read to the fixed width file. Note that the members don't have to be strings. All the basic data types are supported, including `Guid`. (Note that `DateTime` members are not currently supported due to the many ways they can be formatted, but you can work around this by writing custom data converters.)
+All properties and fields in the class with a `FixedWidthField` attribute will be written and/or read to the fixed width file. Note that the members don't have to be strings. All the basic data types are supported, including `DateTime` and `Guid`.
 
 ```cs
 // Declare our class with FixedWidthField attributes.
@@ -121,6 +121,8 @@ ce2026bf-7401-47b2-a7ab-2202292a4425Knives      Utensils    4.7
 ## Writing Custom Converters
 
 If you have a class member of a type for which there is no built-in support, or if you want to customize the way a member is formatted, you can supply your own data conversion class.
+
+One example where you might need to do this is for `DateTime` fields. While the built-in `DateTime` converter works in many cases, date formats can vary wildly. So you might need a custom data converter to control exactly how these values are stored.
 
 Data conversion classes must implement the `IDataConverter` interface, but the easiest way to write a custom data converter in a type-safe manner is to derive your class from `DataConverter<T>`, where `T` is the type of the member you are converting. This class has two abstract members that you must implement in your derived class: `ConvertToString()` and `TryConvertFromString()`.
 

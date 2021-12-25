@@ -62,7 +62,7 @@ namespace SoftCircuits.Parsers
         /// </summary>
         /// <param name="value">The value to be converted to a string.</param>
         /// <returns>Returns a string representation of
-        /// <typeparamref name="T"/></returns>
+        /// <paramref name="value"/>.</returns>
         public abstract string ConvertToString(T? value);
 
         /// <summary>

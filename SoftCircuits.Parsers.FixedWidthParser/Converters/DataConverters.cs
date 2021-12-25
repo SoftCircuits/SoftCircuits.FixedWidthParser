@@ -13,6 +13,7 @@ namespace SoftCircuits.Parsers.Converters
             [typeof(Boolean)] = () => new BooleanConverter(),
             [typeof(Byte)] = () => new ByteConverter(),
             [typeof(Char)] = () => new CharConverter(),
+            [typeof(DateTime)] = () => new DateTimeConverter(),
             [typeof(Decimal)] = () => new DecimalConverter(),
             [typeof(Double)] = () => new DoubleConverter(),
             [typeof(Guid)] = () => new GuidConverter(),

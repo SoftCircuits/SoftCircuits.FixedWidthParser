@@ -19,6 +19,8 @@ namespace FixedWidthParserTests
             public Byte ByteValue { get; set; }
             [FixedWidthField(10)]
             public Char CharValue { get; set; }
+            [FixedWidthField(26)]
+            public DateTime DateTimeValue { get; set; }
             [FixedWidthField(10)]
             public Decimal DecimalValue { get; set; }
             [FixedWidthField(10)]
@@ -71,6 +73,8 @@ namespace FixedWidthParserTests
                     if (result != 0) return result;
                     result = a.CharValue.CompareTo(b.CharValue);
                     if (result != 0) return result;
+                    result = CompareDates(a.DateTimeValue, b.DateTimeValue);
+                    if (result != 0) return result;
                     result = a.DecimalValue.CompareTo(b.DecimalValue);
                     if (result != 0) return result;
                     result = a.DoubleValue.CompareTo(b.DoubleValue);
@@ -103,6 +107,25 @@ namespace FixedWidthParserTests
                     return -1;
                 return 1;
             }
+
+            /// <summary>
+            /// Compares two dates ignoring milliseconds
+            /// </summary>
+            private int CompareDates(DateTime dt1, DateTime dt2)
+            {
+                int result = dt1.Year - dt2.Year;
+                if (result != 0) return result;
+                result = dt1.Month - dt2.Month;
+                if (result != 0) return result;
+                result = dt1.Day - dt2.Day;
+                if (result != 0) return result;
+                result = dt1.Hour - dt2.Hour;
+                if (result != 0) return result;
+                result = dt1.Minute - dt2.Minute;
+                if (result != 0) return result;
+                result = dt1.Second - dt2.Second;
+                return result;
+            }
         }
 
         private readonly List<AllTypesClass> AllTypesItems = new()
@@ -112,6 +135,7 @@ namespace FixedWidthParserTests
                 BooleanValue = true,
                 ByteValue = 47,
                 CharValue = 'r',
+                DateTimeValue = DateTime.MinValue,
                 DecimalValue = 123.456m,
                 DoubleValue = 47.9,
                 GuidValue = Guid.NewGuid(),
@@ -130,6 +154,7 @@ namespace FixedWidthParserTests
                 BooleanValue = false,
                 ByteValue = 107,
                 CharValue = 'v',
+                DateTimeValue = DateTime.MaxValue,
                 DecimalValue = 988.22m,
                 DoubleValue = 90.44,
                 GuidValue = Guid.NewGuid(),
@@ -148,6 +173,7 @@ namespace FixedWidthParserTests
                 BooleanValue = true,
                 ByteValue = 98,
                 CharValue = '4',
+                DateTimeValue = DateTime.Now,
                 DecimalValue = 780.2m,
                 DoubleValue = 86.9,
                 GuidValue = Guid.NewGuid(),
@@ -166,6 +192,7 @@ namespace FixedWidthParserTests
                 BooleanValue = false,
                 ByteValue = 142,
                 CharValue = '&',
+                DateTimeValue = new DateTime(2021, 12, 25, 8, 29, 12),
                 DecimalValue = 9088261.4m,
                 DoubleValue = 478.32,
                 GuidValue = Guid.NewGuid(),

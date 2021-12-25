@@ -11,7 +11,7 @@
     <Company>SoftCircuits</Company>
     <Copyright>Copyright © 2020-2021 SoftCircuits</Copyright>
     <NeutralLanguage>en-US</NeutralLanguage>
-    <PackageReleaseNotes>Removed obsolete attribute from older-style read methods (after marking them as obsolete when adding new async versions) We will continue to support both forms; Misc tweaks.</PackageReleaseNotes>
+    <PackageReleaseNotes>Added built-in DateTime data converter.</PackageReleaseNotes>
     <PackageTags>text parser text-parser file file-parser fixed width fixed-width fixed-width-parser</PackageTags>
     <PackageId>SoftCircuits.FixedWidthParser</PackageId>
     <Product>SoftCircuits.FixedWidthParser</Product>
@@ -21,7 +21,7 @@
     <PackageIcon>Logo_64x64.png</PackageIcon>
     <RepositoryUrl>https://github.com/SoftCircuits/SoftCircuits.FixedWidthParser</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <Version>2.1.1</Version>
+    <Version>2.1.2</Version>
     <PackageReadmeFile>ReadMe.md</PackageReadmeFile>
   </PropertyGroup>
 
