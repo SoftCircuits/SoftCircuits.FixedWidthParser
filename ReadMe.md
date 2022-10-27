@@ -47,6 +47,7 @@ using (FixedWidthReader<Person> reader = new(filename))
 ```
 
 Note: The `Item` property is guaranteed not to be null when `FixedWidthReader<T>.ReadAsync()` returns true. However, .NET does not currently support the `MemberNotNullWhenAttribute` attribute for async methods. So the compiler may generate warnings when nullable reference types are enabled. In this case, you can safely use the null-forgiving operator (!) (or `Debug.Assert()` as shown above) when this method returns true.
+
 ----
 
 ## FixedWidthWriter and FixedWidthReader Classes
