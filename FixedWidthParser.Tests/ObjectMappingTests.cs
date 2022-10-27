@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2020-2021 Jonathan Wood (www.softcircuits.com)
+﻿// Copyright (c) 2020-2022 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
 using NUnit.Framework;
@@ -6,7 +6,6 @@ using SoftCircuits.Parsers;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
 namespace FixedWidthParserTests
@@ -83,34 +82,27 @@ namespace FixedWidthParserTests
 
         #region Support methods
 
-        internal List<T1> WriteReadValues<T1>(List<T1> items, FixedWidthOptions? options = null) where T1 : class, new()
+        internal List<T1> WriteReadValues<T1>(List<T1> items, FixedWidthOptions? options = null, Action<FixedWidthWriter<T1>>? initWriter = null, Action<FixedWidthReader<T1>>? initReader = null) where T1 : class, new()
         {
-            return WriteReadValues<T1, T1>(items, options);
+            return WriteReadValues<T1, T1>(items, options, initWriter, initReader);
         }
 
-        internal static List<T2> WriteReadValues<T1, T2>(List<T1> items, FixedWidthOptions? options = null) where T1 : class, new() where T2 : class, new()
+        internal static List<T2> WriteReadValues<T1, T2>(List<T1> items, FixedWidthOptions? options = null, Action<FixedWidthWriter<T1>>? initWriter = null, Action<FixedWidthReader<T2>>? initReader = null) where T1 : class, new() where T2 : class, new()
         {
-            string path = Path.GetTempFileName();
             List<T2> results;
 
-            try
-            {
-                using (FixedWidthWriter<T1> writer = new(path, options))
-                {
-                    writer.Write(items);
-                }
+            MemoryFile memFile = new();
 
-                using FixedWidthReader<T2> reader = new(path, options);
-                results = reader.ReadAll().ToList();
-            }
-            catch (Exception)
+            using (FixedWidthWriter<T1> writer = new(memFile.GetStream(), options))
             {
-                throw;
+                initWriter?.Invoke(writer);
+                writer.Write(items);
             }
-            finally
-            {
-                File.Delete(path);
-            }
+
+            using FixedWidthReader<T2> reader = new(memFile.GetStream(), options);
+            initReader?.Invoke(reader);
+            results = reader.ReadAll().ToList();
+
             return results;
         }
 

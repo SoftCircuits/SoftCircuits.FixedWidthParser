@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFrameworks>net6.0;net5.0;netstandard2.0</TargetFrameworks>
     <Nullable>annotations</Nullable>
-    <Nullable Condition="'$(TargetFramework)' == 'net5.0'">enable</Nullable>
+    <Nullable Condition="'$(TargetFramework)' != 'netstandard2.0'">enable</Nullable>
     <LangVersion>9.0</LangVersion>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
@@ -11,7 +11,10 @@
     <Company>SoftCircuits</Company>
     <Copyright>Copyright © 2020-2021 SoftCircuits</Copyright>
     <NeutralLanguage>en-US</NeutralLanguage>
-    <PackageReleaseNotes>Added built-in DateTime data converter.</PackageReleaseNotes>
+    <PackageReleaseNotes>Added ability to customize property-to-field mappings for classes without the FixedWidthFieldAttribute; Performance optimizations; Added standard data converters for DateOnly, TimeOnly and DateTimeOffset; Added custom DateTime converters CompactDateTimeConverter, DateOnlyDateTimeConverter and UniversalDateTimeConverter; FixedWidthReader.Columns now deprecated in favor of FixedWidthReader.Values.
+
+BREAKING CHANGES: The method signatures for FixedWidthReader.Read(), FixedWidthReader.ReadAsync(), FixedWidthReader&lt;T&gt;.Read(), and FixedWidthReader&lt;T&gt;.ReadAsync() have changed. We were reluctant to break existing code, but we believe these changes significantly simplifies calling these methods. And the changes needed to code should be very minimal.
+</PackageReleaseNotes>
     <PackageTags>text parser text-parser file file-parser fixed width fixed-width fixed-width-parser</PackageTags>
     <PackageId>SoftCircuits.FixedWidthParser</PackageId>
     <Product>SoftCircuits.FixedWidthParser</Product>
@@ -21,7 +24,7 @@
     <PackageIcon>Logo_64x64.png</PackageIcon>
     <RepositoryUrl>https://github.com/SoftCircuits/SoftCircuits.FixedWidthParser</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <Version>2.1.2</Version>
+    <Version>3.0.0</Version>
     <PackageReadmeFile>ReadMe.md</PackageReadmeFile>
   </PropertyGroup>
 

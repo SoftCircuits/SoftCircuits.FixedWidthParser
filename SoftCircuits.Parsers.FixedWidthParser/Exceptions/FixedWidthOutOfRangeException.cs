@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2020-2021 Jonathan Wood (www.softcircuits.com)
+﻿// Copyright (c) 2020-2022 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
 using System;
@@ -15,7 +15,7 @@ namespace SoftCircuits.Parsers
         /// Constructs a new <see cref="FixedWidthOutOfRangeException"/> instance.
         /// </summary>
         public FixedWidthOutOfRangeException()
-            : base("The current line is not long enough to include one or more fields.")
+            : base("The current line is not long enough for one or more fixed-width fields.")
         {
         }
     }

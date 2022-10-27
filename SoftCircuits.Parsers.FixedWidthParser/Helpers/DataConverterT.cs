@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2020-2021 Jonathan Wood (www.softcircuits.com)
+﻿// Copyright (c) 2020-2022 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
 using System;
@@ -39,10 +39,10 @@ namespace SoftCircuits.Parsers
         /// parsed from the string.</param>
         /// <returns>True if successful, false if the string could not
         /// be converted.</returns>
-#if !NETSTANDARD2_0
-        public bool TryConvertFromString(string? s, [NotNullWhen(true)] out object? value)
-#else
+#if NETSTANDARD2_0
         public bool TryConvertFromString(string s, out object value)
+#else
+        public bool TryConvertFromString(string? s, [NotNullWhen(true)] out object? value)
 #endif
         {
             if (TryConvertFromString(s, out T? temp))
@@ -54,7 +54,7 @@ namespace SoftCircuits.Parsers
             return false;
         }
 
-#region Abstract methods
+        #region Abstract methods
 
         /// <summary>
         /// Override this abstract method to implement your own logic to convert
@@ -74,10 +74,10 @@ namespace SoftCircuits.Parsers
         /// parsed from the string.</param>
         /// <returns>True if successful, false if the string could not
         /// be converted.</returns>
-#if !NETSTANDARD2_0
-        public abstract bool TryConvertFromString(string? s, [NotNullWhen(true)] out T? value);
-#else
+#if NETSTANDARD2_0
         public abstract bool TryConvertFromString(string s, out T value);
+#else
+        public abstract bool TryConvertFromString(string? s, [NotNullWhen(true)] out T? value);
 #endif
 
         #endregion

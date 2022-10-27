@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2020-2021 Jonathan Wood (www.softcircuits.com)
+﻿// Copyright (c) 2020-2022 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
 using System;
@@ -14,9 +14,9 @@ namespace SoftCircuits.Parsers
     public interface IDataConverter
     {
         /// <summary>
-        /// Returns the data type this object converts.
+        /// Gets the data type that this object converts.
         /// </summary>
-        /// <returns>Returns the data type this object converts.</returns>
+        /// <returns>The data type that this object converts.</returns>
         Type GetDataType();
 
         /// <summary>
@@ -37,10 +37,10 @@ namespace SoftCircuits.Parsers
         /// parsed from the string.</param>
         /// <returns>True if successful, false if the string could not
         /// be converted.</returns>
-#if !NETSTANDARD2_0
-        bool TryConvertFromString(string? s, [NotNullWhen(true)] out object? value);
-#else
+#if NETSTANDARD2_0
         bool TryConvertFromString(string? s, out object value);
+#else
+        bool TryConvertFromString(string? s, [NotNullWhen(true)] out object? value);
 #endif
     }
 }

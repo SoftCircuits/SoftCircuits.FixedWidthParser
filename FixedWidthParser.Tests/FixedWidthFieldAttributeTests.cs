@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2020-2021 Jonathan Wood (www.softcircuits.com)
+﻿// Copyright (c) 2020-2022 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
 using NUnit.Framework;
@@ -6,6 +6,7 @@ using SoftCircuits.Parsers;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace FixedWidthParserTests
 {
@@ -51,40 +52,28 @@ namespace FixedWidthParserTests
         [Test]
         public void AttributeTests()
         {
-            string path = Path.GetTempFileName();
+            MemoryFile memFile = new();
 
-            try
+            // Write using data mapping/attributes
+            using (FixedWidthWriter<Product> writer = new(memFile.GetStream()))
             {
-                // Write using data mapping/attributes
-                using (FixedWidthWriter<Product> writer = new(path))
-                {
-                    foreach (var product in Products)
-                        writer.Write(product);
-                }
-
-                List<Product> results = new();
-                using FixedWidthReader<Product> reader = new(path);
-                {
-                    Product? product;
-                    while ((product = reader.Read()) != null)
-                        results.Add(product);
-                }
-
-                Assert.AreEqual(Results.Count, results.Count);
-                for (int i = 0; i < results.Count; i++)
-                {
-                    Assert.AreEqual(Results[i].Description, results[i].Description);
-                    Assert.AreEqual(Results[i].Category, results[i].Category);
-                    Assert.AreEqual(Results[i].Color, results[i].Color);
-                }
+                foreach (var product in Products)
+                    writer.Write(product);
             }
-            catch (Exception)
+
+            List<Product> results = new();
+            using FixedWidthReader<Product> reader = new(memFile.GetStream());
             {
-                throw;
+                while (reader.Read())
+                    results.Add(reader.Item);
             }
-            finally
+
+            Assert.AreEqual(Results.Count, results.Count);
+            for (int i = 0; i < results.Count; i++)
             {
-                File.Delete(path);
+                Assert.AreEqual(Results[i].Description, results[i].Description);
+                Assert.AreEqual(Results[i].Category, results[i].Category);
+                Assert.AreEqual(Results[i].Color, results[i].Color);
             }
         }
     }

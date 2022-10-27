@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2020-2021 Jonathan Wood (www.softcircuits.com)
+﻿// Copyright (c) 2020-2022 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
 using System;
@@ -17,7 +17,7 @@ namespace SoftCircuits.Parsers
         /// </summary>
         /// <param name="type">The type that was unsupported.</param>
         public FixedWidthUnsupportedTypeException(Type type)
-            : base($"There is no built-in data conversion, and no custom data converter has been supplied for type '{type.FullName}'.")
+            : base($"There is no built-in data converter and no custom data converter has been supplied for type '{type.FullName}'.")
         {
         }
     }

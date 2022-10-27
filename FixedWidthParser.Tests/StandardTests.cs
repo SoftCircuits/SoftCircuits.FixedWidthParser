@@ -1,18 +1,100 @@
-// Copyright (c) 2020-2021 Jonathan Wood (www.softcircuits.com)
+// Copyright (c) 2020-2022 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
 using NUnit.Framework;
 using SoftCircuits.Parsers;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace FixedWidthParserTests
 {
     public class StandardTests
     {
         [Test]
-        public void BasicTest()
+        public async Task BasicTestAsync()
+        {
+            FixedWidthField[] fields = new FixedWidthField[]
+            {
+                new FixedWidthField(26),
+                new FixedWidthField(26),
+                new FixedWidthField(26),
+                new FixedWidthField(26),
+            };
+
+            List<string[]> values = new()
+            {
+                new string[] { "abcdefghijklmnopqrstuvwxyz", "1234567890", "1010101010", "" },
+                new string[] { "1234567890", "1010101010", "", "abcdefghijklmnopqrstuvwxyz" },
+                new string[] { "1010101010", "", "abcdefghijklmnopqrstuvwxyz", "1234567890" },
+                new string[] { "", "abcdefghijklmnopqrstuvwxyz", "1234567890", "1010101010" },
+            };
+
+            string path = Path.GetTempFileName();
+
+            // Build expected content
+            StringBuilder builder = new();
+            foreach (var value in values)
+            {
+                Debug.Assert(value.Length == fields.Length);
+                for (int i = 0; i < fields.Length; i++)
+                {
+                    builder.Append(value[i]);
+                    builder.Append(new string(' ', fields[i].Length - value[i].Length));
+                }
+                builder.AppendLine();
+            }
+            string expectedContent = builder.ToString();
+
+            try
+            {
+                // Sync
+                using (FixedWidthWriter writer = new(fields, path))
+                {
+                    for (int i = 0; i < values.Count; i++)
+                        writer.Write(values[i]);
+                }
+
+                Assert.AreEqual(expectedContent, File.ReadAllText(path));
+
+                using (FixedWidthReader reader = new(fields, path))
+                {
+                    int i = 0;
+                    while (reader.Read())
+                        CollectionAssert.AreEquivalent(values[i++], reader.Values);
+                }
+
+                // Async
+                using (FixedWidthWriter writer = new(fields, path))
+                {
+                    for (int i = 0; i < values.Count; i++)
+                        await writer.WriteAsync(values[i]);
+                }
+
+                Assert.AreEqual(expectedContent, File.ReadAllText(path));
+
+                using (FixedWidthReader reader = new(fields, path))
+                {
+                    int i = 0;
+                    while (await reader.ReadAsync())
+                        CollectionAssert.AreEquivalent(values[i++], reader.Values);
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                File.Delete(path);
+            }
+        }
+
+        [Test]
+        public void FieldLayoutTest()
         {
             FixedWidthField[] fields = new FixedWidthField[]
             {
@@ -275,36 +357,24 @@ namespace FixedWidthParserTests
         /// </summary>
         private static void WriteReadValues(IEnumerable<FixedWidthField> writeFields, IEnumerable<FixedWidthField> readFields, List<string[]> items, out List<string[]> results, FixedWidthOptions? options = null)
         {
-            string path = Path.GetTempFileName();
+            MemoryFile memFile = new();
 
-            try
+            using (FixedWidthWriter writer = new(writeFields, memFile.GetStream(), options))
             {
-                using (FixedWidthWriter writer = new(writeFields, path, options))
-                {
-                    foreach (var item in items)
-                        writer.Write(item);
-                }
+                foreach (var item in items)
+                    writer.Write(item);
+            }
 
-                results = new List<string[]>();
-
-                using FixedWidthReader reader = new(readFields, path, options);
-
-                string[]? values;
-                while ((values = reader.Read()) != null)
+            results = new List<string[]>();
+            using FixedWidthReader reader = new(readFields, memFile.GetStream(), options);
+            {
+                while (reader.Read())
                 {
                     // Need to copy values so next read doesn't overwrite them
-                    string[] copy = new string[values.Length];
-                    values.CopyTo(copy, 0);
+                    string[] copy = new string[reader.Values.Length];
+                    reader.Values.CopyTo(copy, 0);
                     results.Add(copy);
                 }
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-            finally
-            {
-                File.Delete(path);
             }
         }
 

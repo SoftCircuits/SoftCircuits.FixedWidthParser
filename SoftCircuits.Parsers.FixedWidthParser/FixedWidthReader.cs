@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2020-2021 Jonathan Wood (www.softcircuits.com)
+﻿// Copyright (c) 2020-2022 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
 using System;
@@ -22,19 +22,26 @@ namespace SoftCircuits.Parsers
         /// <summary>
         /// Gets the list of fixed-width field descriptors.
         /// </summary>
-        public List<FixedWidthField> Fields { get; private set; }
+        protected List<FixedWidthField> Fields { get; set; }
 
         /// <summary>
-        /// Returns the complete, unparsed line of text last read by the <see cref="Read(ref string[]?)"/>
-        /// method. Valid only when <see cref="Read(ref string[]?)"/> returns true.
+        /// Returns the original unparsed line of text last read by <see cref="Read"/> or <see cref="ReadAsync"/>. Valid only
+        /// when <see cref="Read"/> returns true.
         /// </summary>
         public string? CurrentLine { get; private set; }
 
         /// <summary>
-        /// Returns the column values read in the last call to <see cref="Read"/> or <see cref="ReadAsync"/>.
-        /// May be null.
+        /// Gets the column values read by the last call to <see cref="Read"/> or <see cref="ReadAsync"/>. Guaranteed not to be null
+        /// when these methods return true.
         /// </summary>
-        public string[]? Columns { get; private set; }
+        [Obsolete("This property has been deprecated and will be removed in a future version. Please use the Values property instead.")]
+        public string[]? Columns => Values;
+
+        /// <summary>
+        /// Gets the column values read by the last call to <see cref="Read"/> or <see cref="ReadAsync"/>. Guaranteed not to be null
+        /// when these methods return true.
+        /// </summary>
+        public string[]? Values { get; private set; }
 
         /// <summary>
         /// Returns true if the current file position is at the end of the file.
@@ -210,83 +217,100 @@ namespace SoftCircuits.Parsers
         }
 
         /// <summary>
-        /// Reads the fields from one line of data.
+        /// Reads one row of values.
         /// </summary>
-        /// <param name="values">Array to contain the fields. This method will allocate
-        /// the array if this parameter is null or does not have the right number of
-        /// elements.</param>
-        /// <returns>True if successful, false if the end of the file was reached.</returns>
-        /// <exception cref="FixedWidthOutOfRangeException"></exception>
-#if !NETSTANDARD2_0
-        [MemberNotNullWhen(true, "CurrentLine")]
-        public bool Read([NotNullWhen(true)] ref string[]? values)
+        /// <param name="values">Returns the values read when this method returns true.</param>
+        /// <returns>True if successful, or false if there are no more rows.</returns>
+#if NETSTANDARD2_0
+        public bool Read(out string[] values)
 #else
-        public bool Read(ref string[] values)
+        [MemberNotNullWhen(true, nameof(CurrentLine))]
+        [MemberNotNullWhen(true, nameof(Values))]
+        public bool Read([NotNullWhen(true)] out string[]? values)
 #endif
-        {
-            values = Read();
-            return (values != null);
-        }
-
-        /// <summary>
-        /// Reads the fields from one line of data.
-        /// </summary>
-        /// <param name="values">Array to contain the fields. This method will allocate
-        /// the array if this parameter is null or does not have the right number of
-        /// elements.</param>
-        /// <returns>The values read or null if the end of the file was reached.</returns>
-        /// <exception cref="FixedWidthOutOfRangeException"></exception>
-#if !NETSTANDARD2_0
-        [MemberNotNullWhen(true, "CurrentLine")]
-#endif
-        public string[]? Read()
         {
             // Get next line
             CurrentLine = Reader.ReadLine();
-            if (CurrentLine == null)
-                return null;
-
-            ReadLine();
-            return Columns;
+            if (CurrentLine != null)
+            {
+                ParseLine();
+                values = Values;
+                return true;
+            }
+            values = null;
+            return false;
         }
 
         /// <summary>
-        /// Asynchronously reads the fields from one line of data.
+        /// Reads one row of values and stores them in the <see cref="Values"/> property.
         /// </summary>
-        /// <param name="values">Array to contain the fields. This method will allocate
-        /// the array if this parameter is null or does not have the right number of
-        /// elements.</param>
-        /// <returns>The values read or null if the end of the file was reached.</returns>
-        /// <exception cref="FixedWidthOutOfRangeException"></exception>
-        public async Task<string[]?> ReadAsync()
+        /// <returns>True if successful, or false if there are no more rows.</returns>
+#if !NETSTANDARD2_0
+        [MemberNotNullWhen(true, nameof(CurrentLine))]
+        [MemberNotNullWhen(true, nameof(Values))]
+#endif
+        public bool Read()
+        {
+            // Get next line
+            CurrentLine = Reader.ReadLine();
+            if (CurrentLine != null)
+            {
+                ParseLine();
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Asynchronously reads one row of values and stores them in the <see cref="Values"/> property.
+        /// </summary>
+        /// <returns>True if successful, or false if there are no more rows.</returns>
+        /// <remarks>
+        /// Note: The <see cref="Values"/> property is guaranteed not to be null when this method returns true. However, .NET does not currently
+        /// support the <see cref="MemberNotNullWhenAttribute"/> attribute for async methods. So the compiler may generate warnings
+        /// when nullable reference types are enabled. In this case, you can safely use the null-forgiving operator (!) when this
+        /// method returns true.
+        /// </remarks>
+#if !NETSTANDARD2_0
+        [MemberNotNullWhen(true, nameof(CurrentLine))]  // Note: Ignored for async method
+        [MemberNotNullWhen(true, nameof(Values))]       // Note: Ignored for async method
+#endif
+        public async Task<bool> ReadAsync()
         {
             // Get next line
             CurrentLine = await Reader.ReadLineAsync();
-            if (CurrentLine == null)
-                return null;
-
-            ReadLine();
-            return Columns;
+            if (CurrentLine != null)
+            {
+                ParseLine();
+                return true;
+            }
+            return false;
         }
 
         /// <summary>
-        /// Processes a single fixed-width line.
+        /// Closes the <see cref="FixedWidthReader"/> object and underlying stream, and releases
+        /// any system resources associated with the reader.
         /// </summary>
-        private void ReadLine()
+        public void Close() => Reader.Close();
+
+        /// <summary>
+        /// Parses a single fixed-width line.
+        /// </summary>
+#if !NETSTANDARD2_0
+        [MemberNotNull(nameof(Values))]
+#endif
+        private void ParseLine()
         {
             Debug.Assert(CurrentLine != null);
 
             // If needed, allocate array to return values
-            if (Columns == null || Columns.Length != Fields.Count)
-                Columns = new string[Fields.Count];
+            if (Values == null || Values.Length != Fields.Count)
+                Values = new string[Fields.Count];
 
             // Read fields
             int position = 0;
             for (int i = 0; i < Fields.Count; i++)
-            {
-                position += Fields[i].Skip;
-                Columns[i] = ReadField(CurrentLine, Fields[i], ref position);
-            }
+                Values[i] = ParseField(CurrentLine, Fields[i], ref position);
         }
 
         /// <summary>
@@ -296,44 +320,52 @@ namespace SoftCircuits.Parsers
         /// <param name="field">Field descriptor.</param>
         /// <param name="position">The current position within the liine.</param>
         /// <returns>The extracted field.</returns>
-        private string ReadField(string line, FixedWidthField field, ref int position)
+        private string ParseField(string line, FixedWidthField field, ref int position)
         {
             Debug.Assert(line != null);
             Debug.Assert(field != null);
             Debug.Assert(position >= 0);
 
+            // Skip requested characters
+            position += field.Skip;
+
             // Extract field
-            string result;
+            int start, end;
             if (line.Length < position + field.Length)
             {
                 if (Options.ThrowOutOfRangeException)
                     throw new FixedWidthOutOfRangeException();
-#if !NETSTANDARD2_0
-                result = (position <= line.Length) ? line[position..] : string.Empty;
-#else
-                result = (position <= line.Length) ? line.Substring(position) : string.Empty;
-#endif
+                start = (position <= line.Length) ? position : line.Length;
+                end = line.Length;
             }
             else
             {
-                result = line.Substring(position, field.Length);
+                start = position;
+                end = position + field.Length;
             }
 
-            // If requested, trim field
+            // Trim field if requested
             if (field.TrimField ?? Options.TrimFields)
-                result = result.Trim(field.PadCharacter ?? Options.DefaultPadCharacter);
+            {
+                char padCharacter = field.PadCharacter ?? Options.DefaultPadCharacter;
+                // Trim start
+                while (start < end && line[start] == padCharacter)
+                    start++;
+                // Trim end
+                while (end > start && line[end - 1] == padCharacter)
+                    end--;
+            }
 
             // Advance line position
             position += field.Length;
 
-            return result;
+            // Return field value
+#if NETSTANDARD2_0
+            return line.Substring(start, end - start);
+#else
+            return line[start..end];
+#endif
         }
-
-        /// <summary>
-        /// Closes the <see cref="FixedWidthReader"/> object and the underlying stream, and releases
-        /// any system resources associated with the reader.
-        /// </summary>
-        public void Close() => Reader.Close();
 
         /// <summary>
         /// Releases all resources used by the <see cref="FixedWidthReader"/> object.

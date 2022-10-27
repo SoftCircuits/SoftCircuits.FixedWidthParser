@@ -1,7 +1,9 @@
-﻿// Copyright (c) 2020-2021 Jonathan Wood (www.softcircuits.com)
+﻿// Copyright (c) 2020-2022 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
-using System.Diagnostics;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SoftCircuits.Parsers
 {
@@ -50,7 +52,7 @@ namespace SoftCircuits.Parsers
         public int Skip { get; set; }
 
         /// <summary>
-        /// Constructs a new <see cref="FixedWidthField"/>.
+        /// Constructs a new <see cref="FixedWidthField"/> instance.
         /// </summary>
         /// <param name="length">The number of characters that this field occupies.</param>
         /// <param name="alignment">The column alignment for this field. Leave as <c>null</c>
@@ -76,12 +78,27 @@ namespace SoftCircuits.Parsers
 
         internal FixedWidthField(FixedWidthFieldAttribute attribute)
         {
-            Debug.Assert(attribute?.Field != null);
             Length = attribute.Field.Length;
             Alignment = attribute.Field.Alignment;
             PadCharacter = attribute.Field.PadCharacter;
             TrimField = attribute.Field.TrimField;
             Skip = attribute.Field.Skip;
         }
+
+        /// <summary>
+        /// Calculates the line length for the given set of <see cref="FixedWidthField"/>s.
+        /// </summary>
+        /// <param name="fields">The collection of <see cref="FixedWidthField"/>s from which to calculate the line length.</param>
+        /// <returns>The calculated line length.</returns>
+        internal static int CalculateLineLength(IEnumerable<FixedWidthField> fields) => fields.Sum(f => f.Skip + f.Length);
+
+        #region Virtual Methods
+
+        internal virtual string GetValue(object item) => throw new NotSupportedException();
+
+        internal virtual void SetValue(object item, string s, bool throwExceptionOnInvalidData) => throw new NotSupportedException();
+
+        #endregion
+
     }
 }

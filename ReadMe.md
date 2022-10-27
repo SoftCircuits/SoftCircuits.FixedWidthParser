@@ -8,9 +8,48 @@ Install-Package SoftCircuits.FixedWidthParser
 
 ## Overview
 
-SoftCircuits.FixedWidthParser is a lightweight .NET class for reading and writing fixed-width data files. Includes basic reader and writer class, and also includes generic classes that automatically map class properties to fixed-width fields. Includes many options to control the library's behavior.
+SoftCircuits.FixedWidthParser is a lightweight .NET class for reading and writing fixed-width data files.
 
-Fixed-width files are text files that contain data for one record on each line. Fields for each record are not delimited. Instead, each field has a fixed width, or length, and fields are found by their location within the line.
+Fixed-width files are text files that contain one data record on each line. Fields for each record are not delimited. Instead, each field has a fixed width, or length, and fields are found by their location within the line.
+
+The library includes basic classes for reading and writing fixed-width data files. And it also includes generic classes that automatically map class properties to fixed-width fields. The library also provides many options to control the library's behavior.
+
+----
+
+## Breaking Changes in Version 3.0.0
+
+The method signatures for `FixedWidthReader.Read()`, `FixedWidthReader.ReadAsync()`, `FixedWidthReader<T>.Read()`, and `FixedWidthReader<T>.ReadAsync()` have changed. We were very reluctant to break existing code, but we believe these changes significantly simplifies calling these methods. And the changes needed to code should be very minimal.
+
+The `FixedWidthReader.Read()` and `FixedWidthReader.ReadAsync()` now store the values in the `Values` property:
+
+``` cs
+// FixedWidthReader.Read()
+using (FixedWidthReader reader = new(PersonFields, filename))
+{
+    while (reader.Read())
+    {
+        string[] values = reader.Values;
+    }
+}
+```
+
+Similarly, the `FixedWidthReader<T>.Read()` and `FixedWidthReader<T>.ReadAsync()` now store the object read in the `Item` property:
+
+``` cs
+// FixedWidthReader<T>.Read()
+using (FixedWidthReader<Person> reader = new(filename))
+{
+    while (reader.Read())
+    {
+        Debug.Assert(reader.Item != null);
+        Person person = reader.Item;
+    }
+}
+```
+
+Note: `Item` is guaranteed not to be null when `FixedWidthReader<T>.ReadAsync()` returns true. However, .NET does not currently support the `MemberNotNullWhenAttribute` attribute for async methods. So the compiler may generate warnings when nullable reference types are enabled. In this case, you can safely use the null-forgiving operator (!) (or `Debug.Assert()` as shown above) when this method returns true.
+
+----
 
 ## FixedWidthWriter and FixedWidthReader Classes
 
@@ -27,7 +66,7 @@ FixedWidthField[] PersonFields = new FixedWidthField[]
 
 // Write data to disk.
 // FixedWidthWriter.Write() is overloaded to also accept string[] and IEnumerable<string>.
-using (FixedWidthWriter writer = new FixedWidthWriter(PersonFields, filename))
+using (FixedWidthWriter writer = new(PersonFields, filename))
 {
     writer.Write("1", "Bill", "Smith");
     writer.Write("2", "Karen", "Williams");
@@ -37,13 +76,11 @@ using (FixedWidthWriter writer = new FixedWidthWriter(PersonFields, filename))
 }
 
 // Read the data from disk
-using (FixedWidthReader reader = new FixedWidthReader(PersonFields, filename))
+using (FixedWidthReader reader = new(PersonFields, filename))
 {
-    // Array will be allocated if null or the wrong size
-    string[] values;
-    while ((values = reader.Read()) != null)
+    while (reader.Read())
     {
-        // Do something with values here
+        // reader.Values contains the values read
     }
 }
 ```
@@ -60,9 +97,9 @@ The code above writes and then reads the following file:
 
 ## FixedWidthWriter&lt;T&gt; and FixedWidthReader&lt;T&gt; Classes
 
-These classes are used to write and read fixed-width files using a class to define the fields.
+These classes are used to write and read objects to and from fixed-width data files. Object properties are automatically mapped to fixed-width fields.
 
-All properties and fields in the class with a `FixedWidthField` attribute will be written and/or read to the fixed width file. Note that the members don't have to be strings. All the basic data types are supported, including `DateTime` and `Guid`.
+All properties and fields in the class with a `FixedWidthField` attribute will be written and/or read to the fixed-width file. Note that the members don't have to be strings. All the basic data types are supported, including `DateTime` and `Guid`.
 
 ```cs
 // Declare our class with FixedWidthField attributes.
@@ -91,19 +128,18 @@ private readonly List<Product> Products = new List<Product>
 };
 
 // Write the data to a file
-using (FixedWidthWriter<Product> writer = new FixedWidthWriter<Product>(filename))
+using (FixedWidthWriter<Product> writer = new(filename))
 {
     foreach (var product in Products)
         writer.Write(product);
 }
 
 // Read the data back from the file
-List<Product> results = new List<Product>();
-using (FixedWidthReader<Product> reader = new FixedWidthReader<Product>(filename))
+List<Product> results = new();
+using (FixedWidthReader<Product> reader = new(filename))
 {
-    Product? product;
-    while ((product = reader.Read()) != null)
-        results.Add(product);
+    while (reader.Read())
+        results.Add(reader.Item);
 }
 ```
 
@@ -122,11 +158,11 @@ ce2026bf-7401-47b2-a7ab-2202292a4425Knives      Utensils    4.7
 
 If you have a class member of a type for which there is no built-in support, or if you want to customize the way a member is formatted, you can supply your own data conversion class.
 
-One example where you might need to do this is for `DateTime` fields. While the built-in `DateTime` converter works in many cases, date formats can vary wildly. So you might need a custom data converter to control exactly how these values are stored.
+One example where you might need to do this is for `DateTime` fields. While the built-in `DateTime` converter works in many cases, date formats can vary wildly. So you might need a custom data converter to control exactly how these values are formatted.
 
-Data conversion classes must implement the `IDataConverter` interface, but the easiest way to write a custom data converter in a type-safe manner is to derive your class from `DataConverter<T>`, where `T` is the type of the member you are converting. This class has two abstract members that you must implement in your derived class: `ConvertToString()` and `TryConvertFromString()`.
+Data conversion classes must implement the `IDataConverter` interface, but the easiest way to write a custom data converter in a type-safe manner is to derive your class directly from `DataConverter<T>`, where `T` is the type of the member you are converting. This class has two abstract members that you must implement in your derived class: `ConvertToString()` and `TryConvertFromString()`.
 
-The following code reads and writes `Person` records, which contain a `DateTime` property. The `BirthdateConverter` class is used to provide data conversion support for the `DateTime` property. This is done by setting the `ConverterType` property of the `FixedWidthField` attribute.
+The following code reads and writes `Person` records, which contain a `DateTime` property. The `BirthDateConverter` class is used to provide data conversion support for the `DateTime` property. This is done by setting the `ConverterType` property of the `FixedWidthField` attribute.
 
 ```cs
 // Define the Person class
@@ -138,47 +174,46 @@ private class Person
     public string FirstName { get; set; }
     [FixedWidthField(12)]
     public string LastName { get; set; }
-    [FixedWidthField(12, ConverterType = typeof(BirthdateConverter))]
-    public DateTime Birthdate { get; set; }
+    [FixedWidthField(12, ConverterType = typeof(BirthDateConverter))]
+    public DateTime BirthDate { get; set; }
 }
 
 // Define our date converter class
-private class BirthdateConverter : DataConverter<DateTime>
+private class BirthDateConverter : DataConverter<DateTime>
 {
     private const string Format = "yyyyMMdd";
 
     public override string ConvertToString(DateTime value) => value.ToString(Format);
 
-    public override bool TryConvertFromString(string s, out DateTime value)
+    public override bool TryConvertFromString(string? s, out DateTime value)
     {
         return DateTime.TryParseExact(s, Format, null, System.Globalization.DateTimeStyles.None, out value);
     }
 }
 
 // Define some Person data
-private readonly List<Person> People = new List<Person>
+private readonly List<Person> People = new()
 {
-    new Person { Id = 1, FirstName = "Bill", LastName = "Smith", Birthdate = new DateTime(1982, 2, 7) },
-    new Person { Id = 1, FirstName = "Gary", LastName = "Parker", Birthdate = new DateTime(1989, 8, 2) },
-    new Person { Id = 1, FirstName = "Karen", LastName = "Wilson", Birthdate = new DateTime(1978, 6, 24) },
-    new Person { Id = 1, FirstName = "Jeff", LastName = "Johnson", Birthdate = new DateTime(1972, 4, 18) },
-    new Person { Id = 1, FirstName = "John", LastName = "Carter", Birthdate = new DateTime(1982, 12, 21) },
+    new Person { Id = 1, FirstName = "Bill", LastName = "Smith", BirthDate = new DateTime(1982, 2, 7) },
+    new Person { Id = 1, FirstName = "Gary", LastName = "Parker", BirthDate = new DateTime(1989, 8, 2) },
+    new Person { Id = 1, FirstName = "Karen", LastName = "Wilson", BirthDate = new DateTime(1978, 6, 24) },
+    new Person { Id = 1, FirstName = "Jeff", LastName = "Johnson", BirthDate = new DateTime(1972, 4, 18) },
+    new Person { Id = 1, FirstName = "John", LastName = "Carter", BirthDate = new DateTime(1982, 12, 21) },
 };
 
 // Write the data to a file
-using (FixedWidthWriter<Person> writer = new FixedWidthWriter<Person>(filename))
+using (FixedWidthWriter<Person> writer = new(filename))
 {
     foreach (var person in People)
         writer.Write(person);
 }
 
 // Read the data back from the file
-List<Person> results = new List<Person>();
-using (FixedWidthReader<Person> reader = new FixedWidthReader<Person>(filename))
+List<Person> results = new();
+using (FixedWidthReader<Person> reader = new(filename))
 {
-    Person? person;
-    while ((person = reader.Read()) != null)
-        results.Add(person);
+    while (reader.Read())
+        results.Add(reader.Item);
 }
 ```
 
@@ -192,6 +227,31 @@ Here's the file created by the code above:
 1       John        Carter      19821221    
 ```
 
+The library defines the following custom data converters that you can use as the converter type.
+
+- `CompactDateTimeConverter` (DateTime)
+- `DateOnlyDateTimeConverter` (DateTime)
+- `UniversalDateTimeConverter` (DateTime)
+
+## Manual Field Mapping
+
+When using the `FixedWidthReader<T>` and `FixedWidthWriter<T>` classes, it's possible that you need to work with a class that you cannot modify. In this case, you won't be able to add `FixedWidthFieldAttribute` attributes to the properties you want to serialize.
+
+You can work around this by manually mapping fields using the `FixedWidthReader<T>.MapField()` and `FixedWidthWriter<T>.MapField()` methods. These methods will instruct the library how to map class members to fixed-width columns.
+
+```cs
+using (FixedWidthWriter<Person> writer = new(filename))
+{
+    writer.MapField(m => m.Id, 8);
+    writer.MapField(m => m.FirstName, 12);
+    writer.MapField(m => m.LastName, 12);
+    writer.MapField(m => m.BirthDate, 12).SetConverterType(typeof(BirthDateConverter));
+}
+```
+
+As you can see from the last line, the `MapField()` method supports a Fluent interface to set additional mapping properties.
+
+If you call the `MapField()` method for a property that is already mapped (whether from a previous call to `MapField()` or from a `FixedWidthFieldAttribute` attribute), the settings will override the existing map settings. However, if you call `MapField()` for a property that is not already mapped, that field will be appended as the last fixed-width field. So the order fields are mapped will set the order of the fixed-width fields in the output/input file.
 
 ## Additional Field Options
 

@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2020-2021 Jonathan Wood (www.softcircuits.com)
+﻿// Copyright (c) 2020-2022 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
 using System;
@@ -17,7 +17,7 @@ namespace SoftCircuits.Parsers
         /// <param name="value">The value that overflowed the field.</param>
         /// <param name="length">The length of the field.</param>
         public FixedWidthOverflowException(string value, int length)
-            : base($"Value '{value}' is too long for field with length of {length} character(s).")
+            : base($"Value '{value}' is too long for fixed-width field with {length} character(s).")
         {
         }
     }

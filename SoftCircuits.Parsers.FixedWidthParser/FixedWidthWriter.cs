@@ -1,8 +1,10 @@
-﻿// Copyright (c) 2020-2021 Jonathan Wood (www.softcircuits.com)
+﻿// Copyright (c) 2020-2022 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,13 +16,13 @@ namespace SoftCircuits.Parsers
     /// </summary>
     public class FixedWidthWriter : IDisposable
     {
-        private readonly StreamWriter Writer;
         protected readonly FixedWidthOptions Options;
+        protected readonly StreamWriter Writer;
 
         /// <summary>
         /// Gets the list of fixed-width field descriptors.
         /// </summary>
-        public List<FixedWidthField> Fields { get; private set; }
+        protected List<FixedWidthField> Fields;
 
         /// <summary>
         /// Constructs a new <see cref="FixedWidthWriter"/> instance.
@@ -105,65 +107,77 @@ namespace SoftCircuits.Parsers
         }
 
         /// <summary>
-        /// Writes a collection of fields to one line in the output file.
+        /// Writes one or more values as one line in the output file.
         /// </summary>
         /// <param name="args">The field values to write.</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="FixedWidthOverflowException"></exception>
-        public void Write(params string[] args) => Write(args as IEnumerable<string>);
+        public void Write(params string[] args)
+        {
+            if (args != null)
+            {
+                FormatLine(args);
+                Writer.WriteLine(LineBuffer, 0, LineLength);
+            }
+        }
 
         /// <summary>
-        /// Asynchronously writes a collection of fields to one line in the output file.
+        /// Asynchronously writes one or more values as one line in the output file.
         /// </summary>
         /// <param name="args">The field values to write.</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="FixedWidthOverflowException"></exception>
-        public async Task WriteAsync(params string[] args) => await WriteAsync(args as IEnumerable<string>);
+        public async Task WriteAsync(params string[] args)
+        {
+            if (args != null)
+            {
+                FormatLine(args);
+                await Writer.WriteLineAsync(LineBuffer, 0, LineLength);
+            }
+        }
 
         /// <summary>
-        /// Writes a collection of fields to one line in the output file.
+        /// Writes a collection of values to one line in the output file.
         /// </summary>
         /// <param name="values">The field values to write.</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="FixedWidthOverflowException"></exception>
         public void Write(IEnumerable<string>? values)
         {
-            if (values == null)
-                return;
-
-            // Write fields to file
-            IEnumerator<string> enumerator = values.GetEnumerator();
-            foreach (FixedWidthField field in Fields)
+            if (values != null)
             {
-                if (field.Skip > 0)
-                    Writer.Write(new string(Options.DefaultPadCharacter, field.Skip));
-                string value = enumerator.MoveNext() ? enumerator.Current : string.Empty;
-                Writer.Write(FormatField(value, field));
+                FormatLine(values);
+                Writer.WriteLine(LineBuffer, 0, LineLength);
             }
-            Writer.WriteLine();
         }
 
         /// <summary>
-        /// Asynchronously writes a collection of fields to one line in the output file.
+        /// Asynchronously writes a collection of values to one line in the output file.
         /// </summary>
         /// <param name="values">The field values to write.</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="FixedWidthOverflowException"></exception>
         public async Task WriteAsync(IEnumerable<string>? values)
         {
-            if (values == null)
-                return;
+            if (values != null)
+            {
+                FormatLine(values);
+                await Writer.WriteLineAsync(LineBuffer, 0, LineLength);
+            }
+        }
 
-            // Write fields to file
+        /// <summary>
+        /// Formats a line for writing.
+        /// </summary>
+#if !NETSTANDARD2_0
+        [MemberNotNull(nameof(LineBuffer))]
+#endif
+        private void FormatLine(IEnumerable<string> values)
+        {
+            InitLineBuffer(FixedWidthField.CalculateLineLength(Fields));
             IEnumerator<string> enumerator = values.GetEnumerator();
             foreach (FixedWidthField field in Fields)
-            {
-                if (field.Skip > 0)
-                    Writer.Write(new string(Options.DefaultPadCharacter, field.Skip));
-                string value = enumerator.MoveNext() ? enumerator.Current : string.Empty;
-                await Writer.WriteAsync(FormatField(value, field));
-            }
-            await Writer.WriteLineAsync();
+                FormatField(enumerator.MoveNext() ? enumerator.Current : string.Empty, field);
         }
 
         /// <summary>
@@ -172,32 +186,125 @@ namespace SoftCircuits.Parsers
         /// <param name="value">The value to format.</param>
         /// <param name="field">The descriptor for the current field.</param>
         /// <returns>The formatted string.</returns>
-        private string FormatField(string value, FixedWidthField field)
+        private void FormatField(string value, FixedWidthField field)
         {
-            if (value == null)
-                value = string.Empty;
+            Debug.Assert(LineBuffer != null);
 
-            if (value.Length < field.Length)
+            value ??= string.Empty;
+
+            if (field.Skip > 0)
+                Append(Options.DefaultPadCharacter, field.Skip);
+
+            int padLength = field.Length - value.Length;
+            if (padLength > 0)
             {
                 FieldAlignment alignment = field.Alignment ?? Options.DefaultAlignment;
                 char padCharacter = field.PadCharacter ?? Options.DefaultPadCharacter;
                 if (alignment == FieldAlignment.Left)
-                    value = value.PadRight(field.Length, padCharacter);
+                {
+                    Append(value);
+                    Append(padCharacter, padLength);
+                }
                 else // FieldAlignment.Right
-                    value = value.PadLeft(field.Length, padCharacter);
+                {
+                    Append(padCharacter, padLength);
+                    Append(value);
+                }
             }
-            else if (value.Length > field.Length)
+            else if (padLength < 0)
             {
                 if (Options.ThrowOverflowException)
                     throw new FixedWidthOverflowException(value, field.Length);
-#if !NETSTANDARD2_0
-                value = value[..field.Length];
-#else
-                value = value.Substring(0, field.Length);
-#endif
+                Append(value, 0, field.Length);
             }
-            return value;
+            else Append(value);
         }
+
+        #region Line Buffer
+
+        private char[]? LineBuffer = null;
+        private int LineLength = 0;
+
+#if !NETSTANDARD2_0
+        [MemberNotNull(nameof(LineBuffer))]
+#endif
+        private void InitLineBuffer(int lineLength)
+        {
+            if (LineBuffer == null || LineBuffer.Length < lineLength)
+                LineBuffer = new char[lineLength];
+            LineLength = 0;
+        }
+
+        /// <summary>
+        /// Adds a character to the line.
+        /// </summary>
+        public void Append(char c)
+        {
+            Debug.Assert(LineBuffer != null);
+
+            // Prevent overflowing buffer
+            if (LineLength < LineBuffer.Length)
+                LineBuffer[LineLength++] = c;
+        }
+
+        /// <summary>
+        /// Adds a character to the line the number of specified times.
+        /// </summary>
+        private void Append(char c, int count)
+        {
+            Debug.Assert(LineBuffer != null);
+            Debug.Assert(count >= 0);
+
+            // Prevent overflowing buffer
+            if (LineLength + count > LineBuffer.Length)
+                count = LineBuffer.Length - LineLength;
+
+            for (int i = 0; i < count; i++)
+                LineBuffer[LineLength++] = c;
+        }
+
+        /// <summary>
+        /// Appends a string to the line.
+        /// </summary>
+        public void Append(string s)
+        {
+            Debug.Assert(LineBuffer != null);
+            Debug.Assert(s != null);
+
+            int count = s.Length;
+
+            // Prevent overflowing buffer
+            if (LineLength + count > LineBuffer.Length)
+                count = LineBuffer.Length - LineLength;
+
+            for (int i = 0; i < count; i++)
+                LineBuffer[LineLength++] = s[i];
+        }
+
+        /// <summary>
+        /// Appends a section of a string to the line.
+        /// </summary>
+        public void Append(string s, int startIndex, int count)
+        {
+            Debug.Assert(LineBuffer != null);
+            Debug.Assert(s != null);
+            Debug.Assert(startIndex >= 0);
+            Debug.Assert(startIndex <= LineBuffer.Length);
+            Debug.Assert(count >= 0);
+
+            // Prevent overflowing buffer
+            if (LineLength + count > LineBuffer.Length)
+                count = LineBuffer.Length - LineLength;
+
+            // Prevent overflowing string
+            if (startIndex + count > s.Length)
+                count = s.Length - startIndex;
+
+            for (int i = 0; i < count; i++)
+                LineBuffer[LineLength++] = s[startIndex + i];
+        }
+
+        #endregion
 
         /// <summary>
         /// Clears all buffers and causes any unbuffered data to be written to the underlying stream.

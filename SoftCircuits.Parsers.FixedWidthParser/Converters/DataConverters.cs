@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2020-2021 Jonathan Wood (www.softcircuits.com)
+﻿// Copyright (c) 2020-2022 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
 using System;
@@ -14,6 +14,7 @@ namespace SoftCircuits.Parsers.Converters
             [typeof(Byte)] = () => new ByteConverter(),
             [typeof(Char)] = () => new CharConverter(),
             [typeof(DateTime)] = () => new DateTimeConverter(),
+            [typeof(DateTimeOffset)] = () => new DateTimeOffsetConverter(),
             [typeof(Decimal)] = () => new DecimalConverter(),
             [typeof(Double)] = () => new DoubleConverter(),
             [typeof(Guid)] = () => new GuidConverter(),
@@ -26,6 +27,10 @@ namespace SoftCircuits.Parsers.Converters
             [typeof(UInt16)] = () => new UInt16Converter(),
             [typeof(UInt32)] = () => new UInt32Converter(),
             [typeof(UInt64)] = () => new UInt64Converter(),
+#if NET6_0_OR_GREATER
+            [typeof(DateOnly)] = () => new DateOnlyConverter(),
+            [typeof(TimeOnly)] = () => new TimeOnlyConverter(),
+#endif
         };
 
         public static IDataConverter GetConverter(Type type)
