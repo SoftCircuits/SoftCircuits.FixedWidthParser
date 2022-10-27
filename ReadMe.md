@@ -15,10 +15,9 @@ Fixed-width files are text files that contain one data record on each line. Fiel
 The library includes basic classes for reading and writing fixed-width data files. And it also includes generic classes that automatically map class properties to fixed-width fields. The library also provides many options to control the library's behavior.
 
 ----
-
 ## Breaking Changes in Version 3.0.0
 
-The method signatures for `FixedWidthReader.Read()`, `FixedWidthReader.ReadAsync()`, `FixedWidthReader<T>.Read()`, and `FixedWidthReader<T>.ReadAsync()` have changed. We were very reluctant to break existing code, but we believe these changes significantly simplifies calling these methods. And the changes needed to code should be very minimal.
+The method signatures for `FixedWidthReader.Read()`, `FixedWidthReader.ReadAsync()`, `FixedWidthReader<T>.Read()`, and `FixedWidthReader<T>.ReadAsync()` have changed. We were very reluctant to break existing code, but we believe these changes significantly simplify calling these methods. And the code changes should be very minimal.
 
 The `FixedWidthReader.Read()` and `FixedWidthReader.ReadAsync()` now store the values in the `Values` property:
 
@@ -47,8 +46,7 @@ using (FixedWidthReader<Person> reader = new(filename))
 }
 ```
 
-Note: `Item` is guaranteed not to be null when `FixedWidthReader<T>.ReadAsync()` returns true. However, .NET does not currently support the `MemberNotNullWhenAttribute` attribute for async methods. So the compiler may generate warnings when nullable reference types are enabled. In this case, you can safely use the null-forgiving operator (!) (or `Debug.Assert()` as shown above) when this method returns true.
-
+Note: The `Item` property is guaranteed not to be null when `FixedWidthReader<T>.ReadAsync()` returns true. However, .NET does not currently support the `MemberNotNullWhenAttribute` attribute for async methods. So the compiler may generate warnings when nullable reference types are enabled. In this case, you can safely use the null-forgiving operator (!) (or `Debug.Assert()` as shown above) when this method returns true.
 ----
 
 ## FixedWidthWriter and FixedWidthReader Classes
