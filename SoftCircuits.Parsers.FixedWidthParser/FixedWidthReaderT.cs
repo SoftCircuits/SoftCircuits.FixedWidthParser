@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2020-2022 Jonathan Wood (www.softcircuits.com)
+﻿// Copyright (c) 2020-2024 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
 using System;
@@ -241,7 +241,7 @@ namespace SoftCircuits.Parsers
 #endif
 
         /// <summary>
-        /// Creates an instance of <see cref="T"/> from the given field values.
+        /// Creates an instance of <typeparamref name="T"/> from the given field values.
         /// </summary>
         private T CreateItem(string[] values)
         {

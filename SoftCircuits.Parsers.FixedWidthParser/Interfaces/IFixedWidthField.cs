@@ -1,10 +1,13 @@
-﻿// Copyright (c) 2020-2022 Jonathan Wood (www.softcircuits.com)
+﻿// Copyright (c) 2020-2024 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
 using System;
 
 namespace SoftCircuits.Parsers
 {
+    /// <summary>
+    /// Interface that defines a fixed-width field.
+    /// </summary>
     public interface IFixedWidthField
     {
         /// <summary>

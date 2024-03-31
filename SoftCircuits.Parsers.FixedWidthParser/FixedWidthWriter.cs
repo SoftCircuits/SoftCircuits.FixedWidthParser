@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2020-2022 Jonathan Wood (www.softcircuits.com)
+﻿// Copyright (c) 2020-2024 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
 using System;
@@ -16,7 +16,14 @@ namespace SoftCircuits.Parsers
     /// </summary>
     public class FixedWidthWriter : IDisposable
     {
+        /// <summary>
+        /// The options used by this writer.
+        /// </summary>
         protected readonly FixedWidthOptions Options;
+
+        /// <summary>
+        /// The underlying <see cref="StreamReader"/> used by this reader.
+        /// </summary>
         protected readonly StreamWriter Writer;
 
         /// <summary>

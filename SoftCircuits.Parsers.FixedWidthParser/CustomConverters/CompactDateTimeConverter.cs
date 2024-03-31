@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2020-2022 Jonathan Wood (www.softcircuits.com)
+﻿// Copyright (c) 2020-2024 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
 
@@ -15,8 +15,10 @@ namespace SoftCircuits.Parsers
     {
         private const string Format = "yyyyMMddHHmm";
 
+        /// <inheritdoc/>
         public override string ConvertToString(DateTime value) => value.ToString(Format, CultureInfo.InvariantCulture);
 
+        /// <inheritdoc/>
         public override bool TryConvertFromString(string? s, out DateTime value) => DateTime.TryParseExact(s, Format, CultureInfo.InvariantCulture, DateTimeStyles.None, out value);
     }
 }

@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2020-2022 Jonathan Wood (www.softcircuits.com)
+﻿// Copyright (c) 2020-2024 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
 using System;
@@ -17,6 +17,10 @@ namespace SoftCircuits.Parsers
     public class FixedWidthReader : IDisposable
     {
         private readonly StreamReader Reader;
+
+        /// <summary>
+        /// Options used by this reader.
+        /// </summary>
         protected readonly FixedWidthOptions Options;
 
         /// <summary>
@@ -25,20 +29,20 @@ namespace SoftCircuits.Parsers
         protected List<FixedWidthField> Fields { get; set; }
 
         /// <summary>
-        /// Returns the original unparsed line of text last read by <see cref="Read"/> or <see cref="ReadAsync"/>. Valid only
-        /// when <see cref="Read"/> returns true.
+        /// Returns the original unparsed line of text last read by <see cref="Read()"/> or <see cref="ReadAsync()"/>. Valid only
+        /// when <see cref="Read()"/> returns true.
         /// </summary>
         public string? CurrentLine { get; private set; }
 
         /// <summary>
-        /// Gets the column values read by the last call to <see cref="Read"/> or <see cref="ReadAsync"/>. Guaranteed not to be null
+        /// Gets the column values read by the last call to <see cref="Read()"/> or <see cref="ReadAsync()"/>. Guaranteed not to be null
         /// when these methods return true.
         /// </summary>
         [Obsolete("This property has been deprecated and will be removed in a future version. Please use the Values property instead.")]
         public string[]? Columns => Values;
 
         /// <summary>
-        /// Gets the column values read by the last call to <see cref="Read"/> or <see cref="ReadAsync"/>. Guaranteed not to be null
+        /// Gets the column values read by the last call to <see cref="Read()"/> or <see cref="ReadAsync()"/>. Guaranteed not to be null
         /// when these methods return true.
         /// </summary>
         public string[]? Values { get; private set; }
@@ -272,8 +276,8 @@ namespace SoftCircuits.Parsers
         /// method returns true.
         /// </remarks>
 #if !NETSTANDARD2_0
-        [MemberNotNullWhen(true, nameof(CurrentLine))]  // Note: Ignored for async method
-        [MemberNotNullWhen(true, nameof(Values))]       // Note: Ignored for async method
+        [MemberNotNullWhen(true, nameof(CurrentLine))]  // Note: Ignored with async methods
+        [MemberNotNullWhen(true, nameof(Values))]       // Note: Ignored with async methods
 #endif
         public async Task<bool> ReadAsync()
         {

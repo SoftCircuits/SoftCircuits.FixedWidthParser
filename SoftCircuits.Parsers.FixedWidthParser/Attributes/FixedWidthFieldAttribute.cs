@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2020-2022 Jonathan Wood (www.softcircuits.com)
+﻿// Copyright (c) 2020-2024 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
 using System;
@@ -66,6 +66,10 @@ namespace SoftCircuits.Parsers
         /// </summary>
         public Type? ConverterType { get; set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="length">The length of this field.</param>
         public FixedWidthFieldAttribute(int length)
         {
             Field = new FixedWidthField(length);
