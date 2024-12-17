@@ -29,10 +29,15 @@ namespace SoftCircuits.Parsers
         public MappedFixedWidthField(MemberInfo member, FixedWidthFieldAttribute attribute)
             : base(attribute)
         {
+#if NETSTANDARD2_0
             if (member == null)
                 throw new ArgumentNullException(nameof(member));
             if (attribute == null)
                 throw new ArgumentNullException(nameof(attribute));
+#else
+            ArgumentNullException.ThrowIfNull(member);
+            ArgumentNullException.ThrowIfNull(attribute);
+#endif
 
             if (member is FieldInfo fieldInfo)
                 Member = new FieldMember(fieldInfo);
@@ -55,8 +60,12 @@ namespace SoftCircuits.Parsers
         public MappedFixedWidthField(MemberInfo member, int length)
             : base(length)
         {
+#if NETSTANDARD2_0
             if (member == null)
                 throw new ArgumentNullException(nameof(member));
+#else
+            ArgumentNullException.ThrowIfNull(member);
+#endif
 
             if (member is FieldInfo fieldInfo)
                 Member = new FieldMember(fieldInfo);
@@ -215,8 +224,12 @@ namespace SoftCircuits.Parsers
         /// <exception cref="InvalidOperationException"></exception>
         public static IFixedWidthField MapField<T, TMember>(List<FixedWidthField> fields, Expression<Func<T, TMember>> expression, int length)
         {
+#if NETSTANDARD2_0
             if (expression == null)
                 throw new ArgumentNullException(nameof(expression));
+#else
+            ArgumentNullException.ThrowIfNull(expression);
+#endif
 
             // Get member name from expression
             MemberExpression? member = null;
@@ -269,7 +282,7 @@ namespace SoftCircuits.Parsers
             return field;
         }
 
-        #endregion
+#endregion
 
     }
 }

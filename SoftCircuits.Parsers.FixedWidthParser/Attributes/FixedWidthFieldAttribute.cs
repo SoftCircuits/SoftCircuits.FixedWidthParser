@@ -9,10 +9,14 @@ namespace SoftCircuits.Parsers
     /// Attribute that can be applied to class properties and fields to map the member
     /// to a fixed-width field.
     /// </summary>
+    /// <remarks>
+    /// 
+    /// </remarks>
+    /// <param name="length">The length of this field.</param>
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false)]
-    public class FixedWidthFieldAttribute : Attribute
+    public class FixedWidthFieldAttribute(int length) : Attribute
     {
-        internal readonly FixedWidthField Field;
+        internal readonly FixedWidthField Field = new FixedWidthField(length);
 
         /// <summary>
         /// Gets or sets the column alignment for this field.
@@ -65,14 +69,5 @@ namespace SoftCircuits.Parsers
         /// safety, derive the class from <see cref="DataConverter{T}"/>.
         /// </summary>
         public Type? ConverterType { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="length">The length of this field.</param>
-        public FixedWidthFieldAttribute(int length)
-        {
-            Field = new FixedWidthField(length);
-        }
     }
 }

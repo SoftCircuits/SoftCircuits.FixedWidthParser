@@ -113,8 +113,12 @@ namespace SoftCircuits.Parsers
         /// <exception cref="FixedWidthOverflowException"></exception>
         public void Write(IEnumerable<T> items)
         {
+#if NETSTANDARD2_0
             if (items == null)
                 throw new ArgumentNullException(nameof(items));
+#else
+            ArgumentNullException.ThrowIfNull(items);
+#endif
 
             foreach (T item in items)
                 Write(item);
@@ -128,8 +132,12 @@ namespace SoftCircuits.Parsers
         /// <exception cref="FixedWidthOverflowException"></exception>
         public async Task WriteAsync(IEnumerable<T> items)
         {
+#if NETSTANDARD2_0
             if (items == null)
                 throw new ArgumentNullException(nameof(items));
+#else
+            ArgumentNullException.ThrowIfNull(items);
+#endif
 
             foreach (T item in items)
                 await WriteAsync(item);

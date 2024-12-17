@@ -2,12 +2,11 @@
 // Licensed under the MIT license.
 //
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using SoftCircuits.Parsers;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
 
 namespace FixedWidthParserTests
 {
@@ -151,8 +150,8 @@ namespace FixedWidthParserTests
             private static TimeOnly TruncateMilliseconds(TimeOnly t) => new(t.Ticks - t.Ticks % TimeSpan.TicksPerSecond);
         }
 
-        private readonly List<AllTypesClass> AllTypesItems = new()
-        {
+        private readonly List<AllTypesClass> AllTypesItems =
+        [
             new AllTypesClass
             {
                 BooleanValue = true,
@@ -241,7 +240,7 @@ namespace FixedWidthParserTests
                 UInt32Value = 4266079,
                 UInt64Value = 426607980,
             },
-        };
+        ];
 
         [Test]
         public void TestIntrinsicDataConverters()
@@ -312,14 +311,14 @@ namespace FixedWidthParserTests
             }
         }
 
-        private readonly List<Person> People = new()
-        {
+        private readonly List<Person> People =
+        [
             new Person { Id = 1, FirstName = "Bill", LastName = "Smith", BirthDate = new DateTime(1982, 2, 7) },
             new Person { Id = 2, FirstName = "Gary", LastName = "Parker", BirthDate = new DateTime(1989, 8, 2) },
             new Person { Id = 3, FirstName = "Karen", LastName = "Wilson", BirthDate = new DateTime(1978, 6, 24) },
             new Person { Id = 4, FirstName = "Jeff", LastName = "Johnson", BirthDate = new DateTime(1972, 4, 18) },
             new Person { Id = 5, FirstName = "John", LastName = "Carter", BirthDate = new DateTime(1982, 12, 21) },
-        };
+        ];
 
         [Test]
         public void TestCustomConverter()

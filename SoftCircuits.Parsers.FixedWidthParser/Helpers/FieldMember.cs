@@ -9,14 +9,9 @@ namespace SoftCircuits.Parsers
     /// <summary>
     /// Class for accessing field properties.
     /// </summary>
-    internal class FieldMember : IMember
+    internal class FieldMember(FieldInfo field) : IMember
     {
-        private readonly FieldInfo Field;
-
-        public FieldMember(FieldInfo field)
-        {
-            Field = field;
-        }
+        private readonly FieldInfo Field = field;
 
         public string Name => Field.Name;
 

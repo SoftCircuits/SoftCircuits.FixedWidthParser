@@ -29,25 +29,25 @@ namespace FixedWidthParserTests
             public override string ToString() => $"{Category}/{Description}/{Color}";
         }
 
-        private readonly List<Product> Products = new()
-        {
+        private readonly List<Product> Products =
+        [
             new Product { Description = "Coffee Table", Category = "Furniture", Color = "Brown/Black" },
             new Product { Description = "Spoons", Category = "Utensils", Color = "Silver" },
             new Product { Description = "Carpet", Category = "Flooring", Color = "Tan" },
             new Product { Description = "Knives", Category = "Utensils", Color = "Silver" },
             new Product { Description = "Recliner", Category = "Furniture", Color = "Maroon" },
             new Product { Description = "Floor Tiles", Category = "Flooring", Color = "Tan" },
-        };
+        ];
 
-        private readonly List<Product> Results = new()
-        {
+        private readonly List<Product> Results =
+        [
             new Product { Description = "Coffee Table", Category = "Furniture@@@", Color = "*Brown/Black" },
             new Product { Description = "Spoons", Category = "Utensils@@@@", Color = "******Silver" },
             new Product { Description = "Carpet", Category = "Flooring@@@@", Color = "*********Tan" },
             new Product { Description = "Knives", Category = "Utensils@@@@", Color = "******Silver" },
             new Product { Description = "Recliner", Category = "Furniture@@@", Color = "******Maroon" },
             new Product { Description = "Floor Tiles", Category = "Flooring@@@@", Color = "*********Tan" },
-        };
+        ];
 
         [Test]
         public void AttributeTests()
@@ -61,19 +61,19 @@ namespace FixedWidthParserTests
                     writer.Write(product);
             }
 
-            List<Product> results = new();
+            List<Product> results = [];
             using FixedWidthReader<Product> reader = new(memFile.GetStream());
             {
                 while (reader.Read())
                     results.Add(reader.Item);
             }
 
-            Assert.AreEqual(Results.Count, results.Count);
+            Assert.That(Results.Count == results.Count);
             for (int i = 0; i < results.Count; i++)
             {
-                Assert.AreEqual(Results[i].Description, results[i].Description);
-                Assert.AreEqual(Results[i].Category, results[i].Category);
-                Assert.AreEqual(Results[i].Color, results[i].Color);
+                Assert.That(Results[i].Description == results[i].Description);
+                Assert.That(Results[i].Category == results[i].Category);
+                Assert.That(Results[i].Color == results[i].Color);
             }
         }
     }

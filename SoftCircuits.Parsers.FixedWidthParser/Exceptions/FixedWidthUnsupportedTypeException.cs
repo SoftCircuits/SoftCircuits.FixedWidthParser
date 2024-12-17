@@ -10,15 +10,11 @@ namespace SoftCircuits.Parsers
     /// converter for the class property type. To map this property, a custom data converter must
     /// be supplied.
     /// </summary>
-    public class FixedWidthUnsupportedTypeException : Exception
+    /// <remarks>
+    /// Constructs a new <see cref="FixedWidthUnsupportedTypeException"/> instance.
+    /// </remarks>
+    /// <param name="type">The type that was unsupported.</param>
+    public class FixedWidthUnsupportedTypeException(Type type) : Exception($"There is no built-in data converter and no custom data converter has been supplied for type '{type.FullName}'.")
     {
-        /// <summary>
-        /// Constructs a new <see cref="FixedWidthUnsupportedTypeException"/> instance.
-        /// </summary>
-        /// <param name="type">The type that was unsupported.</param>
-        public FixedWidthUnsupportedTypeException(Type type)
-            : base($"There is no built-in data converter and no custom data converter has been supplied for type '{type.FullName}'.")
-        {
-        }
     }
 }

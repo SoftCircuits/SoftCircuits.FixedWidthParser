@@ -40,10 +40,15 @@ namespace SoftCircuits.Parsers
         /// <exception cref="ArgumentNullException"></exception>
         public FixedWidthWriter(IEnumerable<FixedWidthField> fields, string filename, FixedWidthOptions? options = null)
         {
+#if NETSTANDARD2_0
             if (fields == null)
                 throw new ArgumentNullException(nameof(fields));
             if (filename == null)
                 throw new ArgumentNullException(nameof(filename));
+#else
+            ArgumentNullException.ThrowIfNull(fields);
+            ArgumentNullException.ThrowIfNull(filename);
+#endif
 
             Fields = new List<FixedWidthField>(fields);
             Writer = new StreamWriter(filename);
@@ -60,12 +65,18 @@ namespace SoftCircuits.Parsers
         /// <exception cref="ArgumentNullException"></exception>
         public FixedWidthWriter(IEnumerable<FixedWidthField> fields, string filename, Encoding encoding, FixedWidthOptions? options = null)
         {
+#if NETSTANDARD2_0
             if (fields == null)
                 throw new ArgumentNullException(nameof(fields));
             if (filename == null)
                 throw new ArgumentNullException(nameof(filename));
             if (encoding == null)
                 throw new ArgumentNullException(nameof(encoding));
+#else
+            ArgumentNullException.ThrowIfNull(fields);
+            ArgumentNullException.ThrowIfNull(filename);
+            ArgumentNullException.ThrowIfNull(encoding);
+#endif
 
             Fields = new List<FixedWidthField>(fields);
             Writer = new StreamWriter(filename, false, encoding);
@@ -81,10 +92,15 @@ namespace SoftCircuits.Parsers
         /// <exception cref="ArgumentNullException"></exception>
         public FixedWidthWriter(IEnumerable<FixedWidthField> fields, Stream stream, FixedWidthOptions? options = null)
         {
+#if NETSTANDARD2_0
             if (fields == null)
                 throw new ArgumentNullException(nameof(fields));
             if (stream == null)
                 throw new ArgumentNullException(nameof(stream));
+#else
+            ArgumentNullException.ThrowIfNull(fields);
+            ArgumentNullException.ThrowIfNull(stream);
+#endif
 
             Fields = new List<FixedWidthField>(fields);
             Writer = new StreamWriter(stream);
@@ -101,12 +117,18 @@ namespace SoftCircuits.Parsers
         /// <exception cref="ArgumentNullException"></exception>
         public FixedWidthWriter(IEnumerable<FixedWidthField> fields, Stream stream, Encoding encoding, FixedWidthOptions? options = null)
         {
+#if NETSTANDARD2_0
             if (fields == null)
                 throw new ArgumentNullException(nameof(fields));
             if (stream == null)
                 throw new ArgumentNullException(nameof(stream));
             if (encoding == null)
                 throw new ArgumentNullException(nameof(encoding));
+#else
+            ArgumentNullException.ThrowIfNull(fields);
+            ArgumentNullException.ThrowIfNull(stream);
+            ArgumentNullException.ThrowIfNull(encoding);
+#endif
 
             Fields = new List<FixedWidthField>(fields);
             Writer = new StreamWriter(stream, encoding);

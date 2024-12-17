@@ -9,14 +9,9 @@ namespace SoftCircuits.Parsers
     /// <summary>
     /// Class for accessing class properties.
     /// </summary>
-    internal class PropertyMember : IMember
+    internal class PropertyMember(PropertyInfo property) : IMember
     {
-        private readonly PropertyInfo Property;
-
-        public PropertyMember(PropertyInfo property)
-        {
-            Property = property;
-        }
+        private readonly PropertyInfo Property = property;
 
         public string Name => Property.Name;
 

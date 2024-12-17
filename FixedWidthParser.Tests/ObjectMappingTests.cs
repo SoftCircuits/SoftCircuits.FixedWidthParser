@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 //
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using SoftCircuits.Parsers;
 using System;
 using System.Collections;

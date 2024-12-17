@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 //
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using SoftCircuits.Parsers;
 using System;
 using System.Collections.Generic;
@@ -25,13 +26,13 @@ namespace FixedWidthParserTests
                 new FixedWidthField(26),
             };
 
-            List<string[]> values = new()
-            {
-                new string[] { "abcdefghijklmnopqrstuvwxyz", "1234567890", "1010101010", "" },
-                new string[] { "1234567890", "1010101010", "", "abcdefghijklmnopqrstuvwxyz" },
-                new string[] { "1010101010", "", "abcdefghijklmnopqrstuvwxyz", "1234567890" },
-                new string[] { "", "abcdefghijklmnopqrstuvwxyz", "1234567890", "1010101010" },
-            };
+            List<string[]> values =
+            [
+                ["abcdefghijklmnopqrstuvwxyz", "1234567890", "1010101010", ""],
+                ["1234567890", "1010101010", "", "abcdefghijklmnopqrstuvwxyz"],
+                ["1010101010", "", "abcdefghijklmnopqrstuvwxyz", "1234567890"],
+                ["", "abcdefghijklmnopqrstuvwxyz", "1234567890", "1010101010"],
+            ];
 
             string path = Path.GetTempFileName();
 
@@ -58,7 +59,7 @@ namespace FixedWidthParserTests
                         writer.Write(values[i]);
                 }
 
-                Assert.AreEqual(expectedContent, File.ReadAllText(path));
+                Assert.That(expectedContent == File.ReadAllText(path));
 
                 using (FixedWidthReader reader = new(fields, path))
                 {
@@ -74,13 +75,13 @@ namespace FixedWidthParserTests
                         await writer.WriteAsync(values[i]);
                 }
 
-                Assert.AreEqual(expectedContent, File.ReadAllText(path));
+                Assert.That(expectedContent == File.ReadAllText(path));
 
                 using (FixedWidthReader reader = new(fields, path))
                 {
                     int i = 0;
                     while (await reader.ReadAsync())
-                        CollectionAssert.AreEquivalent(values[i++], reader.Values);
+                        CollectionAssert.AreEquivalent(values[i++], reader.Values!);
                 }
             }
             catch (Exception)
@@ -104,37 +105,37 @@ namespace FixedWidthParserTests
                 new FixedWidthField(26),
             };
 
-            List<string[]> values = new()
-            {
-                new string[] { "abcdefghijklmnopqrstuvwxyz", "1234567890", "1010101010", "" },
-                new string[] { "1234567890", "1010101010", "", "abcdefghijklmnopqrstuvwxyz" },
-                new string[] { "1010101010", "", "abcdefghijklmnopqrstuvwxyz", "1234567890" },
-                new string[] { "", "abcdefghijklmnopqrstuvwxyz", "1234567890", "1010101010" },
-            };
+            List<string[]> values =
+            [
+                ["abcdefghijklmnopqrstuvwxyz", "1234567890", "1010101010", ""],
+                ["1234567890", "1010101010", "", "abcdefghijklmnopqrstuvwxyz"],
+                ["1010101010", "", "abcdefghijklmnopqrstuvwxyz", "1234567890"],
+                ["", "abcdefghijklmnopqrstuvwxyz", "1234567890", "1010101010"],
+            ];
 
-            List<string[]> leftPadded = new()
-            {
-                new string[] { "abcdefghijklmnopqrstuvwxyz", "1234567890                ", "1010101010                ", "                          " },
-                new string[] { "1234567890                ", "1010101010                ", "                          ", "abcdefghijklmnopqrstuvwxyz" },
-                new string[] { "1010101010                ", "                          ", "abcdefghijklmnopqrstuvwxyz", "1234567890                " },
-                new string[] { "                          ", "abcdefghijklmnopqrstuvwxyz", "1234567890                ", "1010101010                " },
-            };
+            List<string[]> leftPadded =
+            [
+                ["abcdefghijklmnopqrstuvwxyz", "1234567890                ", "1010101010                ", "                          "],
+                ["1234567890                ", "1010101010                ", "                          ", "abcdefghijklmnopqrstuvwxyz"],
+                ["1010101010                ", "                          ", "abcdefghijklmnopqrstuvwxyz", "1234567890                "],
+                ["                          ", "abcdefghijklmnopqrstuvwxyz", "1234567890                ", "1010101010                "],
+            ];
 
-            List<string[]> rightPadded = new()
-            {
-                new string[] { "abcdefghijklmnopqrstuvwxyz", "                1234567890", "                1010101010", "                          " },
-                new string[] { "                1234567890", "                1010101010", "                          ", "abcdefghijklmnopqrstuvwxyz" },
-                new string[] { "                1010101010", "                          ", "abcdefghijklmnopqrstuvwxyz", "                1234567890" },
-                new string[] { "                          ", "abcdefghijklmnopqrstuvwxyz", "                1234567890", "                1010101010" },
-            };
+            List<string[]> rightPadded =
+            [
+                ["abcdefghijklmnopqrstuvwxyz", "                1234567890", "                1010101010", "                          "],
+                ["                1234567890", "                1010101010", "                          ", "abcdefghijklmnopqrstuvwxyz"],
+                ["                1010101010", "                          ", "abcdefghijklmnopqrstuvwxyz", "                1234567890"],
+                ["                          ", "abcdefghijklmnopqrstuvwxyz", "                1234567890", "                1010101010"],
+            ];
 
-            List<string[]> tildePadded = new()
-            {
-                new string[] { "abcdefghijklmnopqrstuvwxyz", "1234567890~~~~~~~~~~~~~~~~", "1010101010~~~~~~~~~~~~~~~~", "~~~~~~~~~~~~~~~~~~~~~~~~~~" },
-                new string[] { "1234567890~~~~~~~~~~~~~~~~", "1010101010~~~~~~~~~~~~~~~~", "~~~~~~~~~~~~~~~~~~~~~~~~~~", "abcdefghijklmnopqrstuvwxyz" },
-                new string[] { "1010101010~~~~~~~~~~~~~~~~", "~~~~~~~~~~~~~~~~~~~~~~~~~~", "abcdefghijklmnopqrstuvwxyz", "1234567890~~~~~~~~~~~~~~~~" },
-                new string[] { "~~~~~~~~~~~~~~~~~~~~~~~~~~", "abcdefghijklmnopqrstuvwxyz", "1234567890~~~~~~~~~~~~~~~~", "1010101010~~~~~~~~~~~~~~~~" },
-            };
+            List<string[]> tildePadded =
+            [
+                ["abcdefghijklmnopqrstuvwxyz", "1234567890~~~~~~~~~~~~~~~~", "1010101010~~~~~~~~~~~~~~~~", "~~~~~~~~~~~~~~~~~~~~~~~~~~"],
+                ["1234567890~~~~~~~~~~~~~~~~", "1010101010~~~~~~~~~~~~~~~~", "~~~~~~~~~~~~~~~~~~~~~~~~~~", "abcdefghijklmnopqrstuvwxyz"],
+                ["1010101010~~~~~~~~~~~~~~~~", "~~~~~~~~~~~~~~~~~~~~~~~~~~", "abcdefghijklmnopqrstuvwxyz", "1234567890~~~~~~~~~~~~~~~~"],
+                ["~~~~~~~~~~~~~~~~~~~~~~~~~~", "abcdefghijklmnopqrstuvwxyz", "1234567890~~~~~~~~~~~~~~~~", "1010101010~~~~~~~~~~~~~~~~"],
+            ];
 
             WriteReadValues(fields, values, out List<string[]> results, new FixedWidthOptions { TrimFields = true });
             CollectionAssert.AreEqual(values, results);
@@ -163,25 +164,25 @@ namespace FixedWidthParserTests
                 new FixedWidthField(10),
             };
 
-            List<string[]> values = new()
-            {
-                new string[] { "abc" },
-                new string[] { "abc", "def" },
-                new string[] { "abc", "def", "ghi" },
-                new string[] { "abc", "def", "ghi", "jkl" },
-                new string[] { "abc", "def", "ghi", "jkl", "mno" },
-                new string[] { "abc", "def", "ghi", "jkl", "mno", "pqr" },
-            };
+            List<string[]> values =
+            [
+                ["abc"],
+                ["abc", "def"],
+                ["abc", "def", "ghi"],
+                ["abc", "def", "ghi", "jkl"],
+                ["abc", "def", "ghi", "jkl", "mno"],
+                ["abc", "def", "ghi", "jkl", "mno", "pqr"],
+            ];
 
-            List<string[]> expected = new()
-            {
-                new string[] { "abc", string.Empty, string.Empty, string.Empty },
-                new string[] { "abc", "def", string.Empty, string.Empty },
-                new string[] { "abc", "def", "ghi", string.Empty },
-                new string[] { "abc", "def", "ghi", "jkl" },
-                new string[] { "abc", "def", "ghi", "jkl" },
-                new string[] { "abc", "def", "ghi", "jkl" },
-            };
+            List<string[]> expected =
+            [
+                ["abc", string.Empty, string.Empty, string.Empty],
+                ["abc", "def", string.Empty, string.Empty],
+                ["abc", "def", "ghi", string.Empty],
+                ["abc", "def", "ghi", "jkl"],
+                ["abc", "def", "ghi", "jkl"],
+                ["abc", "def", "ghi", "jkl"],
+            ];
 
             WriteReadValues(fields, values, out List<string[]> results);
             CollectionAssert.AreEqual(expected, results);
@@ -197,34 +198,34 @@ namespace FixedWidthParserTests
                 new FixedWidthField(5),
             };
 
-            FixedWidthField[] fields2 = new FixedWidthField[]
-            {
+            FixedWidthField[] fields2 =
+            [
                 new FixedWidthField(5),
                 new FixedWidthField(4),
                 new FixedWidthField(5),
                 new FixedWidthField(5),
-            };
+            ];
 
-            List<string[]> values = new()
-            {
-                new string[] { "abc", "def", "ghi" },
-                new string[] { "def", "ghi", "jkl" },
-                new string[] { "ghi", "jkl", "mno" },
-            };
+            List<string[]> values =
+            [
+                ["abc", "def", "ghi"],
+                ["def", "ghi", "jkl"],
+                ["ghi", "jkl", "mno"],
+            ];
 
-            List<string[]> expected = new()
-            {
-                new string[] { "abc  ", "def  ", "ghi  " },
-                new string[] { "def  ", "ghi  ", "jkl  " },
-                new string[] { "ghi  ", "jkl  ", "mno  " },
-            };
+            List<string[]> expected =
+            [
+                ["abc  ", "def  ", "ghi  "],
+                ["def  ", "ghi  ", "jkl  "],
+                ["ghi  ", "jkl  ", "mno  "],
+            ];
 
-            List<string[]> expected2 = new()
-            {
-                new string[] { "abc  ", "    ", "def  ", "ghi  " },
-                new string[] { "def  ", "    ", "ghi  ", "jkl  " },
-                new string[] { "ghi  ", "    ", "jkl  ", "mno  " },
-            };
+            List<string[]> expected2 =
+            [
+                ["abc  ", "    ", "def  ", "ghi  "],
+                ["def  ", "    ", "ghi  ", "jkl  "],
+                ["ghi  ", "    ", "jkl  ", "mno  "],
+            ];
 
             WriteReadValues(fields, values, out List<string[]> results);
             CollectionAssert.AreEqual(values, results);
@@ -259,19 +260,19 @@ namespace FixedWidthParserTests
                 },
             };
 
-            List<string[]> values = new()
-            {
-                new string[] { "abc", "def", "ghi", "jkl", "mno", "pqr" },
-                new string[] { "def", "ghi", "jkl", "mno", "pqr", "stu" },
-                new string[] { "ghi", "jkl", "mno", "pqr", "stu", "vwx" },
-            };
+            List<string[]> values =
+            [
+                ["abc", "def", "ghi", "jkl", "mno", "pqr"],
+                ["def", "ghi", "jkl", "mno", "pqr", "stu"],
+                ["ghi", "jkl", "mno", "pqr", "stu", "vwx"],
+            ];
 
-            List<string[]> expected = new()
-            {
-                new string[] { "abc       ", "~~~~~~~def", "ghi@@@@@@@", "!!!!!!!jkl", "mno", "pqr" },
-                new string[] { "def       ", "~~~~~~~ghi", "jkl@@@@@@@", "!!!!!!!mno", "pqr", "stu" },
-                new string[] { "ghi       ", "~~~~~~~jkl", "mno@@@@@@@", "!!!!!!!pqr", "stu", "vwx" },
-            };
+            List<string[]> expected =
+            [
+                ["abc       ", "~~~~~~~def", "ghi@@@@@@@", "!!!!!!!jkl", "mno", "pqr"],
+                ["def       ", "~~~~~~~ghi", "jkl@@@@@@@", "!!!!!!!mno", "pqr", "stu"],
+                ["ghi       ", "~~~~~~~jkl", "mno@@@@@@@", "!!!!!!!pqr", "stu", "vwx"],
+            ];
 
             WriteReadValues(fields, values, out List<string[]> results);
             CollectionAssert.AreEqual(expected, results);
@@ -280,23 +281,23 @@ namespace FixedWidthParserTests
         [Test]
         public void OverflowTests()
         {
-            FixedWidthField[] fields = new FixedWidthField[]
-            {
+            FixedWidthField[] fields =
+            [
                 new FixedWidthField(2),
                 new FixedWidthField(2),
-            };
+            ];
 
-            List<string[]> values = new()
-            {
-                new string[] { "abc", "def" },
-                new string[] { "ghi", "jkl" },
-            };
+            List<string[]> values =
+            [
+                ["abc", "def"],
+                ["ghi", "jkl"],
+            ];
 
-            List<string[]> expected = new()
-            {
-                new string[] { "ab", "de" },
-                new string[] { "gh", "jk" },
-            };
+            List<string[]> expected =
+            [
+                ["ab", "de"],
+                ["gh", "jk"],
+            ];
 
             Assert.Throws<FixedWidthOverflowException>(() =>
             {
@@ -316,24 +317,24 @@ namespace FixedWidthParserTests
                 new FixedWidthField(4),
             };
 
-            FixedWidthField[] readFields = new FixedWidthField[]
-            {
+            FixedWidthField[] readFields =
+            [
                 new FixedWidthField(4),
                 new FixedWidthField(4),
                 new FixedWidthField(4),
-            };
+            ];
 
-            List<string[]> values = new()
-            {
-                new string[] { "abc", "def" },
-                new string[] { "ghi", "jkl" },
-            };
+            List<string[]> values =
+            [
+                ["abc", "def"],
+                ["ghi", "jkl"],
+            ];
 
-            List<string[]> expected = new()
-            {
-                new string[] { "abc", "def", string.Empty },
-                new string[] { "ghi", "jkl", string.Empty },
-            };
+            List<string[]> expected =
+            [
+                ["abc", "def", string.Empty],
+                ["ghi", "jkl", string.Empty],
+            ];
 
             Assert.Throws<FixedWidthOutOfRangeException>(() =>
             {

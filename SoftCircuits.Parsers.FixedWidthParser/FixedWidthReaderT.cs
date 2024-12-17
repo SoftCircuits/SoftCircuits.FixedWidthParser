@@ -187,6 +187,13 @@ namespace SoftCircuits.Parsers
         // Note: There is a bug displaying a <see> tag with the name Item. The P (property) prefix causes it to display
         // correctly but not highlighted. https://github.com/dotnet/roslyn/issues/65017#issuecomment-1293925310
 
+#if NETSTANDARD2_0
+        /// <summary>
+        /// Asynchronously reads the next item from the current fixed-width file and stores it in the <see cref="P:Item"/> property.
+        /// </summary>
+        /// <returns>True if successful, false if no more rows could be read.</returns>
+        /// <exception cref="FixedWidthDataException"></exception>
+#else
         /// <summary>
         /// Asynchronously reads the next item from the current fixed-width file and stores it in the <see cref="P:Item"/> property.
         /// </summary>
@@ -198,6 +205,7 @@ namespace SoftCircuits.Parsers
         /// </remarks>
         /// <returns>True if successful, false if no more rows could be read.</returns>
         /// <exception cref="FixedWidthDataException"></exception>
+#endif
 #if !NETSTANDARD2_0
         [MemberNotNullWhen(true, nameof(Item))] // Note: Ignored for async method
 #endif

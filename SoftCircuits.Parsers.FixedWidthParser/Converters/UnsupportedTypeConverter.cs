@@ -10,20 +10,15 @@ namespace SoftCircuits.Parsers.Converters
     /// from a string.
     /// </summary>
     /// <exception cref="FixedWidthUnsupportedTypeException"></exception>
-    internal class UnsupportedTypeConverter : IDataConverter
+    internal class UnsupportedTypeConverter(Type type) : IDataConverter
     {
-        private readonly Type Type;
+        private readonly Type Type = type;
 
         /// <summary>
         /// Returns the type this converter supports.
         /// </summary>
         /// <returns>Returns the type this converter supports.</returns>
         public Type GetDataType() => Type;
-
-        public UnsupportedTypeConverter(Type type)
-        {
-            Type = type;
-        }
 
         public string ConvertToString(object? value) => value?.ToString() ?? string.Empty;
 

@@ -61,10 +61,15 @@ namespace SoftCircuits.Parsers
         /// <exception cref="ArgumentNullException"></exception>
         public FixedWidthReader(IEnumerable<FixedWidthField> fields, string filename, FixedWidthOptions? options = null)
         {
+#if NETSTANDARD2_0
             if (fields == null)
                 throw new ArgumentNullException(nameof(fields));
             if (filename == null)
                 throw new ArgumentNullException(nameof(filename));
+#else
+            ArgumentNullException.ThrowIfNull(fields);
+            ArgumentNullException.ThrowIfNull(filename);
+#endif
 
             Fields = new List<FixedWidthField>(fields);
             Reader = new StreamReader(filename);
@@ -81,12 +86,18 @@ namespace SoftCircuits.Parsers
         /// <exception cref="ArgumentNullException"></exception>
         public FixedWidthReader(IEnumerable<FixedWidthField> fields, string filename, Encoding encoding, FixedWidthOptions? options = null)
         {
+#if NETSTANDARD2_0
             if (fields == null)
                 throw new ArgumentNullException(nameof(fields));
             if (filename == null)
                 throw new ArgumentNullException(nameof(filename));
             if (encoding == null)
                 throw new ArgumentNullException(nameof(encoding));
+#else
+            ArgumentNullException.ThrowIfNull(fields);
+            ArgumentNullException.ThrowIfNull(filename);
+            ArgumentNullException.ThrowIfNull(encoding);
+#endif
 
             Fields = new List<FixedWidthField>(fields);
             Reader = new StreamReader(filename, encoding);
@@ -103,10 +114,15 @@ namespace SoftCircuits.Parsers
         /// <exception cref="ArgumentNullException"></exception>
         public FixedWidthReader(IEnumerable<FixedWidthField> fields, string filename, bool detectEncodingFromByteOrderMarks, FixedWidthOptions? options = null)
         {
+#if NETSTANDARD2_0
             if (fields == null)
                 throw new ArgumentNullException(nameof(fields));
             if (filename == null)
                 throw new ArgumentNullException(nameof(filename));
+#else
+            ArgumentNullException.ThrowIfNull(fields);
+            ArgumentNullException.ThrowIfNull(filename);
+#endif
 
             Fields = new List<FixedWidthField>(fields);
             Reader = new StreamReader(filename, detectEncodingFromByteOrderMarks);
@@ -124,12 +140,18 @@ namespace SoftCircuits.Parsers
         /// <exception cref="ArgumentNullException"></exception>
         public FixedWidthReader(IEnumerable<FixedWidthField> fields, string filename, Encoding encoding, bool detectEncodingFromByteOrderMarks, FixedWidthOptions? options = null)
         {
+#if NETSTANDARD2_0
             if (fields == null)
                 throw new ArgumentNullException(nameof(fields));
             if (filename == null)
                 throw new ArgumentNullException(nameof(filename));
             if (encoding == null)
                 throw new ArgumentNullException(nameof(encoding));
+#else
+            ArgumentNullException.ThrowIfNull(fields);
+            ArgumentNullException.ThrowIfNull(filename);
+            ArgumentNullException.ThrowIfNull(encoding);
+#endif
 
             Fields = new List<FixedWidthField>(fields);
             Reader = new StreamReader(filename, encoding, detectEncodingFromByteOrderMarks);
@@ -145,10 +167,15 @@ namespace SoftCircuits.Parsers
         /// <exception cref="ArgumentNullException"></exception>
         public FixedWidthReader(IEnumerable<FixedWidthField> fields, Stream stream, FixedWidthOptions? options = null)
         {
+#if NETSTANDARD2_0
             if (fields == null)
                 throw new ArgumentNullException(nameof(fields));
             if (stream == null)
                 throw new ArgumentNullException(nameof(stream));
+#else
+            ArgumentNullException.ThrowIfNull(fields);
+            ArgumentNullException.ThrowIfNull(stream);
+#endif
 
             Fields = new List<FixedWidthField>(fields);
             Reader = new StreamReader(stream);
@@ -165,12 +192,18 @@ namespace SoftCircuits.Parsers
         /// <exception cref="ArgumentNullException"></exception>
         public FixedWidthReader(IEnumerable<FixedWidthField> fields, Stream stream, Encoding encoding, FixedWidthOptions? options = null)
         {
+#if NETSTANDARD2_0
             if (fields == null)
                 throw new ArgumentNullException(nameof(fields));
             if (stream == null)
                 throw new ArgumentNullException(nameof(stream));
             if (encoding == null)
                 throw new ArgumentNullException(nameof(encoding));
+#else
+            ArgumentNullException.ThrowIfNull(fields);
+            ArgumentNullException.ThrowIfNull(stream);
+            ArgumentNullException.ThrowIfNull(encoding);
+#endif
 
             Fields = new List<FixedWidthField>(fields);
             Reader = new StreamReader(stream, encoding);
@@ -187,10 +220,15 @@ namespace SoftCircuits.Parsers
         /// <exception cref="ArgumentNullException"></exception>
         public FixedWidthReader(IEnumerable<FixedWidthField> fields, Stream stream, bool detectEncodingFromByteOrderMarks, FixedWidthOptions? options = null)
         {
+#if NETSTANDARD2_0
             if (fields == null)
                 throw new ArgumentNullException(nameof(fields));
             if (stream == null)
                 throw new ArgumentNullException(nameof(stream));
+#else
+            ArgumentNullException.ThrowIfNull(fields);
+            ArgumentNullException.ThrowIfNull(stream);
+#endif
 
             Fields = new List<FixedWidthField>(fields);
             Reader = new StreamReader(stream, detectEncodingFromByteOrderMarks);
@@ -208,12 +246,18 @@ namespace SoftCircuits.Parsers
         /// <exception cref="ArgumentNullException"></exception>
         public FixedWidthReader(IEnumerable<FixedWidthField> fields, Stream stream, Encoding encoding, bool detectEncodingFromByteOrderMarks, FixedWidthOptions? options = null)
         {
+#if NETSTANDARD2_0
             if (fields == null)
                 throw new ArgumentNullException(nameof(fields));
             if (stream == null)
                 throw new ArgumentNullException(nameof(stream));
             if (encoding == null)
                 throw new ArgumentNullException(nameof(encoding));
+#else
+            ArgumentNullException.ThrowIfNull(fields);
+            ArgumentNullException.ThrowIfNull(stream);
+            ArgumentNullException.ThrowIfNull(encoding);
+#endif
 
             Fields = new List<FixedWidthField>(fields);
             Reader = new StreamReader(stream, encoding, detectEncodingFromByteOrderMarks);
@@ -265,16 +309,24 @@ namespace SoftCircuits.Parsers
             return false;
         }
 
+#if NETSTANDARD2_0
+        /// <summary>
+        /// Asynchronously reads one row of values and stores them in the <see cref="Values"/> property.
+        /// </summary>
+        /// <returns>True if successful, or false if there are no more rows.</returns>
+#else
         /// <summary>
         /// Asynchronously reads one row of values and stores them in the <see cref="Values"/> property.
         /// </summary>
         /// <returns>True if successful, or false if there are no more rows.</returns>
         /// <remarks>
-        /// Note: The <see cref="Values"/> property is guaranteed not to be null when this method returns true. However, .NET does not currently
-        /// support the <see cref="MemberNotNullWhenAttribute"/> attribute for async methods. So the compiler may generate warnings
-        /// when nullable reference types are enabled. In this case, you can safely use the null-forgiving operator (!) when this
-        /// method returns true.
+        /// Note: The <see cref="Values"/> property is guaranteed not to be null when this method returns
+        /// true. However, .NET does not currently support the <see cref="MemberNotNullWhenAttribute"/>
+        /// attribute for async methods. So the compiler may generate warnings when nullable reference
+        /// types are enabled. In this case, you can safely use the null-forgiving operator (<c>!</c>)
+        /// when this method returns true.
         /// </remarks>
+#endif
 #if !NETSTANDARD2_0
         [MemberNotNullWhen(true, nameof(CurrentLine))]  // Note: Ignored with async methods
         [MemberNotNullWhen(true, nameof(Values))]       // Note: Ignored with async methods
