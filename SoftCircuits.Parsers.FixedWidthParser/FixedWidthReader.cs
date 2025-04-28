@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2020-2024 Jonathan Wood (www.softcircuits.com)
+﻿// Copyright (c) 2020-2025 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
 using System;
@@ -17,6 +17,7 @@ namespace SoftCircuits.Parsers
     public class FixedWidthReader : IDisposable
     {
         private readonly StreamReader Reader;
+        private readonly int LineLength;
 
         /// <summary>
         /// Options used by this reader.
@@ -71,7 +72,8 @@ namespace SoftCircuits.Parsers
             ArgumentNullException.ThrowIfNull(filename);
 #endif
 
-            Fields = new List<FixedWidthField>(fields);
+            LineLength = FixedWidthField.CalculateLineLength(fields);
+            Fields = [.. fields];
             Reader = new StreamReader(filename);
             Options = options ?? new FixedWidthOptions();
         }
@@ -99,7 +101,8 @@ namespace SoftCircuits.Parsers
             ArgumentNullException.ThrowIfNull(encoding);
 #endif
 
-            Fields = new List<FixedWidthField>(fields);
+            LineLength = FixedWidthField.CalculateLineLength(fields);
+            Fields = [.. fields];
             Reader = new StreamReader(filename, encoding);
             Options = options ?? new FixedWidthOptions();
         }
@@ -124,7 +127,8 @@ namespace SoftCircuits.Parsers
             ArgumentNullException.ThrowIfNull(filename);
 #endif
 
-            Fields = new List<FixedWidthField>(fields);
+            LineLength = FixedWidthField.CalculateLineLength(fields);
+            Fields = [.. fields];
             Reader = new StreamReader(filename, detectEncodingFromByteOrderMarks);
             Options = options ?? new FixedWidthOptions();
         }
@@ -153,7 +157,8 @@ namespace SoftCircuits.Parsers
             ArgumentNullException.ThrowIfNull(encoding);
 #endif
 
-            Fields = new List<FixedWidthField>(fields);
+            LineLength = FixedWidthField.CalculateLineLength(fields);
+            Fields = [.. fields];
             Reader = new StreamReader(filename, encoding, detectEncodingFromByteOrderMarks);
             Options = options ?? new FixedWidthOptions();
         }
@@ -177,7 +182,8 @@ namespace SoftCircuits.Parsers
             ArgumentNullException.ThrowIfNull(stream);
 #endif
 
-            Fields = new List<FixedWidthField>(fields);
+            LineLength = FixedWidthField.CalculateLineLength(fields);
+            Fields = [.. fields];
             Reader = new StreamReader(stream);
             Options = options ?? new FixedWidthOptions();
         }
@@ -205,7 +211,8 @@ namespace SoftCircuits.Parsers
             ArgumentNullException.ThrowIfNull(encoding);
 #endif
 
-            Fields = new List<FixedWidthField>(fields);
+            LineLength = FixedWidthField.CalculateLineLength(fields);
+            Fields = [.. fields];
             Reader = new StreamReader(stream, encoding);
             Options = options ?? new FixedWidthOptions();
         }
@@ -230,7 +237,8 @@ namespace SoftCircuits.Parsers
             ArgumentNullException.ThrowIfNull(stream);
 #endif
 
-            Fields = new List<FixedWidthField>(fields);
+            LineLength = FixedWidthField.CalculateLineLength(fields);
+            Fields = [.. fields];
             Reader = new StreamReader(stream, detectEncodingFromByteOrderMarks);
             Options = options ?? new FixedWidthOptions();
         }
@@ -259,7 +267,8 @@ namespace SoftCircuits.Parsers
             ArgumentNullException.ThrowIfNull(encoding);
 #endif
 
-            Fields = new List<FixedWidthField>(fields);
+            LineLength = FixedWidthField.CalculateLineLength(fields);
+            Fields = [.. fields];
             Reader = new StreamReader(stream, encoding, detectEncodingFromByteOrderMarks);
             Options = options ?? new FixedWidthOptions();
         }
@@ -277,8 +286,7 @@ namespace SoftCircuits.Parsers
         public bool Read([NotNullWhen(true)] out string[]? values)
 #endif
         {
-            // Get next line
-            CurrentLine = Reader.ReadLine();
+            GetNextLine();
             if (CurrentLine != null)
             {
                 ParseLine();
@@ -299,8 +307,7 @@ namespace SoftCircuits.Parsers
 #endif
         public bool Read()
         {
-            // Get next line
-            CurrentLine = Reader.ReadLine();
+            GetNextLine();
             if (CurrentLine != null)
             {
                 ParseLine();
@@ -333,14 +340,39 @@ namespace SoftCircuits.Parsers
 #endif
         public async Task<bool> ReadAsync()
         {
-            // Get next line
-            CurrentLine = await Reader.ReadLineAsync();
+            await GetNextLineAsync();
             if (CurrentLine != null)
             {
                 ParseLine();
                 return true;
             }
             return false;
+        }
+
+        /// <summary>
+        /// Reads the next line from the file. Skips any ignored lines.
+        /// </summary>
+        private void GetNextLine()
+        {
+            CurrentLine = Reader.ReadLine();
+            if (Options.IsIgnoredLine != null)
+            {
+                while (CurrentLine != null && Options.IsIgnoredLine(CurrentLine))
+                    CurrentLine = Reader.ReadLine();
+            }
+        }
+
+        /// <summary>
+        /// Asynchronously reads the next line from the file. Skips any ignored lines.
+        /// </summary>
+        private async Task GetNextLineAsync()
+        {
+            CurrentLine = await Reader.ReadLineAsync();
+            if (Options.IsIgnoredLine != null)
+            {
+                while (CurrentLine != null && Options.IsIgnoredLine(CurrentLine))
+                    CurrentLine = await Reader.ReadLineAsync();
+            }
         }
 
         /// <summary>
@@ -374,7 +406,7 @@ namespace SoftCircuits.Parsers
         /// </summary>
         /// <param name="line">The line that contains all the fields.</param>
         /// <param name="field">Field descriptor.</param>
-        /// <param name="position">The current position within the liine.</param>
+        /// <param name="position">The current position within the line.</param>
         /// <returns>The extracted field.</returns>
         private string ParseField(string line, FixedWidthField field, ref int position)
         {

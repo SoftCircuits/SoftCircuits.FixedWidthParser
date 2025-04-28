@@ -1,6 +1,8 @@
-﻿// Copyright (c) 2020-2024 Jonathan Wood (www.softcircuits.com)
+﻿// Copyright (c) 2020-2025 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
+
+using System;
 
 namespace SoftCircuits.Parsers
 {
@@ -39,6 +41,20 @@ namespace SoftCircuits.Parsers
         public bool TrimFields { get; set; }
 
         /// <summary>
+        /// <para>
+        /// Gets or sets a function that determines whether a line should be ignored when reading a file. For example,
+        /// you could use <c>IsIgnoredLine = s =&gt; s.Length &lt; 20</c> to ignore all lines shorter than 20 characters
+        /// (including blank lines). This is helpful when reading files that can contain a mix of fixed-width fields and
+        /// other data.
+        /// </para>
+        /// <para>
+        /// The function should return <c>true</c> to ignore the line, or <c>false</c> to read it
+        /// normally. The default value is <c>null</c>, which causes all lines to be read normally.
+        /// </para>
+        /// </summary>
+        public Func<string, bool>? IsIgnoredLine { get; set; }
+
+        /// <summary>
         /// Gets or sets whether a <see cref="FixedWidthDataException"/> exception is thrown when
         /// reading a field that cannot be converted to the target field type. The default
         /// value is <c>true</c>.
@@ -68,6 +84,7 @@ namespace SoftCircuits.Parsers
             DefaultAlignment = FieldAlignment.Left;
             DefaultPadCharacter = ' ';
             TrimFields = true;
+            IsIgnoredLine = null;
             ThrowDataException = true;
             ThrowOutOfRangeException = true;
             ThrowOverflowException = true;

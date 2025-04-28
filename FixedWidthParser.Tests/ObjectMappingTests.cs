@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2020-2024 Jonathan Wood (www.softcircuits.com)
+﻿// Copyright (c) 2020-2025 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
 using NUnit.Framework;
@@ -65,15 +65,15 @@ namespace FixedWidthParserTests
             }
         }
 
-        private readonly List<Product> Products = new()
-        {
+        private readonly List<Product> Products =
+        [
             new Product { Id = Guid.NewGuid(), Description = "Coffee Table", Category = "Furniture", Rating = 4.5 },
             new Product { Id = Guid.NewGuid(), Description = "Spoons", Category = "Utensils", Rating = 4.2 },
             new Product { Id = Guid.NewGuid(), Description = "Carpet", Category = "Flooring", Rating = 4.5 },
             new Product { Id = Guid.NewGuid(), Description = "Knives", Category = "Utensils", Rating = 4.7 },
             new Product { Id = Guid.NewGuid(), Description = "Recliner", Category = "Furniture", Rating = 4.5 },
             new Product { Id = Guid.NewGuid(), Description = "Floor Tiles", Category = "Flooring", Rating = 4.5 },
-        };
+        ];
 
         [Test]
         public void BasicTests()
@@ -102,7 +102,7 @@ namespace FixedWidthParserTests
 
             using FixedWidthReader<T2> reader = new(memFile.GetStream(), options);
             initReader?.Invoke(reader);
-            results = reader.ReadAll().ToList();
+            results = [.. reader.ReadAll()];
 
             return results;
         }

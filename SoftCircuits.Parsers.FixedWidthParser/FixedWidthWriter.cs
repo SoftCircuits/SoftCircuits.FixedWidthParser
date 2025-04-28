@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2020-2024 Jonathan Wood (www.softcircuits.com)
+﻿// Copyright (c) 2020-2025 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
 using System;
@@ -50,7 +50,7 @@ namespace SoftCircuits.Parsers
             ArgumentNullException.ThrowIfNull(filename);
 #endif
 
-            Fields = new List<FixedWidthField>(fields);
+            Fields = [.. fields];
             Writer = new StreamWriter(filename);
             Options = options ?? new FixedWidthOptions();
         }
@@ -78,7 +78,7 @@ namespace SoftCircuits.Parsers
             ArgumentNullException.ThrowIfNull(encoding);
 #endif
 
-            Fields = new List<FixedWidthField>(fields);
+            Fields = [.. fields];
             Writer = new StreamWriter(filename, false, encoding);
             Options = options ?? new FixedWidthOptions();
         }
@@ -102,7 +102,7 @@ namespace SoftCircuits.Parsers
             ArgumentNullException.ThrowIfNull(stream);
 #endif
 
-            Fields = new List<FixedWidthField>(fields);
+            Fields = [.. fields];
             Writer = new StreamWriter(stream);
             Options = options ?? new FixedWidthOptions();
         }
@@ -130,7 +130,7 @@ namespace SoftCircuits.Parsers
             ArgumentNullException.ThrowIfNull(encoding);
 #endif
 
-            Fields = new List<FixedWidthField>(fields);
+            Fields = [.. fields];
             Writer = new StreamWriter(stream, encoding);
             Options = options ?? new FixedWidthOptions();
         }

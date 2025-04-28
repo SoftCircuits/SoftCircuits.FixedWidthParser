@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2020-2024 Jonathan Wood (www.softcircuits.com)
+﻿// Copyright (c) 2020-2025 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
 using NUnit.Framework;
@@ -23,8 +23,8 @@ namespace FixedWidthParserTests
         }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
-        public List<Person> People = new()
-        {
+        public List<Person> People =
+        [
             new() { Id = 1, FirstName = "Bob", LastName = "Villa", Age = 27, Country = "USA" },
             new() { Id = 2, FirstName = "Jack", LastName = "Carpenter", Age = 18, Country = "USA" },
             new() { Id = 3, FirstName = "Susan", LastName = "Smith", Age = 33, Country = "France" },
@@ -35,7 +35,7 @@ namespace FixedWidthParserTests
             new() { Id = 8, FirstName = "Roxanne", LastName = "Olsen", Age = 14, Country = "UK" },
             new() { Id = 9, FirstName = "Billy", LastName = "Benson", Age = 2, Country = "Canada" },
             new() { Id = 10, FirstName = "Janice", LastName = "Biden", Age = 80, Country = "USA" },
-        };
+        ];
 
         private class PersonComparer : IComparer, IComparer<Person>
         {

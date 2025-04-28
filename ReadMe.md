@@ -320,6 +320,23 @@ Gets or sets whether leading and trailing pad characters are trimmed when readin
 
 WARNING: If this property is <c>true</c> and the field value contains leading or trailing characters that match the current pad character, those characters will also be trimmed.
 
+#### Action<string, bool>? IsIgnoredLine
+
+By default, the library throws an exception when the line is not long enough to contain all of the fixed-width fields. However,
+in some cases, the file you are readings may have a mix of fixed-width fields and other data, or it could contain empty lines.
+In these cases, you may want to ignore some lines when reading a file.
+
+The `IsIgnoredLIne` property can be used to specify a function that determines whether the current line should be ignored. For
+example, the following code causes the library to ignore any lines that are less than 20 characters (this includes empty lines).
+
+```cs
+// Ignore lines less than 20 characters
+FixedWidthOptions options = new FixedWidthOptions
+{
+    IsIgnoredLine = line => line.Length < 20
+};
+```
+
 #### bool ThrowDataException
 
 Gets or sets whether a `FixedWidthDataException` is thrown when reading a field that cannot be converted to the target field type. The default value is `true`.

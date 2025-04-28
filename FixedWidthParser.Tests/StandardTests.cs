@@ -1,4 +1,4 @@
-// Copyright (c) 2020-2024 Jonathan Wood (www.softcircuits.com)
+// Copyright (c) 2020-2025 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
 using NUnit.Framework;
@@ -18,13 +18,13 @@ namespace FixedWidthParserTests
         [Test]
         public async Task BasicTestAsync()
         {
-            FixedWidthField[] fields = new FixedWidthField[]
-            {
-                new FixedWidthField(26),
-                new FixedWidthField(26),
-                new FixedWidthField(26),
-                new FixedWidthField(26),
-            };
+            FixedWidthField[] fields =
+            [
+                new(26),
+                new(26),
+                new(26),
+                new(26),
+            ];
 
             List<string[]> values =
             [
@@ -97,13 +97,13 @@ namespace FixedWidthParserTests
         [Test]
         public void FieldLayoutTest()
         {
-            FixedWidthField[] fields = new FixedWidthField[]
-            {
-                new FixedWidthField(26),
-                new FixedWidthField(26),
-                new FixedWidthField(26),
-                new FixedWidthField(26),
-            };
+            FixedWidthField[] fields =
+            [
+                new(26),
+                new(26),
+                new(26),
+                new(26),
+            ];
 
             List<string[]> values =
             [
@@ -156,13 +156,13 @@ namespace FixedWidthParserTests
         [Test]
         public void FieldMismatchTest()
         {
-            FixedWidthField[] fields = new FixedWidthField[]
-            {
-                new FixedWidthField(10),
-                new FixedWidthField(10),
-                new FixedWidthField(10),
-                new FixedWidthField(10),
-            };
+            FixedWidthField[] fields =
+            [
+                new(10),
+                new(10),
+                new(10),
+                new(10),
+            ];
 
             List<string[]> values =
             [
@@ -191,19 +191,19 @@ namespace FixedWidthParserTests
         [Test]
         public void SkipTests()
         {
-            FixedWidthField[] fields = new FixedWidthField[]
-            {
-                new FixedWidthField(5),
-                new FixedWidthField(5) { Skip = 4 },
-                new FixedWidthField(5),
-            };
+            FixedWidthField[] fields =
+            [
+                new(5),
+                new(5) { Skip = 4 },
+                new(5),
+            ];
 
             FixedWidthField[] fields2 =
             [
-                new FixedWidthField(5),
-                new FixedWidthField(4),
-                new FixedWidthField(5),
-                new FixedWidthField(5),
+                new(5),
+                new(4),
+                new(5),
+                new(5),
             ];
 
             List<string[]> values =
@@ -240,13 +240,13 @@ namespace FixedWidthParserTests
         [Test]
         public void FieldOverrideTests()
         {
-            FixedWidthField[] fields = new FixedWidthField[]
-            {
-                new FixedWidthField(10, FieldAlignment.Left, ' ', false),
-                new FixedWidthField(10, FieldAlignment.Right, '~', false),
-                new FixedWidthField(10, alignment: FieldAlignment.Left, padCharacter: '@', trimField: false),
-                new FixedWidthField(10, alignment: FieldAlignment.Right, padCharacter: '!', trimField: false),
-                new FixedWidthField(10)
+            FixedWidthField[] fields =
+            [
+                new(10, FieldAlignment.Left, ' ', false),
+                new(10, FieldAlignment.Right, '~', false),
+                new(10, alignment: FieldAlignment.Left, padCharacter: '@', trimField: false),
+                new(10, alignment: FieldAlignment.Right, padCharacter: '!', trimField: false),
+                new(10)
                 {
                     Alignment = FieldAlignment.Left,
                     PadCharacter = '=',
@@ -258,7 +258,7 @@ namespace FixedWidthParserTests
                     PadCharacter = '=',
                     TrimField = true,
                 },
-            };
+            ];
 
             List<string[]> values =
             [
@@ -311,17 +311,17 @@ namespace FixedWidthParserTests
         [Test]
         public void OutOfRangeTests()
         {
-            FixedWidthField[] writeFields = new FixedWidthField[]
-            {
-                new FixedWidthField(4),
-                new FixedWidthField(4),
-            };
+            FixedWidthField[] writeFields =
+            [
+                new(4),
+                new(4),
+            ];
 
             FixedWidthField[] readFields =
             [
-                new FixedWidthField(4),
-                new FixedWidthField(4),
-                new FixedWidthField(4),
+                new(4),
+                new(4),
+                new(4),
             ];
 
             List<string[]> values =
@@ -342,6 +342,39 @@ namespace FixedWidthParserTests
             });
 
             WriteReadValues(writeFields, readFields, values, out List<string[]> results, new FixedWidthOptions { ThrowOutOfRangeException = false });
+            CollectionAssert.AreEqual(expected, results);
+        }
+
+        [Test]
+        public void IgnoredLinesTests()
+        {
+            FixedWidthField[] fields =
+            [
+                new(4),
+                new(4),
+            ];
+
+            List<string> lines =
+            [
+                "abcd1234",
+                "abcd",
+                "1234",
+                "",
+                "jklm5678",
+            ];
+
+            List<string[]> expected =
+            [
+                ["abcd", "1234"],
+                ["jklm", "5678"],
+            ];
+
+            Assert.Throws<FixedWidthOutOfRangeException>(() =>
+            {
+                WriteReadValues(lines, fields, out List<string[]> results, new FixedWidthOptions { IsIgnoredLine = null });
+            });
+
+            WriteReadValues(lines, fields, out List<string[]> results, new FixedWidthOptions { IsIgnoredLine = s => s.Length < 8 });
             CollectionAssert.AreEqual(expected, results);
         }
 
@@ -366,7 +399,33 @@ namespace FixedWidthParserTests
                     writer.Write(item);
             }
 
-            results = new List<string[]>();
+            results = [];
+            using FixedWidthReader reader = new(readFields, memFile.GetStream(), options);
+            {
+                while (reader.Read())
+                {
+                    // Need to copy values so next read doesn't overwrite them
+                    string[] copy = new string[reader.Values.Length];
+                    reader.Values.CopyTo(copy, 0);
+                    results.Add(copy);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Writes free-form text lines and reads back the results as fixed-width fields.
+        /// </summary>
+        private static void WriteReadValues(IEnumerable<string> writeLines, IEnumerable<FixedWidthField> readFields, out List<string[]> results, FixedWidthOptions? options = null)
+        {
+            MemoryFile memFile = new();
+
+            using (StreamWriter writer = new(memFile.GetStream()))
+            {
+                foreach (var line in writeLines)
+                    writer.WriteLine(line);
+            }
+
+            results = [];
             using FixedWidthReader reader = new(readFields, memFile.GetStream(), options);
             {
                 while (reader.Read())

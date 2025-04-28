@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2020-2024 Jonathan Wood (www.softcircuits.com)
+﻿// Copyright (c) 2020-2025 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
 using System;
@@ -16,7 +16,7 @@ namespace SoftCircuits.Parsers
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false)]
     public class FixedWidthFieldAttribute(int length) : Attribute
     {
-        internal readonly FixedWidthField Field = new FixedWidthField(length);
+        internal readonly FixedWidthField Field = new(length);
 
         /// <summary>
         /// Gets or sets the column alignment for this field.
