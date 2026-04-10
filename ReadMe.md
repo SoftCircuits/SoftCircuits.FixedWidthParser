@@ -161,6 +161,8 @@ One example where you might need to do this is for `DateTime` fields. While the 
 
 Data conversion classes must implement the `IDataConverter` interface, but the easiest way to write a custom data converter in a type-safe manner is to derive your class directly from `DataConverter<T>`, where `T` is the type of the member you are converting. This class has two abstract members that you must implement in your derived class: `ConvertToString()` and `TryConvertFromString()`.
 
+Data conversion classes must either have a parameterless constructor or they can define a constructor that accepts a `FixedWidthDescriptor` parameter. In the latter case, an instance of `FixedWidthDescriptor` will be provided, which provides information about the field being converted.
+
 The following code reads and writes `Person` records, which contain a `DateTime` property. The `BirthDateConverter` class is used to provide data conversion support for the `DateTime` property. This is done by setting the `ConverterType` property of the `FixedWidthField` attribute.
 
 ```cs
@@ -281,6 +283,8 @@ Gets or sets the number of characters to skip before the field. Normally, this p
 #### Type ConverterType
 
 Gets or sets the data type that converts this field to and from a string (as demonstrated previously). Must derive from `IDataConverter`. For best results and type safety, derive the class from `DataConverter<T>`.
+
+The specified type must either have a parameterless constructor or it can define a constructor that accepts a `FixedWidthDescriptor` parameter. In the latter case, an instance of `FixedWidthDescriptor` will be provided, which provides information about the field being converted.
 
 This property is available with the `FixedWidthField` attribute and not the `FixedWidthField` class.
 

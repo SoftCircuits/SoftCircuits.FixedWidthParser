@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2020-2025 Jonathan Wood (www.softcircuits.com)
+﻿// Copyright (c) 2020-2026 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
 using System;
@@ -6,12 +6,9 @@ using System;
 namespace SoftCircuits.Parsers
 {
     /// <summary>
-    /// Attribute that can be applied to class properties and fields to map the member
+    /// Attribute that can be applied to class properties to map the member
     /// to a fixed-width field.
     /// </summary>
-    /// <remarks>
-    /// 
-    /// </remarks>
     /// <param name="length">The length of this field.</param>
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false)]
     public class FixedWidthFieldAttribute(int length) : Attribute
@@ -68,6 +65,12 @@ namespace SoftCircuits.Parsers
         /// Must derive from <see cref="IDataConverter"/>. For best results and type
         /// safety, derive the class from <see cref="DataConverter{T}"/>.
         /// </summary>
+        /// <remarks>
+        /// The specified type must either have a parameterless constructor or it can define a constructor
+        /// that accepts a <see cref="FixedWidthDescriptor"/> parameter. In the latter case, an instance of
+        /// <see cref="FixedWidthDescriptor"/> will be provided, which provides information about the field
+        /// being converted.
+        /// </remarks>
         public Type? ConverterType { get; set; }
     }
 }

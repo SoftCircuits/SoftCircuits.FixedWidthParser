@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2020-2025 Jonathan Wood (www.softcircuits.com)
+﻿// Copyright (c) 2020-2026 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
 using NUnit.Framework;
@@ -77,7 +77,7 @@ namespace FixedWidthParserTests
         public void Test()
         {
             ObjectMappingTests x = new();
-            CollectionAssert.AreEqual(People, x.WriteReadValues(People, null, w => MapWriter(w), r => MapReader(r)), new PersonComparer());
+            CollectionAssert.AreEqual(People, ObjectMappingTests.WriteReadValues(People, null, w => MapWriter(w), r => MapReader(r)), new PersonComparer());
         }
 
         private static void MapWriter(FixedWidthWriter<Person> writer)

@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2020-2025 Jonathan Wood (www.softcircuits.com)
+﻿// Copyright (c) 2020-2026 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
 using NUnit.Framework;
@@ -83,7 +83,7 @@ namespace FixedWidthParserTests
 
         #region Support methods
 
-        internal List<T1> WriteReadValues<T1>(List<T1> items, FixedWidthOptions? options = null, Action<FixedWidthWriter<T1>>? initWriter = null, Action<FixedWidthReader<T1>>? initReader = null) where T1 : class, new()
+        internal static List<T1> WriteReadValues<T1>(List<T1> items, FixedWidthOptions? options = null, Action<FixedWidthWriter<T1>>? initWriter = null, Action<FixedWidthReader<T1>>? initReader = null) where T1 : class, new()
         {
             return WriteReadValues<T1, T1>(items, options, initWriter, initReader);
         }

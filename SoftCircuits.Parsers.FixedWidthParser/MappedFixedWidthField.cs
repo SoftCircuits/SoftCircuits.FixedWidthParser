@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2020-2025 Jonathan Wood (www.softcircuits.com)
+﻿// Copyright (c) 2020-2026 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
 using SoftCircuits.Parsers.Converters;
@@ -124,15 +124,18 @@ namespace SoftCircuits.Parsers
         /// <exception cref="InvalidOperationException"></exception>
         private IDataConverter GetConverter(Type? converterType)
         {
-            if (converterType != null)
-            {
-                if (!typeof(IDataConverter).IsAssignableFrom(converterType))
-                    throw new InvalidOperationException($"The data converter type specified for member '{Member.Name}' must derive from '{nameof(IDataConverter)}'.");
-                if (Activator.CreateInstance(converterType) is not IDataConverter converter)
-                    throw new Exception($"Unable to create instance of type '{converterType.FullName}'.");
-                return converter;
-            }
-            return DataConverters.GetConverter(Member.Type);
+            if (converterType is null)
+                return DataConverters.GetConverter(Member.Type);
+
+            if (!typeof(IDataConverter).IsAssignableFrom(converterType))
+                throw new InvalidOperationException(
+                    $"The data converter type specified for member '{Member.Name}' must derive from '{nameof(IDataConverter)}'.");
+
+            ConstructorInfo? constructor = converterType.GetConstructor([typeof(FixedWidthDescriptor)]);
+
+            return constructor != null
+                ? (IDataConverter)constructor.Invoke([new FixedWidthDescriptor(Member.Name, Length)])
+                : (IDataConverter)Activator.CreateInstance(converterType)!;
         }
 
         #region IFixedWidthField Interface

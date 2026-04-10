@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2020-2025 Jonathan Wood (www.softcircuits.com)
+﻿// Copyright (c) 2020-2026 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
 using System;
@@ -204,7 +204,7 @@ namespace SoftCircuits.Parsers
         private void FormatLine(IEnumerable<string> values)
         {
             InitLineBuffer(FixedWidthField.CalculateLineLength(Fields));
-            IEnumerator<string> enumerator = values.GetEnumerator();
+            using IEnumerator<string> enumerator = values.GetEnumerator();
             foreach (FixedWidthField field in Fields)
                 FormatField(enumerator.MoveNext() ? enumerator.Current : string.Empty, field);
         }
@@ -254,6 +254,9 @@ namespace SoftCircuits.Parsers
         private char[]? LineBuffer = null;
         private int LineLength = 0;
 
+        /// <summary>
+        /// Note: Does not clear existing characters. Assumes we'll write the same length.
+        /// </summary>
 #if !NETSTANDARD2_0
         [MemberNotNull(nameof(LineBuffer))]
 #endif
@@ -288,8 +291,13 @@ namespace SoftCircuits.Parsers
             if (LineLength + count > LineBuffer.Length)
                 count = LineBuffer.Length - LineLength;
 
+#if NETSTANDARD2_0
             for (int i = 0; i < count; i++)
                 LineBuffer[LineLength++] = c;
+#else
+            LineBuffer.AsSpan(LineLength, count).Fill(c);
+            LineLength += count;
+#endif
         }
 
         /// <summary>
@@ -306,8 +314,8 @@ namespace SoftCircuits.Parsers
             if (LineLength + count > LineBuffer.Length)
                 count = LineBuffer.Length - LineLength;
 
-            for (int i = 0; i < count; i++)
-                LineBuffer[LineLength++] = s[i];
+            s.CopyTo(0, LineBuffer, LineLength, count);
+            LineLength += count;
         }
 
         /// <summary>
@@ -329,11 +337,11 @@ namespace SoftCircuits.Parsers
             if (startIndex + count > s.Length)
                 count = s.Length - startIndex;
 
-            for (int i = 0; i < count; i++)
-                LineBuffer[LineLength++] = s[startIndex + i];
+            s.CopyTo(0, LineBuffer, LineLength, count);
+            LineLength += count;
         }
 
-        #endregion
+#endregion
 
         /// <summary>
         /// Clears all buffers and causes any unbuffered data to be written to the underlying stream.
