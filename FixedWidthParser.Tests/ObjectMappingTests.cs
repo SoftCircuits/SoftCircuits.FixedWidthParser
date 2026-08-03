@@ -1,19 +1,13 @@
 ﻿// Copyright (c) 2020-2026 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
-using NUnit.Framework;
-using NUnit.Framework.Legacy;
 using SoftCircuits.Parsers;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 
-namespace FixedWidthParserTests
+namespace FixedWidthParser.Tests
 {
     public class ObjectMappingTests
     {
-        private class Product
+        public class Product
         {
             [FixedWidthField(36)]
             public Guid Id { get; set; }
@@ -32,37 +26,17 @@ namespace FixedWidthParserTests
             public override string ToString() => $"{Id}/{Category}/{Description}/{Rating}";
         }
 
-        private class ProductComparer : IComparer, IComparer<Product>
+        public class ProductComparer : IEqualityComparer<Product>
         {
-            public int Compare(object? a, object? b)
+            public bool Equals(Product? x, Product? y)
             {
-                if (a is not Product ta || b is not Product tb)
-                    throw new InvalidOperationException();
-                return Compare(ta, tb);
+                if (x is null && y is null) return true;
+                if (x is null || y is null) return false;
+                return x.Id == y.Id && x.Description == y.Description && x.Category == y.Category && x.Rating == y.Rating;
             }
 
-            public int Compare(Product? a, Product? b)
-            {
-                if (a != null && b != null)
-                {
-                    int result;
-
-                    result = a.Id.CompareTo(b.Id);
-                    if (result != 0) return result;
-                    result = a.Description.CompareTo(b.Description);
-                    if (result != 0) return result;
-                    result = a.Category.CompareTo(b.Category);
-                    if (result != 0) return result;
-                    result = a.Rating.CompareTo(b.Rating);
-                    return result;
-                }
-
-                if (a == null && b == null)
-                    return 0;
-                if (a == null)
-                    return -1;
-                return 1;
-            }
+            public int GetHashCode(Product obj) =>
+                HashCode.Combine(obj.Id, obj.Description, obj.Category, obj.Rating);
         }
 
         private readonly List<Product> Products =
@@ -75,10 +49,10 @@ namespace FixedWidthParserTests
             new Product { Id = Guid.NewGuid(), Description = "Floor Tiles", Category = "Flooring", Rating = 4.5 },
         ];
 
-        [Test]
+        [Fact]
         public void BasicTests()
         {
-            CollectionAssert.AreEqual(Products, WriteReadValues(Products), new ProductComparer());
+            Assert.Equal(Products, WriteReadValues(Products), new ProductComparer());
         }
 
         #region Support methods

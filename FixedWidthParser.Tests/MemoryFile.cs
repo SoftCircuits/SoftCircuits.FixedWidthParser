@@ -1,17 +1,16 @@
 ﻿// Copyright (c) 2020-2026 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
-using System.IO;
 using System.Text;
 
-namespace FixedWidthParserTests
+namespace FixedWidthParser.Tests
 {
     /// <summary>
     /// Helper class for reading and writing to memory files.
     /// </summary>
     public class MemoryFile
     {
-        private MemoryStream? _Stream;
+        private MemoryStream? Stream;
 
         /// <summary>
         /// Gets a memory stream for reading or writing.
@@ -20,14 +19,14 @@ namespace FixedWidthParserTests
         /// written to the previous stream returned by this method.</param>
         public Stream GetStream(bool loadLastStreamContent = true)
         {
-            MemoryStream? oldStream = _Stream;
-            _Stream = new();
+            MemoryStream? oldStream = Stream;
+            Stream = new();
             if (loadLastStreamContent && oldStream != null)
             {
-                _Stream.Write(oldStream.ToArray());
-                _Stream.Seek(0, SeekOrigin.Begin);
+                Stream.Write(oldStream.ToArray());
+                Stream.Seek(0, SeekOrigin.Begin);
             }
-            return _Stream;
+            return Stream;
         }
 
         /// <summary>
@@ -35,9 +34,9 @@ namespace FixedWidthParserTests
         /// </summary>
         public string GetContent()
         {
-            if (_Stream != null)
+            if (Stream != null)
             {
-                byte[] buffer = _Stream.ToArray();
+                byte[] buffer = Stream.ToArray();
                 return Encoding.UTF8.GetString(buffer, 0, buffer.Length);
             }
             return string.Empty;

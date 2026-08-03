@@ -1,14 +1,9 @@
 ﻿// Copyright (c) 2020-2026 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
-using NUnit.Framework;
 using SoftCircuits.Parsers;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Threading.Tasks;
 
-namespace FixedWidthParserTests
+namespace FixedWidthParser.Tests
 {
     public class FixedWidthFieldAttributeTests
     {
@@ -49,7 +44,7 @@ namespace FixedWidthParserTests
             new Product { Description = "Floor Tiles", Category = "Flooring@@@@", Color = "*********Tan" },
         ];
 
-        [Test]
+        [Fact]
         public void AttributeTests()
         {
             MemoryFile memFile = new();
@@ -68,12 +63,12 @@ namespace FixedWidthParserTests
                     results.Add(reader.Item);
             }
 
-            Assert.That(Results.Count == results.Count);
+            Assert.Equal(Results.Count, results.Count);
             for (int i = 0; i < results.Count; i++)
             {
-                Assert.That(Results[i].Description == results[i].Description);
-                Assert.That(Results[i].Category == results[i].Category);
-                Assert.That(Results[i].Color == results[i].Color);
+                Assert.Equal(Results[i].Description, results[i].Description);
+                Assert.Equal(Results[i].Category, results[i].Category);
+                Assert.Equal(Results[i].Color, results[i].Color);
             }
         }
     }

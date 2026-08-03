@@ -1,18 +1,13 @@
 ﻿// Copyright (c) 2020-2026 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
-using NUnit.Framework;
-using NUnit.Framework.Legacy;
 using SoftCircuits.Parsers;
-using System;
-using System.Collections;
-using System.Collections.Generic;
 
-namespace FixedWidthParserTests
+namespace FixedWidthParser.Tests
 {
     public class DataConverterTests
     {
-        private class AllTypesClass
+        public class AllTypesClass
         {
             [FixedWidthField(10)]
             public Boolean BooleanValue { get; set; }
@@ -59,90 +54,85 @@ namespace FixedWidthParserTests
             }
         }
 
-        private class AllTypesComparer : IComparer, IComparer<AllTypesClass>
+        public class AllTypesComparer : IEqualityComparer<AllTypesClass>
         {
-            public int Compare(object? a, object? b)
+            public bool Equals(AllTypesClass? x, AllTypesClass? y)
             {
-                if (a is not AllTypesClass ta || b is not AllTypesClass tb)
-                    throw new InvalidOperationException();
-                return Compare(ta, tb);
+                if (x is null && y is null)
+                    return true;
+                if (x is null || y is null)
+                    return false;
+                if (x.BooleanValue != y.BooleanValue)
+                    return false;
+                if (x.ByteValue != y.ByteValue)
+                    return false;
+                if (x.CharValue != y.CharValue)
+                    return false;
+                if (x.DateOnlyValue != y.DateOnlyValue)
+                    return false;
+                x.DateTimeValue = TruncateMilliseconds(x.DateTimeValue);
+                y.DateTimeValue = TruncateMilliseconds(y.DateTimeValue);
+                if (x.DateTimeValue != y.DateTimeValue)
+                    return false;
+                x.DateTimeOffsetValue = TruncateMilliseconds(x.DateTimeOffsetValue);
+                y.DateTimeOffsetValue = TruncateMilliseconds(y.DateTimeOffsetValue);
+                if (x.DateTimeOffsetValue != y.DateTimeOffsetValue)
+                    return false;
+                if (y.DecimalValue != y.DecimalValue)
+                    return false;
+                if (x.DoubleValue != y.DoubleValue)
+                    return false;
+                if (x.GuidValue != y.GuidValue)
+                    return false;
+                if (x.Int16Value != y.Int16Value)
+                    return false;
+                if (x.Int32Value != y.Int32Value)
+                    return false;
+                if (x.Int64Value != y.Int64Value)
+                    return false;
+                if (x.SByteValue != y.SByteValue)
+                    return false;
+                if (x.SingleValue != y.SingleValue)
+                    return false;
+                if (x.StringValue != y.StringValue)
+                    return false;
+                x.TimeOnlyValue = TruncateMilliseconds(x.TimeOnlyValue);
+                y.TimeOnlyValue = TruncateMilliseconds(y.TimeOnlyValue);
+                if (x.TimeOnlyValue != y.TimeOnlyValue)
+                    return false;
+                if (x.UInt16Value != y.UInt16Value)
+                    return false;
+                if (x.UInt32Value != y.UInt32Value)
+                    return false;
+                if (x.UInt64Value != y.UInt64Value)
+                    return false;
+
+                return true;
             }
 
-            public int Compare(AllTypesClass? a, AllTypesClass? b)
+            public int GetHashCode(AllTypesClass obj)
             {
-                if (a != null && b != null)
-                {
-                    int result;
-
-                    result = a.BooleanValue.CompareTo(b.BooleanValue);
-                    if (result != 0) return result;
-
-                    result = a.ByteValue.CompareTo(b.ByteValue);
-                    if (result != 0) return result;
-
-                    result = a.CharValue.CompareTo(b.CharValue);
-                    if (result != 0) return result;
-
-                    result = a.DateOnlyValue.CompareTo(b.DateOnlyValue);
-                    if (result != 0) return result;
-
-                    a.DateTimeValue = TruncateMilliseconds(a.DateTimeValue);
-                    b.DateTimeValue = TruncateMilliseconds(b.DateTimeValue);
-                    result = a.DateTimeValue.CompareTo(b.DateTimeValue);
-                    if (result != 0) return result;
-
-                    a.DateTimeOffsetValue = TruncateMilliseconds(a.DateTimeOffsetValue);
-                    b.DateTimeOffsetValue = TruncateMilliseconds(b.DateTimeOffsetValue);
-                    result = a.DateTimeOffsetValue.CompareTo(b.DateTimeOffsetValue);
-                    if (result != 0) return result;
-
-                    result = a.DecimalValue.CompareTo(b.DecimalValue);
-                    if (result != 0) return result;
-
-                    result = a.DoubleValue.CompareTo(b.DoubleValue);
-                    if (result != 0) return result;
-
-                    result = a.GuidValue.CompareTo(b.GuidValue);
-                    if (result != 0) return result;
-
-                    result = a.Int16Value.CompareTo(b.Int16Value);
-                    if (result != 0) return result;
-
-                    result = a.Int32Value.CompareTo(b.Int32Value);
-                    if (result != 0) return result;
-
-                    result = a.Int64Value.CompareTo(b.Int64Value);
-                    if (result != 0) return result;
-
-                    result = a.SByteValue.CompareTo(b.SByteValue);
-                    if (result != 0) return result;
-
-                    result = a.SingleValue.CompareTo(b.SingleValue);
-                    if (result != 0) return result;
-
-                    result = a.StringValue.CompareTo(b.StringValue);
-                    if (result != 0) return result;
-
-                    a.TimeOnlyValue = TruncateMilliseconds(a.TimeOnlyValue);
-                    b.TimeOnlyValue = TruncateMilliseconds(b.TimeOnlyValue);
-                    result = a.TimeOnlyValue.CompareTo(b.TimeOnlyValue);
-                    if (result != 0) return result;
-
-                    result = a.UInt16Value.CompareTo(b.UInt16Value);
-                    if (result != 0) return result;
-
-                    result = a.UInt32Value.CompareTo(b.UInt32Value);
-                    if (result != 0) return result;
-
-                    result = a.UInt64Value.CompareTo(b.UInt64Value);
-                    return result;
-                }
-
-                if (a == null && b == null)
-                    return 0;
-                if (a == null)
-                    return -1;
-                return 1;
+                var hash = new HashCode();
+                hash.Add(obj.BooleanValue);
+                hash.Add(obj.ByteValue);
+                hash.Add(obj.CharValue);
+                hash.Add(obj.DateOnlyValue);
+                hash.Add(obj.DateTimeValue);
+                hash.Add(obj.DateTimeOffsetValue);
+                hash.Add(obj.DecimalValue);
+                hash.Add(obj.DoubleValue);
+                hash.Add(obj.GuidValue);
+                hash.Add(obj.Int16Value);
+                hash.Add(obj.Int32Value);
+                hash.Add(obj.Int64Value);
+                hash.Add(obj.SByteValue);
+                hash.Add(obj.SingleValue);
+                hash.Add(obj.StringValue);
+                hash.Add(obj.TimeOnlyValue);
+                hash.Add(obj.UInt16Value);
+                hash.Add(obj.UInt32Value);
+                hash.Add(obj.UInt64Value);
+                return hash.ToHashCode();
             }
 
             private static DateTime TruncateMilliseconds(DateTime dt) => dt.AddTicks(-(dt.Ticks % TimeSpan.TicksPerSecond));
@@ -242,11 +232,11 @@ namespace FixedWidthParserTests
             },
         ];
 
-        [Test]
+        [Fact]
         public void TestIntrinsicDataConverters()
         {
             ObjectMappingTests x = new();
-            CollectionAssert.AreEqual(AllTypesItems, ObjectMappingTests.WriteReadValues(AllTypesItems), new AllTypesComparer());
+            Assert.Equal(AllTypesItems, ObjectMappingTests.WriteReadValues(AllTypesItems), new AllTypesComparer());
         }
     }
 }

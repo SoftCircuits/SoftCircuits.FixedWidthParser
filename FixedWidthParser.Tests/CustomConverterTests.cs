@@ -1,17 +1,15 @@
-﻿using NUnit.Framework;
-using NUnit.Framework.Legacy;
+﻿// Copyright (c) 2020-2026 Jonathan Wood (www.softcircuits.com)
+// Licensed under the MIT license.
+//
 using SoftCircuits.Parsers;
-using System;
-using System.Collections;
-using System.Collections.Generic;
 
-namespace FixedWidthParserTests
+namespace FixedWidthParser.Tests
 {
-    internal class CustomConverterTests
+    public class CustomConverterTests
     {
         private const int BirthDateLength = 20;
 
-        private class Person
+        public class Person
         {
             [FixedWidthField(8)]
             public int Id { get; set; }
@@ -28,7 +26,7 @@ namespace FixedWidthParserTests
             }
         }
 
-        private class PersonWithDescriptor
+        public class PersonWithDescriptor
         {
             [FixedWidthField(8)]
             public int Id { get; set; }
@@ -45,70 +43,30 @@ namespace FixedWidthParserTests
             }
         }
 
-        private class PersonComparer : IComparer, IComparer<Person>
+        public class PersonComparer : IEqualityComparer<Person>
         {
-            public int Compare(object? a, object? b)
+            public bool Equals(Person? x, Person? y)
             {
-                if (a is not Person ta || b is not Person tb)
-                    throw new InvalidOperationException();
-                return Compare(ta, tb);
+                if (x is null && y is null) return true;
+                if (x is null || y is null) return false;
+                return x.Id == y.Id && x.FirstName == y.FirstName && x.LastName == y.LastName && x.BirthDate == y.BirthDate;
             }
 
-            public int Compare(Person? a, Person? b)
-            {
-                if (a != null && b != null)
-                {
-                    int result;
-
-                    result = a.Id.CompareTo(b.Id);
-                    if (result != 0) return result;
-                    result = a.FirstName.CompareTo(b.FirstName);
-                    if (result != 0) return result;
-                    result = a.LastName.CompareTo(b.LastName);
-                    if (result != 0) return result;
-                    result = a.BirthDate.CompareTo(b.BirthDate);
-                    return result;
-                }
-
-                if (a == null && b == null)
-                    return 0;
-                if (a == null)
-                    return -1;
-                return 1;
-            }
+            public int GetHashCode(Person obj) =>
+                HashCode.Combine(obj.Id, obj.FirstName, obj.LastName, obj.BirthDate);
         }
 
-        private class PersonWithDescriptorComparer : IComparer, IComparer<PersonWithDescriptor>
+        public class PersonWithDescriptorComparer : IEqualityComparer<PersonWithDescriptor>
         {
-            public int Compare(object? a, object? b)
+            public bool Equals(PersonWithDescriptor? x, PersonWithDescriptor? y)
             {
-                if (a is not PersonWithDescriptor ta || b is not PersonWithDescriptor tb)
-                    throw new InvalidOperationException();
-                return Compare(ta, tb);
+                if (x is null && y is null) return true;
+                if (x is null || y is null) return false;
+                return x.Id == y.Id && x.FirstName == y.FirstName && x.LastName == y.LastName && x.BirthDate == y.BirthDate;
             }
 
-            public int Compare(PersonWithDescriptor? a, PersonWithDescriptor? b)
-            {
-                if (a != null && b != null)
-                {
-                    int result;
-
-                    result = a.Id.CompareTo(b.Id);
-                    if (result != 0) return result;
-                    result = a.FirstName.CompareTo(b.FirstName);
-                    if (result != 0) return result;
-                    result = a.LastName.CompareTo(b.LastName);
-                    if (result != 0) return result;
-                    result = a.BirthDate.CompareTo(b.BirthDate);
-                    return result;
-                }
-
-                if (a == null && b == null)
-                    return 0;
-                if (a == null)
-                    return -1;
-                return 1;
-            }
+            public int GetHashCode(PersonWithDescriptor obj) =>
+                HashCode.Combine(obj.Id, obj.FirstName, obj.LastName, obj.BirthDate);
         }
 
         private class BirthdateConverter() : DataConverter<DateTime>
@@ -133,9 +91,9 @@ namespace FixedWidthParserTests
 
             public override bool TryConvertFromString(string? s, out DateTime value)
             {
-                Assert.That(Field != null);
-                Assert.That(Field!.Name == nameof(PersonWithDescriptor.BirthDate));
-                Assert.That(Field!.Length == BirthDateLength);
+                Assert.NotNull(Field);
+                Assert.Equal(nameof(PersonWithDescriptor.BirthDate), Field!.Name);
+                Assert.Equal(BirthDateLength, Field!.Length);
                 return DateTime.TryParseExact(s, Format, null, System.Globalization.DateTimeStyles.None, out value);
             }
         }
@@ -158,22 +116,22 @@ namespace FixedWidthParserTests
             new PersonWithDescriptor { Id = 5, FirstName = "John", LastName = "Carter", BirthDate = new DateTime(1982, 12, 21) },
         ];
 
-        [Test]
+        [Fact]
         public void TestCustomConverter()
         {
             ObjectMappingTests x = new();
-            CollectionAssert.AreEqual(People, ObjectMappingTests.WriteReadValues(People), new PersonComparer());
+            Assert.Equal(People, ObjectMappingTests.WriteReadValues(People), new PersonComparer());
 
             // Test predefined custom converters
-            CollectionAssert.AreEqual(People, ObjectMappingTests.WriteReadValues(People, null,
+            Assert.Equal(People, ObjectMappingTests.WriteReadValues(People, null,
                 w => w.MapField(m => m.BirthDate, 20).SetConverterType(typeof(UniversalDateTimeConverter)),
                 r => r.MapField(m => m.BirthDate, 20).SetConverterType(typeof(UniversalDateTimeConverter))),
                 new PersonComparer());
-            CollectionAssert.AreEqual(People, ObjectMappingTests.WriteReadValues(People, null,
+            Assert.Equal(People, ObjectMappingTests.WriteReadValues(People, null,
                 w => w.MapField(m => m.BirthDate, 20).SetConverterType(typeof(CompactDateTimeConverter)),
                 r => r.MapField(m => m.BirthDate, 20).SetConverterType(typeof(CompactDateTimeConverter))),
                 new PersonComparer());
-            CollectionAssert.AreEqual(People, ObjectMappingTests.WriteReadValues(People, null,
+            Assert.Equal(People, ObjectMappingTests.WriteReadValues(People, null,
                 w => w.MapField(m => m.BirthDate, 20).SetConverterType(typeof(DateOnlyDateTimeConverter)),
                 r => r.MapField(m => m.BirthDate, 20).SetConverterType(typeof(DateOnlyDateTimeConverter))),
                 new PersonComparer());
@@ -182,22 +140,22 @@ namespace FixedWidthParserTests
         /// <summary>
         /// Test custom converter with a constructor that accepts a <see cref="FixedWidthDescriptor"/> parameter.
         /// </summary>
-        [Test]
+        [Fact]
         public void TestCustomConverterWithDescriptors()
         {
             ObjectMappingTests x = new();
-            CollectionAssert.AreEqual(PeopleWithDescriptors, ObjectMappingTests.WriteReadValues(PeopleWithDescriptors), new PersonWithDescriptorComparer());
+            Assert.Equal(PeopleWithDescriptors, ObjectMappingTests.WriteReadValues(PeopleWithDescriptors), new PersonWithDescriptorComparer());
 
             // Test predefined custom converters
-            CollectionAssert.AreEqual(PeopleWithDescriptors, ObjectMappingTests.WriteReadValues(PeopleWithDescriptors, null,
+            Assert.Equal(PeopleWithDescriptors, ObjectMappingTests.WriteReadValues(PeopleWithDescriptors, null,
                 w => w.MapField(m => m.BirthDate, 20).SetConverterType(typeof(UniversalDateTimeConverter)),
                 r => r.MapField(m => m.BirthDate, 20).SetConverterType(typeof(UniversalDateTimeConverter))),
                 new PersonWithDescriptorComparer());
-            CollectionAssert.AreEqual(PeopleWithDescriptors, ObjectMappingTests.WriteReadValues(PeopleWithDescriptors, null,
+            Assert.Equal(PeopleWithDescriptors, ObjectMappingTests.WriteReadValues(PeopleWithDescriptors, null,
                 w => w.MapField(m => m.BirthDate, 20).SetConverterType(typeof(CompactDateTimeConverter)),
                 r => r.MapField(m => m.BirthDate, 20).SetConverterType(typeof(CompactDateTimeConverter))),
                 new PersonWithDescriptorComparer());
-            CollectionAssert.AreEqual(PeopleWithDescriptors, ObjectMappingTests.WriteReadValues(PeopleWithDescriptors, null,
+            Assert.Equal(PeopleWithDescriptors, ObjectMappingTests.WriteReadValues(PeopleWithDescriptors, null,
                 w => w.MapField(m => m.BirthDate, 20).SetConverterType(typeof(DateOnlyDateTimeConverter)),
                 r => r.MapField(m => m.BirthDate, 20).SetConverterType(typeof(DateOnlyDateTimeConverter))),
                 new PersonWithDescriptorComparer());

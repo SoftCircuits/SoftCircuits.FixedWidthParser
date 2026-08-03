@@ -1,21 +1,15 @@
-// Copyright (c) 2020-2026 Jonathan Wood (www.softcircuits.com)
+﻿// Copyright (c) 2020-2026 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
-using NUnit.Framework;
-using NUnit.Framework.Legacy;
 using SoftCircuits.Parsers;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace FixedWidthParserTests
+namespace FixedWidthParser.Tests
 {
     public class StandardTests
     {
-        [Test]
+        [Fact]
         public async Task BasicTestAsync()
         {
             FixedWidthField[] fields =
@@ -59,13 +53,13 @@ namespace FixedWidthParserTests
                         writer.Write(values[i]);
                 }
 
-                Assert.That(expectedContent == File.ReadAllText(path));
+                Assert.Equal(expectedContent, File.ReadAllText(path));
 
                 using (FixedWidthReader reader = new(fields, path))
                 {
                     int i = 0;
                     while (reader.Read())
-                        CollectionAssert.AreEquivalent(values[i++], reader.Values);
+                        Assert.Equivalent(values[i++], reader.Values);
                 }
 
                 // Async
@@ -75,13 +69,13 @@ namespace FixedWidthParserTests
                         await writer.WriteAsync(values[i]);
                 }
 
-                Assert.That(expectedContent == File.ReadAllText(path));
+                Assert.Equal(expectedContent, File.ReadAllText(path));
 
                 using (FixedWidthReader reader = new(fields, path))
                 {
                     int i = 0;
                     while (await reader.ReadAsync())
-                        CollectionAssert.AreEquivalent(values[i++], reader.Values!);
+                        Assert.Equivalent(values[i++], reader.Values!);
                 }
             }
             catch (Exception)
@@ -94,7 +88,7 @@ namespace FixedWidthParserTests
             }
         }
 
-        [Test]
+        [Fact]
         public void FieldLayoutTest()
         {
             FixedWidthField[] fields =
@@ -138,22 +132,22 @@ namespace FixedWidthParserTests
             ];
 
             WriteReadValues(fields, values, out List<string[]> results, new FixedWidthOptions { TrimFields = true });
-            CollectionAssert.AreEqual(values, results);
+            Assert.Equal(values, results);
 
             WriteReadValues(fields, values, out results, new FixedWidthOptions { DefaultPadCharacter = '~', TrimFields = true });
-            CollectionAssert.AreEqual(values, results);
+            Assert.Equal(values, results);
 
             WriteReadValues(fields, values, out results, new FixedWidthOptions { DefaultAlignment = FieldAlignment.Left, TrimFields = false });
-            CollectionAssert.AreEqual(leftPadded, results);
+            Assert.Equal(leftPadded, results);
 
             WriteReadValues(fields, values, out results, new FixedWidthOptions { DefaultAlignment = FieldAlignment.Right, TrimFields = false });
-            CollectionAssert.AreEqual(rightPadded, results);
+            Assert.Equal(rightPadded, results);
 
             WriteReadValues(fields, values, out results, new FixedWidthOptions { DefaultPadCharacter = '~', TrimFields = false });
-            CollectionAssert.AreEqual(tildePadded, results);
+            Assert.Equal(tildePadded, results);
         }
 
-        [Test]
+        [Fact]
         public void FieldMismatchTest()
         {
             FixedWidthField[] fields =
@@ -185,10 +179,10 @@ namespace FixedWidthParserTests
             ];
 
             WriteReadValues(fields, values, out List<string[]> results);
-            CollectionAssert.AreEqual(expected, results);
+            Assert.Equal(expected, results);
         }
 
-        [Test]
+        [Fact]
         public void SkipTests()
         {
             FixedWidthField[] fields =
@@ -228,16 +222,16 @@ namespace FixedWidthParserTests
             ];
 
             WriteReadValues(fields, values, out List<string[]> results);
-            CollectionAssert.AreEqual(values, results);
+            Assert.Equal(values, results);
 
             WriteReadValues(fields, values, out results, new FixedWidthOptions { TrimFields = false });
-            CollectionAssert.AreEqual(expected, results);
+            Assert.Equal(expected, results);
 
             WriteReadValues(fields, fields2, values, out results, new FixedWidthOptions { TrimFields = false });
-            CollectionAssert.AreEqual(expected2, results);
+            Assert.Equal(expected2, results);
         }
 
-        [Test]
+        [Fact]
         public void FieldOverrideTests()
         {
             FixedWidthField[] fields =
@@ -275,10 +269,10 @@ namespace FixedWidthParserTests
             ];
 
             WriteReadValues(fields, values, out List<string[]> results);
-            CollectionAssert.AreEqual(expected, results);
+            Assert.Equal(expected, results);
         }
 
-        [Test]
+        [Fact]
         public void OverflowTests()
         {
             FixedWidthField[] fields =
@@ -305,10 +299,10 @@ namespace FixedWidthParserTests
             });
 
             WriteReadValues(fields, values, out List<string[]> results, new FixedWidthOptions { ThrowOverflowException = false });
-            CollectionAssert.AreEqual(expected, results);
+            Assert.Equal(expected, results);
         }
 
-        [Test]
+        [Fact]
         public void OutOfRangeTests()
         {
             FixedWidthField[] writeFields =
@@ -342,10 +336,10 @@ namespace FixedWidthParserTests
             });
 
             WriteReadValues(writeFields, readFields, values, out List<string[]> results, new FixedWidthOptions { ThrowOutOfRangeException = false });
-            CollectionAssert.AreEqual(expected, results);
+            Assert.Equal(expected, results);
         }
 
-        [Test]
+        [Fact]
         public void IgnoredLinesTests()
         {
             FixedWidthField[] fields =
@@ -375,7 +369,7 @@ namespace FixedWidthParserTests
             });
 
             WriteReadValues(lines, fields, out List<string[]> results, new FixedWidthOptions { IsIgnoredLine = s => s.Length < 8 });
-            CollectionAssert.AreEqual(expected, results);
+            Assert.Equal(expected, results);
         }
 
         #region Support methods
