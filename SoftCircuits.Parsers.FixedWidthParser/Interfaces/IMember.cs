@@ -3,18 +3,17 @@
 //
 using System;
 
-namespace SoftCircuits.Parsers
+namespace SoftCircuits.Parsers;
+
+/// <summary>
+/// Interface for accessing class members.
+/// </summary>
+internal interface IMember
 {
-    /// <summary>
-    /// Interface for accessing class members.
-    /// </summary>
-    internal interface IMember
-    {
-        string Name { get; }
-        Type Type { get; }
-        bool CanRead { get; }
-        bool CanWrite { get; }
-        void SetValue(object item, object value);
-        object? GetValue(object item);
-    }
+    string Name { get; }
+    Type Type { get; }
+    bool CanRead { get; }
+    bool CanWrite { get; }
+    void SetValue(object item, object value);
+    object? GetValue(object item);
 }

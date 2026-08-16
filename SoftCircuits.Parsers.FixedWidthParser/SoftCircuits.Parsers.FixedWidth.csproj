@@ -12,7 +12,7 @@
     <Company>SoftCircuits</Company>
     <Copyright>Copyright © 2020-2026 SoftCircuits</Copyright>
     <NeutralLanguage>en-US</NeutralLanguage>
-    <PackageReleaseNotes>Added direct support for .NET 10; custom converters can now optionally define a constructor that takes a FixedWidthDescriptor instances, which provides information about the property being converted; Code optimizations and cleanup.</PackageReleaseNotes>
+    <PackageReleaseNotes>Code optimizations: 1) Optimized per-row initialization in FixedWidthWriter; 2) Now precompiling assignments in FixedWidthWriter&lt;T&gt; and FixedWidthReader&lt;T&gt; (improves performance on larger files); Code review and clean up.</PackageReleaseNotes>
     <PackageTags>text parser text-parser file file-parser fixed width fixed-width fixed-width-parser</PackageTags>
     <PackageId>SoftCircuits.FixedWidthParser</PackageId>
     <Product>SoftCircuits.FixedWidthParser</Product>
@@ -22,7 +22,7 @@
     <PackageIcon>Logo_64x64.png</PackageIcon>
     <RepositoryUrl>https://github.com/SoftCircuits/SoftCircuits.FixedWidthParser</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <Version>3.5.0</Version>
+    <Version>4.0.0</Version>
     <PackageReadmeFile>ReadMe.md</PackageReadmeFile>
     <SignAssembly>False</SignAssembly>
   </PropertyGroup>

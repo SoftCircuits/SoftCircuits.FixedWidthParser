@@ -3,12 +3,11 @@
 //
 using System;
 
-namespace SoftCircuits.Parsers.Converters
-{
-    internal class DoubleConverter : DataConverter<Double>
-    {
-        public override string ConvertToString(Double value) => value.ToString();
+namespace SoftCircuits.Parsers.Converters;
 
-        public override bool TryConvertFromString(string? s, out Double value) => Double.TryParse(s, out value);
-    }
+internal class DoubleConverter : DataConverter<Double>
+{
+    public override string ConvertToString(Double value) => value.ToString();
+
+    public override bool TryConvertFromString(string? s, out Double value) => Double.TryParse(s, out value);
 }

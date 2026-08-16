@@ -3,12 +3,11 @@
 //
 using System;
 
-namespace SoftCircuits.Parsers.Converters
-{
-    internal class ByteConverter : DataConverter<Byte>
-    {
-        public override string ConvertToString(Byte value) => value.ToString();
+namespace SoftCircuits.Parsers.Converters;
 
-        public override bool TryConvertFromString(string? s, out Byte value) => Byte.TryParse(s, out value);
-    }
+internal class ByteConverter : DataConverter<Byte>
+{
+    public override string ConvertToString(Byte value) => value.ToString();
+
+    public override bool TryConvertFromString(string? s, out Byte value) => Byte.TryParse(s, out value);
 }

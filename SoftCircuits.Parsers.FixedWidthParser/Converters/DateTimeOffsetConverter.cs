@@ -4,14 +4,13 @@
 using System;
 using System.Globalization;
 
-namespace SoftCircuits.Parsers.Converters
+namespace SoftCircuits.Parsers.Converters;
+
+internal class DateTimeOffsetConverter : DataConverter<DateTimeOffset>
 {
-    internal class DateTimeOffsetConverter : DataConverter<DateTimeOffset>
-    {
-        private const string Format = "yyyy-MM-dd HH:mm:ss zzz";
+    private const string Format = "yyyy-MM-dd HH:mm:ss zzz";
 
-        public override string ConvertToString(DateTimeOffset value) => value.ToString(Format, CultureInfo.InvariantCulture);
+    public override string ConvertToString(DateTimeOffset value) => value.ToString(Format, CultureInfo.InvariantCulture);
 
-        public override bool TryConvertFromString(string? s, out DateTimeOffset value) => DateTimeOffset.TryParseExact(s, Format, CultureInfo.InvariantCulture, DateTimeStyles.None, out value);
-    }
+    public override bool TryConvertFromString(string? s, out DateTimeOffset value) => DateTimeOffset.TryParseExact(s, Format, CultureInfo.InvariantCulture, DateTimeStyles.None, out value);
 }

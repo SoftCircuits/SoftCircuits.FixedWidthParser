@@ -3,12 +3,11 @@
 //
 using System;
 
-namespace SoftCircuits.Parsers.Converters
-{
-    internal class DecimalConverter : DataConverter<Decimal>
-    {
-        public override string ConvertToString(Decimal value) => value.ToString();
+namespace SoftCircuits.Parsers.Converters;
 
-        public override bool TryConvertFromString(string? s, out Decimal value) => Decimal.TryParse(s, out value);
-    }
+internal class DecimalConverter : DataConverter<Decimal>
+{
+    public override string ConvertToString(Decimal value) => value.ToString();
+
+    public override bool TryConvertFromString(string? s, out Decimal value) => Decimal.TryParse(s, out value);
 }

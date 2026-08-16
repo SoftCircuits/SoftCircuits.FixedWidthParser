@@ -5,19 +5,18 @@
 using System;
 using System.Globalization;
 
-namespace SoftCircuits.Parsers
+namespace SoftCircuits.Parsers;
+
+/// <summary>
+/// Custom <see cref="DateTime"/> converter that stores only the date portion of the value.
+/// </summary>
+public class DateOnlyDateTimeConverter : DataConverter<DateTime>
 {
-    /// <summary>
-    /// Custom <see cref="DateTime"/> converter that stores only the date portion of the value.
-    /// </summary>
-    public class DateOnlyDateTimeConverter : DataConverter<DateTime>
-    {
-        private const string Format = "yyyy-MM-dd";
+    private const string Format = "yyyy-MM-dd";
 
-        /// <inheritdoc/>
-        public override string ConvertToString(DateTime value) => value.ToString(Format, CultureInfo.InvariantCulture);
+    /// <inheritdoc/>
+    public override string ConvertToString(DateTime value) => value.ToString(Format, CultureInfo.InvariantCulture);
 
-        /// <inheritdoc/>
-        public override bool TryConvertFromString(string? s, out DateTime value) => DateTime.TryParseExact(s, Format, CultureInfo.InvariantCulture, DateTimeStyles.None, out value);
-    }
+    /// <inheritdoc/>
+    public override bool TryConvertFromString(string? s, out DateTime value) => DateTime.TryParseExact(s, Format, CultureInfo.InvariantCulture, DateTimeStyles.None, out value);
 }

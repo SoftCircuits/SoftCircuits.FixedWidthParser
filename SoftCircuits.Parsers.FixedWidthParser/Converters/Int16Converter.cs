@@ -3,12 +3,11 @@
 //
 using System;
 
-namespace SoftCircuits.Parsers.Converters
-{
-    internal class Int16Converter : DataConverter<Int16>
-    {
-        public override string ConvertToString(Int16 value) => value.ToString();
+namespace SoftCircuits.Parsers.Converters;
 
-        public override bool TryConvertFromString(string? s, out Int16 value) => Int16.TryParse(s, out value);
-    }
+internal class Int16Converter : DataConverter<Int16>
+{
+    public override string ConvertToString(Int16 value) => value.ToString();
+
+    public override bool TryConvertFromString(string? s, out Int16 value) => Int16.TryParse(s, out value);
 }

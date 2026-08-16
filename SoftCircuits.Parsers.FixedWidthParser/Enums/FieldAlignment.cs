@@ -2,21 +2,20 @@
 // Licensed under the MIT license.
 //
 
-namespace SoftCircuits.Parsers
+namespace SoftCircuits.Parsers;
+
+/// <summary>
+/// Specifies fixed-width field alignment.
+/// </summary>
+public enum FieldAlignment
 {
     /// <summary>
-    /// Specifies fixed-width field alignment.
+    /// Field is aligned left by padding on the right.
     /// </summary>
-    public enum FieldAlignment
-    {
-        /// <summary>
-        /// Field is aligned left by padding on the right.
-        /// </summary>
-        Left,
+    Left,
 
-        /// <summary>
-        /// Field is aligned right by padding on the left.
-        /// </summary>
-        Right,
-    }
+    /// <summary>
+    /// Field is aligned right by padding on the left.
+    /// </summary>
+    Right,
 }

@@ -3,12 +3,11 @@
 //
 using System;
 
-namespace SoftCircuits.Parsers.Converters
-{
-    internal class BooleanConverter : DataConverter<Boolean>
-    {
-        public override string ConvertToString(Boolean value) => value.ToString();
+namespace SoftCircuits.Parsers.Converters;
 
-        public override bool TryConvertFromString(string? s, out Boolean value) => Boolean.TryParse(s, out value);
-    }
+internal class BooleanConverter : DataConverter<Boolean>
+{
+    public override string ConvertToString(Boolean value) => value.ToString();
+
+    public override bool TryConvertFromString(string? s, out Boolean value) => Boolean.TryParse(s, out value);
 }
