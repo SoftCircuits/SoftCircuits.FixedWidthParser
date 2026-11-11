@@ -94,6 +94,10 @@ namespace FixedWidthParser.Tests
                 Assert.NotNull(Field);
                 Assert.Equal(nameof(PersonWithDescriptor.BirthDate), Field!.Name);
                 Assert.Equal(BirthDateLength, Field!.Length);
+                // Note: Test reader/writer uses default options
+                Assert.Equal(FixedWidthOptions.InitDefaultAlignment, Field!.Alignment);
+                Assert.Equal(FixedWidthOptions.InitDefaultPadCharacter, Field!.PadCharacter);
+                Assert.Equal(FixedWidthOptions.InitTrimFields, Field!.TrimField);
                 return DateTime.TryParseExact(s, Format, null, System.Globalization.DateTimeStyles.None, out value);
             }
         }

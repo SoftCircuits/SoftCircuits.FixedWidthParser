@@ -17,6 +17,7 @@ internal class MappedFixedWidthField : FixedWidthField, IFixedWidthField
 {
     private readonly IMember Member;
     private IDataConverter Converter;
+    protected FixedWidthOptions? Options = null;
 
     /// <summary>
     /// Constructs a new <see cref="MappedFixedWidthField"/> instance.
@@ -24,9 +25,10 @@ internal class MappedFixedWidthField : FixedWidthField, IFixedWidthField
     /// <param name="member"><see cref="MemberInfo"/> that describes this field. Must be of type
     /// <see cref="FieldInfo"/> or <see cref="PropertyInfo"/>.</param>
     /// <param name="attribute">The field's <see cref="FixedWidthFieldAttribute"/> attribute.</param>
+    /// <param name="options">Reader/writer options used by <see cref="FixedWidthDescriptor"/>. Leave as null to use the default options.</param>
     /// <exception cref="ArgumentNullException"></exception>
     /// <exception cref="ArgumentException"></exception>
-    public MappedFixedWidthField(MemberInfo member, FixedWidthFieldAttribute attribute)
+    public MappedFixedWidthField(MemberInfo member, FixedWidthFieldAttribute attribute, FixedWidthOptions? options)
         : base(attribute)
     {
 #if NETSTANDARD2_0
@@ -38,6 +40,8 @@ internal class MappedFixedWidthField : FixedWidthField, IFixedWidthField
         ArgumentNullException.ThrowIfNull(member);
         ArgumentNullException.ThrowIfNull(attribute);
 #endif
+
+        Options = options;
 
         if (member is FieldInfo fieldInfo)
             Member = new FieldMember(fieldInfo);
@@ -55,9 +59,10 @@ internal class MappedFixedWidthField : FixedWidthField, IFixedWidthField
     /// <param name="member"><see cref="MemberInfo"/> that describes this field. Must be of type
     /// <see cref="FieldInfo"/> or <see cref="PropertyInfo"/>.</param>
     /// <param name="length">This field's length.</param>
+    /// <param name="options">Reader/writer options used by <see cref="FixedWidthDescriptor"/>. Leave as null to use the default options.</param>
     /// <exception cref="ArgumentNullException"></exception>
     /// <exception cref="ArgumentException"></exception>
-    public MappedFixedWidthField(MemberInfo member, int length)
+    public MappedFixedWidthField(MemberInfo member, int length, FixedWidthOptions? options)
         : base(length)
     {
 #if NETSTANDARD2_0
@@ -66,6 +71,8 @@ internal class MappedFixedWidthField : FixedWidthField, IFixedWidthField
 #else
         ArgumentNullException.ThrowIfNull(member);
 #endif
+
+        Options = options;
 
         if (member is FieldInfo fieldInfo)
             Member = new FieldMember(fieldInfo);
@@ -133,8 +140,9 @@ internal class MappedFixedWidthField : FixedWidthField, IFixedWidthField
 
         ConstructorInfo? constructor = converterType.GetConstructor([typeof(FixedWidthDescriptor)]);
 
+
         return constructor != null
-            ? (IDataConverter)constructor.Invoke([new FixedWidthDescriptor(Member.Name, Length)])
+            ? (IDataConverter)constructor.Invoke([new FixedWidthDescriptor(Member.Name, this, Options)])
             : (IDataConverter)Activator.CreateInstance(converterType)!;
     }
 
@@ -179,8 +187,9 @@ internal class MappedFixedWidthField : FixedWidthField, IFixedWidthField
     /// if not members have a <see cref="FixedWidthFieldAttribute"/> attribute.
     /// </summary>
     /// <param name="type">The type to build <see cref="MappedFixedWidthField"/>s for.</param>
+    /// <param name="options">Reader/writer options used by <see cref="FixedWidthDescriptor"/>. Leave as null to use the default options.</param>
     /// <returns>A collection of <see cref="MappedFixedWidthField"/>s.</returns>
-    public static IEnumerable<FixedWidthField> MapFields(Type type)
+    public static IEnumerable<FixedWidthField> MapFields(Type type, FixedWidthOptions? options)
     {
         foreach (MemberInfo member in type.GetMembers(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance))
         {
@@ -191,13 +200,13 @@ internal class MappedFixedWidthField : FixedWidthField, IFixedWidthField
 
                 if (member is PropertyInfo propertyInfo)
                 {
-                    field = new MappedFixedWidthField(propertyInfo, attribute);
+                    field = new MappedFixedWidthField(propertyInfo, attribute, options);
                 }
                 else if (member is FieldInfo fieldInfo)
                 {
                     // Ignore compiler-generated fields for backing properties
                     if (!fieldInfo.IsDefined(typeof(CompilerGeneratedAttribute)))
-                        field = new MappedFixedWidthField(fieldInfo, attribute);
+                        field = new MappedFixedWidthField(fieldInfo, attribute, options);
                 }
                 if (field != null)
                     yield return field;
@@ -221,11 +230,12 @@ internal class MappedFixedWidthField : FixedWidthField, IFixedWidthField
     /// <param name="fields">The list of existing field maps. Any new maps will be appended to this collection.</param>
     /// <param name="expression">An expression that specifies the property being mapped.</param>
     /// <param name="length">The number of characters used by this field.</param>
+    /// <param name="options">Reader/writer options used by <see cref="FixedWidthDescriptor"/>. Leave as null to use the default options.</param>
     /// <returns>An <see cref="IFixedWidthField"/> that supports a Fluent interface to set additional mapping properties.</returns>
     /// <exception cref="ArgumentNullException"></exception>
     /// <exception cref="ArgumentException"></exception>
     /// <exception cref="InvalidOperationException"></exception>
-    public static IFixedWidthField MapField<T, TMember>(List<FixedWidthField> fields, Expression<Func<T, TMember>> expression, int length)
+    public static IFixedWidthField MapField<T, TMember>(List<FixedWidthField> fields, Expression<Func<T, TMember>> expression, int length, FixedWidthOptions? options)
     {
 #if NETSTANDARD2_0
         if (expression == null)
@@ -267,13 +277,13 @@ internal class MappedFixedWidthField : FixedWidthField, IFixedWidthField
 
             if (members[0] is PropertyInfo propertyInfo)
             {
-                field = new MappedFixedWidthField(propertyInfo, length);
+                field = new MappedFixedWidthField(propertyInfo, length, options);
             }
             else if (members[0] is FieldInfo fieldInfo)
             {
                 // Ignore compiler-generated fields for backing properties
                 if (!fieldInfo.IsDefined(typeof(CompilerGeneratedAttribute)))
-                    field = new MappedFixedWidthField(fieldInfo, length);
+                    field = new MappedFixedWidthField(fieldInfo, length, options);
             }
 
             if (field == null)

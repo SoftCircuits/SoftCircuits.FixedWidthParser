@@ -12,7 +12,7 @@
     <Company>SoftCircuits</Company>
     <Copyright>Copyright © 2020-2026 SoftCircuits</Copyright>
     <NeutralLanguage>en-US</NeutralLanguage>
-    <PackageReleaseNotes>Code optimizations: 1) Optimized per-row initialization in FixedWidthWriter; 2) Now precompiling assignments in FixedWidthWriter&lt;T&gt; and FixedWidthReader&lt;T&gt; (improves performance on larger files); Code review and clean up.</PackageReleaseNotes>
+    <PackageReleaseNotes>Added additional fields to FixedWidthDescriptor (the object optionally passed to a custom converter constructor); Minor tweaks and fixes.</PackageReleaseNotes>
     <PackageTags>text parser text-parser file file-parser fixed width fixed-width fixed-width-parser</PackageTags>
     <PackageId>SoftCircuits.FixedWidthParser</PackageId>
     <Product>SoftCircuits.FixedWidthParser</Product>
@@ -22,7 +22,7 @@
     <PackageIcon>Logo_64x64.png</PackageIcon>
     <RepositoryUrl>https://github.com/SoftCircuits/SoftCircuits.FixedWidthParser</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <Version>4.0.0</Version>
+    <Version>4.0.1</Version>
     <PackageReadmeFile>ReadMe.md</PackageReadmeFile>
     <SignAssembly>False</SignAssembly>
   </PropertyGroup>
@@ -40,6 +40,10 @@
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="FixedWidthParser.Tests" />
   </ItemGroup>
 
 </Project>

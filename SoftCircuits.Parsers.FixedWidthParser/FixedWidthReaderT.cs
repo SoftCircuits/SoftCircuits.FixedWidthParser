@@ -29,7 +29,7 @@ public class FixedWidthReader<T> : FixedWidthReader where T : class, new()
     /// <param name="filename">File to read.</param>
     /// <param name="options">Library options. Leave as null to use the default options.</param>
     public FixedWidthReader(string filename, FixedWidthOptions? options = null)
-        : base(MappedFixedWidthField.MapFields(typeof(T)), filename, options)
+        : base(MappedFixedWidthField.MapFields(typeof(T), options), filename, options)
     {
     }
 
@@ -40,7 +40,7 @@ public class FixedWidthReader<T> : FixedWidthReader where T : class, new()
     /// <param name="encoding">The character encoding to use.</param>
     /// <param name="options">Library options. Leave as null to use the default options.</param>
     public FixedWidthReader(string filename, Encoding encoding, FixedWidthOptions? options = null)
-        : base(MappedFixedWidthField.MapFields(typeof(T)), filename, encoding, options)
+        : base(MappedFixedWidthField.MapFields(typeof(T), options), filename, encoding, options)
     {
     }
 
@@ -51,7 +51,7 @@ public class FixedWidthReader<T> : FixedWidthReader where T : class, new()
     /// <param name="detectEncodingFromByteOrderMarks">Indicates whether to look for byte order marks at the beginning of the file.</param>
     /// <param name="options">Library options. Leave as null to use the default options.</param>
     public FixedWidthReader(string filename, bool detectEncodingFromByteOrderMarks, FixedWidthOptions? options = null)
-        : base(MappedFixedWidthField.MapFields(typeof(T)), filename, detectEncodingFromByteOrderMarks, options)
+        : base(MappedFixedWidthField.MapFields(typeof(T), options), filename, detectEncodingFromByteOrderMarks, options)
     {
     }
 
@@ -63,7 +63,7 @@ public class FixedWidthReader<T> : FixedWidthReader where T : class, new()
     /// <param name="detectEncodingFromByteOrderMarks">Indicates whether to look for byte order marks at the beginning of the file.</param>
     /// <param name="options">Library options. Leave as null to use the default options.</param>
     public FixedWidthReader(string filename, Encoding encoding, bool detectEncodingFromByteOrderMarks, FixedWidthOptions? options = null)
-        : base(MappedFixedWidthField.MapFields(typeof(T)), filename, encoding, detectEncodingFromByteOrderMarks, options)
+        : base(MappedFixedWidthField.MapFields(typeof(T), options), filename, encoding, detectEncodingFromByteOrderMarks, options)
     {
     }
 
@@ -73,7 +73,7 @@ public class FixedWidthReader<T> : FixedWidthReader where T : class, new()
     /// <param name="stream">Stream to read.</param>
     /// <param name="options">Library options. Leave as null to use the default options.</param>
     public FixedWidthReader(Stream stream, FixedWidthOptions? options = null)
-        : base(MappedFixedWidthField.MapFields(typeof(T)), stream, options)
+        : base(MappedFixedWidthField.MapFields(typeof(T), options), stream, options)
     {
     }
 
@@ -84,7 +84,7 @@ public class FixedWidthReader<T> : FixedWidthReader where T : class, new()
     /// <param name="encoding">The character encoding to use.</param>
     /// <param name="options">Library options. Leave as null to use the default options.</param>
     public FixedWidthReader(Stream stream, Encoding encoding, FixedWidthOptions? options = null)
-        : base(MappedFixedWidthField.MapFields(typeof(T)), stream, encoding, options)
+        : base(MappedFixedWidthField.MapFields(typeof(T), options), stream, encoding, options)
     {
     }
 
@@ -95,7 +95,7 @@ public class FixedWidthReader<T> : FixedWidthReader where T : class, new()
     /// <param name="detectEncodingFromByteOrderMarks">Indicates whether to look for byte order marks at the beginning of the file.</param>
     /// <param name="options">Library options. Leave as null to use the default options.</param>
     public FixedWidthReader(Stream stream, bool detectEncodingFromByteOrderMarks, FixedWidthOptions? options = null)
-        : base(MappedFixedWidthField.MapFields(typeof(T)), stream, detectEncodingFromByteOrderMarks, options)
+        : base(MappedFixedWidthField.MapFields(typeof(T), options), stream, detectEncodingFromByteOrderMarks, options)
     {
     }
 
@@ -107,7 +107,7 @@ public class FixedWidthReader<T> : FixedWidthReader where T : class, new()
     /// <param name="detectEncodingFromByteOrderMarks">Indicates whether to look for byte order marks at the beginning of the file.</param>
     /// <param name="options">Library options. Leave as null to use the default options.</param>
     public FixedWidthReader(Stream stream, Encoding encoding, bool detectEncodingFromByteOrderMarks, FixedWidthOptions? options = null)
-        : base(MappedFixedWidthField.MapFields(typeof(T)), stream, encoding, detectEncodingFromByteOrderMarks, options)
+        : base(MappedFixedWidthField.MapFields(typeof(T), options), stream, encoding, detectEncodingFromByteOrderMarks, options)
     {
     }
 
@@ -129,7 +129,7 @@ public class FixedWidthReader<T> : FixedWidthReader where T : class, new()
     /// <exception cref="ArgumentNullException"></exception>
     /// <exception cref="ArgumentException"></exception>
     /// <exception cref="InvalidOperationException"></exception>
-    public IFixedWidthField MapField<TMember>(Expression<Func<T, TMember>> expression, int length) => MappedFixedWidthField.MapField(Fields, expression, length);
+    public IFixedWidthField MapField<TMember>(Expression<Func<T, TMember>> expression, int length) => MappedFixedWidthField.MapField(Fields, expression, length, Options);
 
     /// <summary>
     /// Reads the next row from the current fixed-width file and returns the raw text values.

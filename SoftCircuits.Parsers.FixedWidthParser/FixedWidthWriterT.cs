@@ -25,7 +25,7 @@ public class FixedWidthWriter<T> : FixedWidthWriter where T : class, new()
     /// <param name="filename">File to write.</param>
     /// <param name="options">Library options. Leave as null to use the default options.</param>
     public FixedWidthWriter(string filename, FixedWidthOptions? options = null)
-        : base(MappedFixedWidthField.MapFields(typeof(T)), filename, options)
+        : base(MappedFixedWidthField.MapFields(typeof(T), options), filename, options)
     {
     }
 
@@ -36,7 +36,7 @@ public class FixedWidthWriter<T> : FixedWidthWriter where T : class, new()
     /// <param name="encoding">The character encoding to use.</param>
     /// <param name="options">Library options. Leave as null to use the default options.</param>
     public FixedWidthWriter(string filename, Encoding encoding, FixedWidthOptions? options = null)
-        : base(MappedFixedWidthField.MapFields(typeof(T)), filename, encoding, options)
+        : base(MappedFixedWidthField.MapFields(typeof(T), options), filename, encoding, options)
     {
     }
 
@@ -46,7 +46,7 @@ public class FixedWidthWriter<T> : FixedWidthWriter where T : class, new()
     /// <param name="stream">Stream to write.</param>
     /// <param name="options">Library options. Leave as null to use the default options.</param>
     public FixedWidthWriter(Stream stream, FixedWidthOptions? options = null)
-        : base(MappedFixedWidthField.MapFields(typeof(T)), stream, options)
+        : base(MappedFixedWidthField.MapFields(typeof(T), options), stream, options)
     {
     }
 
@@ -57,7 +57,7 @@ public class FixedWidthWriter<T> : FixedWidthWriter where T : class, new()
     /// <param name="encoding">The character encoding to use.</param>
     /// <param name="options">Library options. Leave as null to use the default options.</param>
     public FixedWidthWriter(Stream stream, Encoding encoding, FixedWidthOptions? options = null)
-        : base(MappedFixedWidthField.MapFields(typeof(T)), stream, encoding, options)
+        : base(MappedFixedWidthField.MapFields(typeof(T), options), stream, encoding, options)
     {
     }
 
@@ -79,7 +79,7 @@ public class FixedWidthWriter<T> : FixedWidthWriter where T : class, new()
     /// <exception cref="ArgumentNullException"></exception>
     /// <exception cref="ArgumentException"></exception>
     /// <exception cref="InvalidOperationException"></exception>
-    public IFixedWidthField MapField<TMember>(Expression<Func<T, TMember>> expression, int length) => MappedFixedWidthField.MapField(Fields, expression, length);
+    public IFixedWidthField MapField<TMember>(Expression<Func<T, TMember>> expression, int length) => MappedFixedWidthField.MapField(Fields, expression, length, Options);
 
     /// <summary>
     /// Writes the given item to the fixed-width file.

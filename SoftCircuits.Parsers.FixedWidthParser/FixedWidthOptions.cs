@@ -12,6 +12,15 @@ namespace SoftCircuits.Parsers;
 /// </summary>
 public class FixedWidthOptions
 {
+    // Default property values
+    internal const FieldAlignment InitDefaultAlignment = FieldAlignment.Left;
+    internal const char InitDefaultPadCharacter = ' ';
+    internal const bool InitTrimFields = true;
+    internal const Func<string, bool>? InitIsIgnoredLine = null;
+    internal const bool InitThrowDataException = true;
+    internal const bool InitThrowOutOfRangeException = true;
+    internal const bool InitThrowOverflowException = true;
+
     /// <summary>
     /// Gets or sets the default way fields are padded. For example, if a field is right aligned, values shorter
     /// than the field width are padded on the left. Can be overridden for individual fields using the
@@ -36,7 +45,7 @@ public class FixedWidthOptions
     /// <para>
     /// WARNING: If this property is <c>true</c> and the field value contains leading or trailing characters that
     /// match the current pad character, those characters will also be trimmed.
-    /// </para>
+    /// </para> 
     /// </summary>
     public bool TrimFields { get; set; }
 
@@ -81,12 +90,12 @@ public class FixedWidthOptions
     /// </summary>
     public FixedWidthOptions()
     {
-        DefaultAlignment = FieldAlignment.Left;
-        DefaultPadCharacter = ' ';
-        TrimFields = true;
-        IsIgnoredLine = null;
-        ThrowDataException = true;
-        ThrowOutOfRangeException = true;
-        ThrowOverflowException = true;
+        DefaultAlignment = InitDefaultAlignment;
+        DefaultPadCharacter = InitDefaultPadCharacter;
+        TrimFields = InitTrimFields;
+        IsIgnoredLine = InitIsIgnoredLine;
+        ThrowDataException = InitThrowDataException;
+        ThrowOutOfRangeException = InitThrowOutOfRangeException;
+        ThrowOverflowException = InitThrowOverflowException;
     }
 }
